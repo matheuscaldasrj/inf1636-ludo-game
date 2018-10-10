@@ -1,1 +1,1 @@
-"# Inf1636 - Ludo Game" 
+# Inf1636 - Ludo Game
