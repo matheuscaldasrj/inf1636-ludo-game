@@ -43,7 +43,7 @@ public class LudoGameFrame extends JFrame {
 	private JPanel buildBoardPanel() {
 		BoardPanel boardPanel = new BoardPanel();
 		boardPanel.setSize(WIDHT_DEFAULT,HEIGHT);
-		boardPanel.setBackground(Color.BLUE);
+		boardPanel.setBackground(Color.WHITE);
 		
 		return boardPanel;
 	}
