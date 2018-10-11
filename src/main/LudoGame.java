@@ -1,12 +1,12 @@
-/**
- * 
- */
 package main;
+
+import layout.LudoGameFrame;
 
 public class LudoGame {
 
-	public static void main(String[] args) {
-		System.out.println("Ludo game is now running!!");
+	public void startGame() {
+		LudoGameFrame ludoGameFrame = new LudoGameFrame();
+		ludoGameFrame.setTitle("Ludo game");
+		ludoGameFrame.setVisible(true);
 	}
-
 }
