@@ -1,12 +1,11 @@
 package layout;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Rectangle2D.Float;
-import java.util.Iterator;
 
 import javax.swing.JPanel;
 
@@ -69,17 +68,57 @@ public class BoardPanel extends JPanel {
 		drawRedTeam();
 		drawYellowTeam();
 		
+		//drawInitialCircles
+		
+		drawInitialCicles();
+		
+		
 
 	}
 	
+	private void drawInitialCicles() {
+		drawCircleByInitialSquarePosition(0, 0);
+		drawCircleByInitialSquarePosition(initialSquareSize + centerSquareSize, 0);
+		drawCircleByInitialSquarePosition(0,initialSquareSize + + centerSquareSize);
+		drawCircleByInitialSquarePosition(initialSquareSize + centerSquareSize, initialSquareSize + centerSquareSize);
+		
+	}
+	
+	void drawCircleByInitialSquarePosition(float poisitionX, float positionY) {
+		Ellipse2D.Double circle;
+		float radius = initialSquareSize/7;
+		graphics2.setColor(Color.WHITE);
+		
+		circle = new Ellipse2D.Double(poisitionX + initialSquareSize/6 ,positionY + initialSquareSize/5, radius,radius);
+		graphics2.fill(circle);
+		
+		circle = new Ellipse2D.Double(poisitionX + 0.7*initialSquareSize,positionY + initialSquareSize/5, radius, radius);
+		graphics2.fill(circle);
+		
+		
+		circle = new Ellipse2D.Double(poisitionX + initialSquareSize/6 ,positionY + 0.6*initialSquareSize, radius,radius);
+		graphics2.fill(circle);
+		
+		circle = new Ellipse2D.Double(poisitionX + 0.7*initialSquareSize,positionY + 0.6*initialSquareSize, radius, radius);
+		graphics2.fill(circle);
+		
+		
+		//back to black
+		graphics2.setColor(Color.BLACK);
+	}
+
 	private void drawYellowTeam() {
 		drawGameSquares(2*initialSquareSize + centerSquareSize -rectSide, initialSquareSize + centerSquareSize, new YellowBoardColorImpl());
 	}
 	
 	private void drawRedTeam() {
-		drawGameSquares(0, initialSquareSize - rectSide, new RedBoardColorImpl());
+		BoardColorInterface boardColor = new RedBoardColorImpl();
+		drawGameSquares(0, initialSquareSize - rectSide, boardColor);
 	}
 	
+	
+
+
 	private void drawGreenTeam() {
 		drawGameSquares(initialSquareSize + 3*rectSide, 0, new GreenBoardColorImpl());
 	}
@@ -88,11 +127,10 @@ public class BoardPanel extends JPanel {
 	}
 	
 
-	private void drawGameSquares(float xPosition, float yPosition, BoardColorInterface boardColor) {
-				
+	
+	private void drawGameSquares(float xPosition, float yPosition, BoardColorInterface boardColor) {		
 		graphics2.setPaint(Color.BLACK);
 		Rectangle2D.Float rect;
-	
 		
 		for(int i=0;i<18;i++) {
 			PointPosition pointPosition = boardColor.getNextSquarePosition(i, rectSide, xPosition, yPosition);
