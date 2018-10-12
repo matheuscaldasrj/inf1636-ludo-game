@@ -19,7 +19,6 @@ public class ControlPanel extends JPanel {
 	public void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);		
 		Graphics2D g2 = (Graphics2D) graphics;
-		g2.draw(new Rectangle2D.Float(0, 0, 300, 400));
 
 	}
 	 

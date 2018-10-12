@@ -11,7 +11,7 @@ import javax.swing.JSplitPane;
 
 public class LudoGameFrame extends JFrame {
 	
-	private final int WIDHT_DEFAULT=1280;
+	private final int WIDHT_DEFAULT=1200;
 	private final int HEIGHT_DEFAULT=800;
 
 	
@@ -21,6 +21,7 @@ public class LudoGameFrame extends JFrame {
 		
 		setLayoutPositions();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setResizable(false);
 	}
 	
 	private void buildSplitPanel() {
@@ -31,6 +32,7 @@ public class LudoGameFrame extends JFrame {
 		JSplitPane splitPane = new JSplitPane();
         splitPane.setSize(WIDHT_DEFAULT, HEIGHT_DEFAULT);
         splitPane.setDividerSize(0);
+
         splitPane.setDividerLocation(WIDHT_DEFAULT*2/3);
         splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setLeftComponent(boardPanel);
@@ -42,15 +44,16 @@ public class LudoGameFrame extends JFrame {
 	
 	private JPanel buildBoardPanel() {
 		BoardPanel boardPanel = new BoardPanel();
-		boardPanel.setSize(WIDHT_DEFAULT,HEIGHT);
+		boardPanel.setSize(WIDHT_DEFAULT*2/3,HEIGHT_DEFAULT);
 		boardPanel.setBackground(Color.WHITE);
-		
+		System.out.println("boardSize");
+		System.out.println(boardPanel.getSize());
 		return boardPanel;
 	}
 		
 	private JPanel buildControlPanel() {
 		ControlPanel controlPanel = new ControlPanel();
-		controlPanel.setSize(WIDHT_DEFAULT,HEIGHT);
+		controlPanel.setSize(WIDHT_DEFAULT,HEIGHT_DEFAULT);
 		controlPanel.setBackground(Color.RED);		
 		return controlPanel;
 	}
