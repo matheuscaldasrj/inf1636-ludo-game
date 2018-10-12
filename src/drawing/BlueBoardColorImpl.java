@@ -1,4 +1,4 @@
-package layout;
+package drawing;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -7,11 +7,11 @@ import java.awt.geom.Rectangle2D.Float;
 
 import models.PointPosition;
 
-public class RedBoardColorImpl extends AbstractBoardColor implements BoardColorInterface {
+public class BlueBoardColorImpl extends AbstractBoardColor implements BoardColorInterface {
 	
-	static Color color = Color.RED;
+	static Color color = Color.BLUE;
 	
-	public RedBoardColorImpl() {
+	public BlueBoardColorImpl() {
 		super(color);
 	}
 
@@ -23,11 +23,11 @@ public class RedBoardColorImpl extends AbstractBoardColor implements BoardColorI
 
 		if( index != 0 && index % 3 == 0) {
 			//GO TO NEXT LEVEL
-			rectX = currentX + rectSide;
-			rectY = currentY - 2*rectSide;
+			rectX = currentX - 2*rectSide;
+			rectY = currentY - rectSide;
 		} else {
-			rectX = currentX;
-			rectY = currentY + rectSide;
+			rectX = currentX + rectSide;
+			rectY = currentY;
 		}
 	
 		return new PointPosition(rectX, rectY);

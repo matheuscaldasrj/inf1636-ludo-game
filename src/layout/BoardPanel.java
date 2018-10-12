@@ -10,6 +10,11 @@ import java.util.Iterator;
 
 import javax.swing.JPanel;
 
+import drawing.BlueBoardColorImpl;
+import drawing.BoardColorInterface;
+import drawing.GreenBoardColorImpl;
+import drawing.RedBoardColorImpl;
+import drawing.YellowBoardColorImpl;
 import models.PointPosition;
 
 public class BoardPanel extends JPanel {
@@ -33,7 +38,7 @@ public class BoardPanel extends JPanel {
 
 		initialSquareSize = (float) (getSize().getWidth() * 2/ 5);
 
-		paintInitialSquares();
+		
 		paintBoardSquares();
 
 	}
@@ -51,9 +56,14 @@ public class BoardPanel extends JPanel {
 	
 	private void paintBoardSquares() {
 		rectSide = (float) (getSize().getWidth() - 2*initialSquareSize) / 3;
-		drawCenterRectangule();		
 		
-
+		//initialSquare
+		paintInitialSquares();
+		
+		//center
+		drawCenterRectangule();
+		
+		//team squares
 		drawGreenTeam();
 		drawBlueTeam();
 		drawRedTeam();

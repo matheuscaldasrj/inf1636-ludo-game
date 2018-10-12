@@ -20,7 +20,7 @@ public class LudoGameFrame extends JFrame {
 		
 		setLayoutPositions();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setResizable(false);
+		setResizable(true);
 	}
 	
 	private void buildSplitPanel() {
