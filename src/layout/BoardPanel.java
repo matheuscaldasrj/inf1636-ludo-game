@@ -10,11 +10,15 @@ import java.util.Iterator;
 
 import javax.swing.JPanel;
 
+import models.PointPosition;
+
 public class BoardPanel extends JPanel {
 	
 	private Graphics2D graphics2;
 	private float initialSquareSize;
-	float centerSquareSize;
+	private float centerSquareSize;
+	private int boardSize;
+	private float rectSide;
 	
 	public BoardPanel() {
 	}
@@ -36,111 +40,61 @@ public class BoardPanel extends JPanel {
 	
 	private void keepAspectRatio() {
 		//lets keep aspect ratio
-		int maxSize;
 		if(getSize().getHeight() >= getSize().getWidth()) {
-			maxSize = (int) getSize().getWidth();
+			boardSize = (int) getSize().getWidth();
 		} else {
-			maxSize = (int) getSize().getHeight();
+			boardSize = (int) getSize().getHeight();
 		}
 		
-		setSize(maxSize,maxSize);
+		setSize(boardSize,boardSize);
 	}
 	
 	private void paintBoardSquares() {
-		
+		rectSide = (float) (getSize().getWidth() - 2*initialSquareSize) / 3;
 		drawCenterRectangule();		
 		
 
-//		drawGreenTeam();
+		drawGreenTeam();
 		drawBlueTeam();
-//		drawRedTeam();
-//		drawYellowTeam();
+		drawRedTeam();
+		drawYellowTeam();
 		
 
 	}
 	
 	private void drawYellowTeam() {
-		drawGameSquares(initialSquareSize + centerSquareSize, initialSquareSize, false, Color.YELLOW);
+		drawGameSquares(2*initialSquareSize + centerSquareSize -rectSide, initialSquareSize + centerSquareSize, new YellowBoardColorImpl());
 	}
 	
 	private void drawRedTeam() {
-		drawGameSquares(0, initialSquareSize, false, Color.RED);
+		drawGameSquares(0, initialSquareSize - rectSide, new RedBoardColorImpl());
 	}
 	
 	private void drawGreenTeam() {
-		drawGameSquares(initialSquareSize, 0, true, Color.GREEN);
+		drawGameSquares(initialSquareSize + 3*rectSide, 0, new GreenBoardColorImpl());
 	}
 	private void drawBlueTeam() {
-		drawGameSquares(initialSquareSize, initialSquareSize  + centerSquareSize, true, Color.BLUE);	
+		drawGameSquares(initialSquareSize - rectSide, boardSize - rectSide, new BlueBoardColorImpl());	
 	}
-		
-	private void drawGameSquares(float xPosition, float yPosition, boolean isVertical, Color color) {
-		
-		float rectWidth;
-			
-		if(isVertical) {
-			rectWidth = (float) (getSize().getWidth() - 2*initialSquareSize) / 3;
-		} else {
-			rectWidth = (float) (getSize().getHeight() - 2*initialSquareSize) / 3;
-		}
+	
+
+	private void drawGameSquares(float xPosition, float yPosition, BoardColorInterface boardColor) {
+				
 		graphics2.setPaint(Color.BLACK);
 		Rectangle2D.Float rect;
 	
-		//index can be 0, 1 or 2
-		int index = 0;
 		
 		for(int i=0;i<18;i++) {
-			
-			float rectX;
-			float rectY;
-			
-			if(isVertical) {
-				rectX = xPosition + rectWidth*index;;
-				rectY = yPosition;				
-			} else {
-				rectX = xPosition;
-				rectY = yPosition + rectWidth*index;
-			}
-		
-			rect = new Rectangle2D.Float(rectX, rectY, rectWidth, rectWidth);
-			
-			
-			
-			rect = fillColor(rect,i,color);
-			
+			PointPosition pointPosition = boardColor.getNextSquarePosition(i, rectSide, xPosition, yPosition);
+			xPosition = pointPosition.getX();
+			yPosition = pointPosition.getY();
+			rect = new Rectangle2D.Float(xPosition, yPosition, rectSide, rectSide);
+			rect = boardColor.fillColor(graphics2, rect, i);
 			graphics2.draw(rect);				
-			index++;
-			
-			
-			if(index != 0 && index % 3 == 0) {
-				if(isVertical) {
-					yPosition += rectWidth;
-					xPosition = initialSquareSize;	
-				} else {
-					yPosition = initialSquareSize;
-					xPosition += rectWidth;
-				}				
-				
-				index = 0;
-			}
 					
 		}
 	}
 	
-	private Float fillColor(Rectangle2D.Float rect, int index, Color color) {
-		//checks using index if it should be colored;
-		
-		if(index == 2) {
-			graphics2.setColor(color);
-			graphics2.fill(rect);
-		}
-		
-		
-		//back to black
-		graphics2.setPaint(Color.BLACK);
-		
-		return rect;
-	}
 	private void drawCenterRectangule() {
 		System.out.println("height: " + getSize().height);
 
