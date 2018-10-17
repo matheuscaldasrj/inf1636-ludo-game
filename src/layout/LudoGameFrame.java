@@ -3,16 +3,22 @@ package layout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+
+import models.Piece;
 
 public class LudoGameFrame extends JFrame {
 	
 	private final int WIDTH_DEFAULT=1200;
 	private final int HEIGHT_DEFAULT=800;
 
+	
+	BoardPanel boardPanel;
+	JPanel controlPanel;
 	
 	public LudoGameFrame() {		
 		
@@ -25,8 +31,8 @@ public class LudoGameFrame extends JFrame {
 	
 	private void buildSplitPanel() {
 		
-		JPanel boardPanel = buildBoardPanel();
-		JPanel controlPanel = buildControlPanel();
+		boardPanel = buildBoardPanel();
+		controlPanel = buildControlPanel();
 		
 		JSplitPane splitPane = new JSplitPane();
         splitPane.setSize(WIDTH_DEFAULT, HEIGHT_DEFAULT);
@@ -41,7 +47,7 @@ public class LudoGameFrame extends JFrame {
 	}
 	
 	
-	private JPanel buildBoardPanel() {
+	private BoardPanel buildBoardPanel() {
 		BoardPanel boardPanel = new BoardPanel();
 		boardPanel.setSize(WIDTH_DEFAULT*2/3,HEIGHT_DEFAULT);
 		boardPanel.setBackground(Color.WHITE);
@@ -67,6 +73,11 @@ public class LudoGameFrame extends JFrame {
 		int y=sa/2-HEIGHT_DEFAULT/2;
 		setBounds(x,y,WIDTH_DEFAULT,HEIGHT_DEFAULT);
 		
+	}
+	
+	
+	public void drawPieces(List<Piece> pieces) {
+		boardPanel.drawPieces(pieces);
 	}
 	
 

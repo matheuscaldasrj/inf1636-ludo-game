@@ -3,9 +3,9 @@ package layout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -14,6 +14,7 @@ import drawing.BoardColorInterface;
 import drawing.GreenBoardColorImpl;
 import drawing.RedBoardColorImpl;
 import drawing.YellowBoardColorImpl;
+import models.Piece;
 import models.PointPosition;
 
 public class BoardPanel extends JPanel {
@@ -95,7 +96,6 @@ public class BoardPanel extends JPanel {
 		circle = new Ellipse2D.Double(poisitionX + 0.7*initialSquareSize,positionY + initialSquareSize/5, radius, radius);
 		graphics2.fill(circle);
 		
-		
 		circle = new Ellipse2D.Double(poisitionX + initialSquareSize/6 ,positionY + 0.6*initialSquareSize, radius,radius);
 		graphics2.fill(circle);
 		
@@ -154,7 +154,7 @@ public class BoardPanel extends JPanel {
 		graphics2.draw(rect);
 	}
 	
-	
+
 	private void paintInitialSquares() {
 				
 		float rectX = (float) (getSize().getWidth() - initialSquareSize);
@@ -179,5 +179,17 @@ public class BoardPanel extends JPanel {
 		graphics2.fill(rect4);
 	}
 	
-	 
+	
+	private void drawPiece(Piece piece) {
+		
+	}
+	
+	public void drawPieces(List<Piece> pieces) {
+		
+		for(Piece piece : pieces) {
+			drawPiece(piece);
+		}
+		
+		
+	}
 }
