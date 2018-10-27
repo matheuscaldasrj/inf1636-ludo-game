@@ -14,8 +14,7 @@ public class LudoGame {
 	public void startGame() {
 		ludoGameFrame = new LudoGameFrame();
 		ludoGameFrame.setTitle("Ludo game");
-		ludoGameFrame.setVisible(true);
-		
+		ludoGameFrame.setVisible(true);		
 
 	}
 	
