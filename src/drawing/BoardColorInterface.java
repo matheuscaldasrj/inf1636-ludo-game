@@ -10,5 +10,6 @@ public interface BoardColorInterface {
 	
 	public Float fillColor(Graphics2D graphics2d, Float rect, int index);
 	PointPosition getNextSquarePosition(int index, float rectSide, float currentX, float currentY);
+	public int getBoardIndexByBlockIndex(int i);
 	
 }

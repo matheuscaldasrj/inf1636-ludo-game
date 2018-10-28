@@ -7,16 +7,23 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class AbstractBoardColor {
 	
 	Color color;
 	int indexToBeBlack = 5;
 	List<Integer> indexToBeColored = Arrays.asList( 4,7, 10, 13, 16); 
+	Map<Integer,Integer> indexMapper;
 	
-	
-	public AbstractBoardColor(Color color) {
+	public AbstractBoardColor(Color color, Map indexMapper) {
 		this.color = color;
+		this.indexMapper = indexMapper;
+	}
+	
+	
+	public int getBoardIndexByBlockIndex(int i) {
+		return indexMapper.get(i);
 	}
 	
 	public Float fillColor(Graphics2D graphics2, Float rect, int index){

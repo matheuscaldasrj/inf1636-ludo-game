@@ -76,8 +76,8 @@ public class LudoGameFrame extends JFrame {
 	}
 	
 	
-	public void drawPieces(List<Piece> pieces) {
-		boardPanel.drawPieces(pieces);
+	public void setNewPieces(List<Piece> pieces) {
+		boardPanel.setNewPieces(pieces);
 	}
 	
 

@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -14,6 +15,7 @@ import drawing.BoardColorInterface;
 import drawing.GreenBoardColorImpl;
 import drawing.RedBoardColorImpl;
 import drawing.YellowBoardColorImpl;
+import models.BoardPosition;
 import models.Piece;
 import models.PointPosition;
 
@@ -24,6 +26,11 @@ public class BoardPanel extends JPanel {
 	private float centerSquareSize;
 	private int boardSize;
 	private float rectSide;
+	
+	private BoardPosition[] boardPositions =  new BoardPosition[72]; 
+	
+	private List<Piece> pieces = new ArrayList<Piece>();
+	
 	
 	public BoardPanel() {
 	}
@@ -40,7 +47,7 @@ public class BoardPanel extends JPanel {
 
 		
 		paintBoardSquares();
-
+		
 	}
 	
 	private void keepAspectRatio() {
@@ -70,11 +77,14 @@ public class BoardPanel extends JPanel {
 		drawYellowTeam();
 		
 		//drawInitialCircles
-		
 		drawInitialCicles();
 		
+		//draw Pieces
+		for(Piece piece : pieces) {			
+			drawPiece(piece);
+		}
+				
 		
-
 	}
 	
 	private void drawInitialCicles() {
@@ -112,13 +122,8 @@ public class BoardPanel extends JPanel {
 	}
 	
 	private void drawRedTeam() {
-		BoardColorInterface boardColor = new RedBoardColorImpl();
-		drawGameSquares(0, initialSquareSize - rectSide, boardColor);
+		drawGameSquares(0, initialSquareSize - rectSide, new RedBoardColorImpl());
 	}
-	
-	
-
-
 	private void drawGreenTeam() {
 		drawGameSquares(initialSquareSize + 3*rectSide, 0, new GreenBoardColorImpl());
 	}
@@ -136,6 +141,10 @@ public class BoardPanel extends JPanel {
 			PointPosition pointPosition = boardColor.getNextSquarePosition(i, rectSide, xPosition, yPosition);
 			xPosition = pointPosition.getX();
 			yPosition = pointPosition.getY();
+			
+			int boardIndex = boardColor.getBoardIndexByBlockIndex(i);
+			boardPositions[boardIndex] = new BoardPosition(xPosition, yPosition);
+			
 			rect = new Rectangle2D.Float(xPosition, yPosition, rectSide, rectSide);
 			rect = boardColor.fillColor(graphics2, rect, i);
 			graphics2.draw(rect);				
@@ -144,9 +153,6 @@ public class BoardPanel extends JPanel {
 	}
 	
 	private void drawCenterRectangule() {
-		System.out.println("height: " + getSize().height);
-
-		System.out.println("getWidth: " + getSize().getWidth());
 		centerSquareSize = (float) (getSize().getHeight() - 2*initialSquareSize);
 		Rectangle2D.Float rect = new Rectangle2D.Float(initialSquareSize, initialSquareSize , centerSquareSize,centerSquareSize);
 		graphics2.setColor(Color.BLACK);
@@ -182,14 +188,21 @@ public class BoardPanel extends JPanel {
 	
 	private void drawPiece(Piece piece) {
 		
+		float radius = initialSquareSize/10;
+		BoardPosition boardPosition = boardPositions[piece.getIndex()];
+		
+
+		Ellipse2D.Double circle = new Ellipse2D.Double(boardPosition.getX() + initialSquareSize/25, boardPosition.getY() + initialSquareSize/25, radius,radius);
+		graphics2.setColor(piece.getColor());
+		graphics2.fill(circle);
+		
+	
 	}
 	
-	public void drawPieces(List<Piece> pieces) {
+	public void setNewPieces(List<Piece> pieces) {
+		this.pieces = pieces;
 		
-		for(Piece piece : pieces) {
-			drawPiece(piece);
-		}
-		
-		
+		//when setting new pieces, lets repaint all board
+		repaint();
 	}
 }

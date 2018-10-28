@@ -1,21 +1,39 @@
 package drawing;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.Rectangle2D.Float;
+import java.util.HashMap;
+import java.util.Map;
 
 import models.PointPosition;
 
 public class BlueBoardColorImpl extends AbstractBoardColor implements BoardColorInterface {
 	
 	static Color color = Color.BLUE;
+	static Map<Integer, Integer> indexMap;
+	
+	
+	
+	static
+    {
+		indexMap = new HashMap<Integer, Integer>();
+		
+		indexMap.put(0, 51);indexMap.put(1, 50);
+		indexMap.put(2, 49);indexMap.put(3, 0);
+		indexMap.put(4, 52);indexMap.put(5, 48);
+		indexMap.put(6, 1);indexMap.put(7, 53);
+		indexMap.put(8, 47);indexMap.put(9, 2);
+		
+		indexMap.put(10, 54);indexMap.put(11, 46);
+		indexMap.put(12, 3);indexMap.put(13, 55);
+		indexMap.put(14, 45);indexMap.put(15, 4);
+		indexMap.put(16, 56);indexMap.put(17, 44);
+		
+    }
 	
 	public BlueBoardColorImpl() {
-		super(color);
+		super(color, indexMap);		
 	}
 
-	
 	@Override
 	public PointPosition getNextSquarePosition(int index, float rectSide, float currentX, float currentY) {
 		float rectX;
