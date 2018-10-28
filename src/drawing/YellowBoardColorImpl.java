@@ -15,8 +15,6 @@ public class YellowBoardColorImpl extends AbstractBoardColor implements BoardCol
 		super(color, indexMap);
 	}
 
-	
-	//	TODO - CORRECT INDEX
 	static
     {
 		indexMap = new HashMap<Integer, Integer>();

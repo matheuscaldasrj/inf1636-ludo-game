@@ -12,6 +12,9 @@ public class BlueBoardColorImpl extends AbstractBoardColor implements BoardColor
 	static Map<Integer, Integer> indexMap;
 	
 	
+	public BlueBoardColorImpl() {
+		super(color, indexMap);		
+	}
 	
 	static
     {
@@ -30,10 +33,6 @@ public class BlueBoardColorImpl extends AbstractBoardColor implements BoardColor
 		
     }
 	
-	public BlueBoardColorImpl() {
-		super(color, indexMap);		
-	}
-
 	@Override
 	public PointPosition getNextSquarePosition(int index, float rectSide, float currentX, float currentY) {
 		float rectX;
