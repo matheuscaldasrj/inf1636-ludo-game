@@ -27,7 +27,7 @@ public class BoardPanel extends JPanel {
 	private int boardSize;
 	private float rectSide;
 	
-	private BoardPosition[] boardPositions =  new BoardPosition[72]; 
+	private BoardPosition[] boardPositions =  new BoardPosition[88]; 
 	
 	private List<Piece> pieces = new ArrayList<Piece>();
 	

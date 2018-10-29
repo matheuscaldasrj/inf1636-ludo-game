@@ -10,12 +10,13 @@ public class Piece {
 	private boolean hasFinished;	// States if the piece has reached the final position
 	private int id;					// Identifies the piece in the pieces ArrayList
 	
-	public Piece(Color c, int id) {
-		index = -1;
-		color = c;
+	public Piece(int id, int index, Color color, boolean isBarrier) {
+		this.id = id;
+		this.index = index;
+		this.color = color;
+		this.isBarrier = isBarrier;
+
 		hasFinished = false;
-		isBarrier = false;
-		this.setId(id);
 	}
 	
 	// Index

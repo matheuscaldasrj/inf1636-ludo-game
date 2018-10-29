@@ -25,22 +25,22 @@ public class GameRules {
 		
 		// Create BLUE
 		for(; i<4 ; i++) {
-			pieces.add(new Piece(Color.BLUE, i));
+			pieces.add(new Piece(i, 4,Color.BLUE,false));
 		}
 		
 		// Create RED
 		for(; i<8 ; i++) {
-			pieces.add(new Piece(Color.RED, i));
+			pieces.add(new Piece(i,5,Color.RED, false));
 		}
 		
 		// Create GREEN
 		for(; i<12 ; i++) {
-			pieces.add(new Piece(Color.GREEN, i));
+			pieces.add(new Piece(i,6,Color.GREEN, false));
 		}
 		
 		// Create YELLOW
 		for(; i<16 ; i++) {
-			pieces.add(new Piece(Color.YELLOW, i));
+			pieces.add(new Piece(i,7,Color.YELLOW, false));
 		}
 	}
 	

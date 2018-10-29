@@ -1,35 +1,31 @@
 package main;
 
-import java.awt.Color;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
+import gameRules.GameRules;
 import layout.LudoGameFrame;
 import models.Piece;
-import gameRules.GameRules;
 
 public class LudoGame {
 	
-	LudoGameFrame ludoGameFrame;
+	LudoGameFrame ludoGameFrame = new LudoGameFrame();
 	List<Piece> pieces = new ArrayList<Piece>();
-	GameRules rules;
+	GameRules rules = new GameRules();
 	
 	public void startGame() {
 		
 		//lets draw initial board
-		ludoGameFrame = new LudoGameFrame();
 		ludoGameFrame.setTitle("Ludo game");
 		ludoGameFrame.setVisible(true);		
 		
-		rules = new GameRules();
-		rules.CreatePieces();
+//		rules.CreatePieces();
+		
+	
 	}
 		
-	public void nextRound(List<Piece> pieces) {
-	
-		
+	public void drawNextRound(List<Piece> pieces) {
+		System.out.println(pieces);
 		ludoGameFrame.setNewPieces(pieces);
 	}
 

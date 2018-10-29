@@ -16,6 +16,8 @@ public class BlueBoardColorImpl extends AbstractBoardColor implements BoardColor
 		super(color, indexMap);		
 	}
 	
+	
+	
 	static
     {
 		indexMap = new HashMap<Integer, Integer>();
