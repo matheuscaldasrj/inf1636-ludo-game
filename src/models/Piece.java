@@ -4,17 +4,18 @@ import java.awt.Color;
 
 public class Piece {
 	
-	private int index; 				// The piece's position
+	private int index; 				// The piece's position in the board
 	private Color color; 			// The piece's color
 	private boolean isBarrier;		// States if the piece is a barrier or not
 	private boolean hasFinished;	// States if the piece has reached the final position
+	private int id;					// Identifies the piece in the pieces ArrayList
 	
-	
-	public Piece(Color c) {
+	public Piece(Color c, int id) {
 		index = -1;
 		color = c;
 		hasFinished = false;
 		isBarrier = false;
+		this.setId(id);
 	}
 	
 	// Index
@@ -47,6 +48,15 @@ public class Piece {
 	}
 	public void setHasFinished(boolean hasFinished) {
 		this.hasFinished = hasFinished;
+	}
+	
+	// id
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	
