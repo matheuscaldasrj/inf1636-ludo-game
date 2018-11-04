@@ -16,11 +16,9 @@ import models.Piece;
 public class GameRules {
 	
 	public List<Piece> pieces;
-	private Color playerTurn;
 	
 	public GameRules() {
 		pieces = new ArrayList<Piece>();
-		playerTurn = Color.BLUE;
 	}
 	
 	// Creates all the pieces of the game, setting their colors and initial positions.
@@ -49,7 +47,7 @@ public class GameRules {
 		}
 	}
 	
-	public Color nextTurn() {
+	public Color nextTurn(Color playerTurn) {
 		if(playerTurn == Color.BLUE) playerTurn = Color.RED;
 		
 		else if(playerTurn == Color.RED) playerTurn = Color.GREEN;
