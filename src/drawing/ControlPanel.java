@@ -1,4 +1,4 @@
-package layout;
+package drawing;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;

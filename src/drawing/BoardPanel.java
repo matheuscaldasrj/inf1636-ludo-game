@@ -1,4 +1,4 @@
-package layout;
+package drawing;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -11,11 +11,6 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import drawing.BlueBoardColorImpl;
-import drawing.BoardColorInterface;
-import drawing.GreenBoardColorImpl;
-import drawing.RedBoardColorImpl;
-import drawing.YellowBoardColorImpl;
 import models.BoardPosition;
 import models.Piece;
 import models.PointPosition;
