@@ -2,6 +2,7 @@ package drawing;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Float;
 import java.util.HashMap;
@@ -51,6 +52,17 @@ public class GreenBoardColorImpl extends AbstractBoardColor implements BoardColo
 		}
 	
 		return new PointPosition(rectX, rectY);
+	}
+
+
+	@Override
+	public Polygon getInitialTriangule(int xPosition, int yPosition, float rectSide) {
+		int[] xPoints = {(int) (xPosition + 0.25*rectSide),(int) (xPosition + 0.5*rectSide),(int) (xPosition + 0.75*rectSide)};
+		int[] yPoints = {(int) (yPosition + 0.25*rectSide),(int) (yPosition + 0.75*rectSide),(int) (yPosition + 0.25*rectSide)};
+		
+		Polygon polygon = new Polygon(xPoints, yPoints, 3);
+
+		return polygon;
 	}
 
 

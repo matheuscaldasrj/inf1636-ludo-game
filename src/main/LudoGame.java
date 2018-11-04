@@ -3,8 +3,8 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
+import drawing.LudoGameFrame;
 import gameRules.GameRules;
-import layout.LudoGameFrame;
 import models.Piece;
 import java.awt.Color;
 import java.awt.event.ActionListener;

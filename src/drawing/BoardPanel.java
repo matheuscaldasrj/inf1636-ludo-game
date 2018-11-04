@@ -1,8 +1,9 @@
-package layout;
+package drawing;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -10,11 +11,6 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import drawing.BlueBoardColorImpl;
-import drawing.BoardColorInterface;
-import drawing.GreenBoardColorImpl;
-import drawing.RedBoardColorImpl;
-import drawing.YellowBoardColorImpl;
 import models.BoardPosition;
 import models.Piece;
 import models.PointPosition;
@@ -146,8 +142,19 @@ public class BoardPanel extends JPanel {
 			boardPositions[boardIndex] = new BoardPosition(xPosition, yPosition);
 			
 			rect = new Rectangle2D.Float(xPosition, yPosition, rectSide, rectSide);
-			rect = boardColor.fillColor(graphics2, rect, i);
-			graphics2.draw(rect);				
+			rect = boardColor.fillRectColor(graphics2, rect, i);
+			graphics2.draw(rect);
+			
+			if(i==3) {
+				//if we are in index 3 we should draw initial triangle
+				graphics2.setColor(Color.WHITE);
+				Polygon polygon = boardColor.getInitialTriangule((int) xPosition, (int) yPosition, rectSide);
+				graphics2.draw(polygon);
+				
+				graphics2.fill(polygon);
+				graphics2.setColor(Color.BLACK);
+				
+			}
 					
 		}
 	}
@@ -158,9 +165,71 @@ public class BoardPanel extends JPanel {
 		graphics2.setColor(Color.BLACK);
 		graphics2.fill(rect);
 		graphics2.draw(rect);
+		
+		drawCenterTriangles( (int) centerSquareSize);
+		
 	}
 	
-
+	private void drawCenterTriangles(int centerSquareSize) {
+		//now lets draw triangules
+		int[] xPoints = new int[3];
+		int[] yPoints = new int[3];
+		Polygon triangle;
+		
+		//red triangle
+		xPoints[0] = (int) initialSquareSize;
+		yPoints[0] = (int) initialSquareSize;
+		xPoints[1] = (int) (initialSquareSize + 0.5*centerSquareSize);
+		yPoints[1] = (int) (initialSquareSize + 0.5*centerSquareSize);
+		xPoints[2] = (int) (initialSquareSize);
+		yPoints[2] = (int) (initialSquareSize + centerSquareSize);
+		triangle = new Polygon(xPoints, yPoints,3);
+		drawCenterTriangle(triangle, Color.RED);
+		
+		
+		//green triangle
+		xPoints[0] = (int) initialSquareSize;
+		yPoints[0] = (int) initialSquareSize;
+		xPoints[1] = (int) (initialSquareSize + 0.5*centerSquareSize);
+		yPoints[1] = (int) (initialSquareSize + 0.5*centerSquareSize);
+		xPoints[2] = (int) (initialSquareSize + centerSquareSize);
+		yPoints[2] = (int) (initialSquareSize);
+		triangle = new Polygon(xPoints, yPoints,3);
+		drawCenterTriangle(triangle, Color.GREEN);
+		
+		//yellow triangle
+		xPoints[0] = (int) initialSquareSize + centerSquareSize;
+		yPoints[0] = (int) initialSquareSize;
+		xPoints[1] = (int) (initialSquareSize + 0.5*centerSquareSize);
+		yPoints[1] = (int) (initialSquareSize + 0.5*centerSquareSize);
+		xPoints[2] = (int) (initialSquareSize + centerSquareSize);
+		yPoints[2] = (int) (initialSquareSize + centerSquareSize);
+		triangle = new Polygon(xPoints, yPoints,3);
+		drawCenterTriangle(triangle, Color.YELLOW);
+		
+		//blue triangle
+		xPoints[0] = (int) initialSquareSize;
+		yPoints[0] = (int) initialSquareSize  + centerSquareSize;
+		xPoints[1] = (int) (initialSquareSize + 0.5*centerSquareSize);
+		yPoints[1] = (int) (initialSquareSize + 0.5*centerSquareSize);
+		xPoints[2] = (int) (initialSquareSize + centerSquareSize);
+		yPoints[2] = (int) (initialSquareSize  + centerSquareSize);
+		triangle = new Polygon(xPoints, yPoints,3);
+		drawCenterTriangle(triangle, Color.BLUE);
+		
+		
+				
+	}
+	
+	
+	private void drawCenterTriangle(Polygon polygon, Color color) {
+		graphics2.setColor(color);
+		graphics2.draw(polygon);;
+		graphics2.fill(polygon);
+		//back to white
+		graphics2.setColor(Color.WHITE);
+	}
+	
 	private void paintInitialSquares() {
 				
 		float rectX = (float) (getSize().getWidth() - initialSquareSize);
@@ -191,8 +260,7 @@ public class BoardPanel extends JPanel {
 		float radius = initialSquareSize/10;
 		BoardPosition boardPosition = boardPositions[piece.getIndex()];
 		
-
-		Ellipse2D.Double circle = new Ellipse2D.Double(boardPosition.getX() + initialSquareSize/25, boardPosition.getY() + initialSquareSize/25, radius,radius);
+		Ellipse2D.Double circle = new Ellipse2D.Double(boardPosition.getX() + initialSquareSize/30, boardPosition.getY() + initialSquareSize/30, radius,radius);
 		graphics2.setColor(piece.getColor());
 		graphics2.fill(circle);
 		
