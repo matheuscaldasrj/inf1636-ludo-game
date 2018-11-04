@@ -1,15 +1,14 @@
 package main;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
 import drawing.LudoGameFrame;
 import gameRules.GameRules;
 import models.Piece;
-import java.awt.Color;
-import java.awt.event.ActionListener;
 
-public class LudoGame implements ActionListener {
+public class LudoGame {
 	
 	LudoGameFrame ludoGameFrame = new LudoGameFrame();
 	List<Piece> pieces = new ArrayList<Piece>();
