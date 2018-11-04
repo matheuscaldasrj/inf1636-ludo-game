@@ -3,6 +3,7 @@ package layout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -146,8 +147,18 @@ public class BoardPanel extends JPanel {
 			boardPositions[boardIndex] = new BoardPosition(xPosition, yPosition);
 			
 			rect = new Rectangle2D.Float(xPosition, yPosition, rectSide, rectSide);
-			rect = boardColor.fillColor(graphics2, rect, i);
-			graphics2.draw(rect);				
+			rect = boardColor.fillRectColor(graphics2, rect, i);
+			graphics2.draw(rect);
+			
+			if(i==3) {
+				graphics2.setColor(Color.WHITE);
+				Polygon polygon = boardColor.getInitialTriangule((int) xPosition, (int) yPosition, rectSide);
+				graphics2.draw(polygon);
+				
+				graphics2.fill(polygon);
+				graphics2.setColor(Color.BLACK);
+				
+			}
 					
 		}
 	}

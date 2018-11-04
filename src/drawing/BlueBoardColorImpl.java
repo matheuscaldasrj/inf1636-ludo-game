@@ -1,6 +1,7 @@
 package drawing;
 
 import java.awt.Color;
+import java.awt.Polygon;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,6 +52,19 @@ public class BlueBoardColorImpl extends AbstractBoardColor implements BoardColor
 	
 		return new PointPosition(rectX, rectY);
 	}
+
+	@Override
+	public Polygon getInitialTriangule(int xPosition, int yPosition, float rectSide) {
+		
+		int[] xPoints = {(int) (xPosition + 0.25*rectSide),(int) (xPosition + 0.5*rectSide),(int) (xPosition + 0.75*rectSide)};
+		int[] yPoints = {(int) (yPosition + 0.75*rectSide),(int) (yPosition + 0.25*rectSide),(int) (yPosition + 0.75*rectSide)};
+		
+		Polygon polygon = new Polygon(xPoints, yPoints, 3);
+
+		return polygon;
+		
+	}
+
 
 
 	

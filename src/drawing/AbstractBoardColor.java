@@ -13,7 +13,7 @@ public class AbstractBoardColor {
 	
 	Color color;
 	int indexToBeBlack = 5;
-	List<Integer> indexToBeColored = Arrays.asList( 4,7, 10, 13, 16); 
+	List<Integer> indexToBeColored = Arrays.asList( 3, 4,7, 10, 13, 16); 
 	Map<Integer,Integer> indexMapper;
 	
 	public AbstractBoardColor(Color color, Map indexMapper) {
@@ -26,7 +26,7 @@ public class AbstractBoardColor {
 		return indexMapper.get(i);
 	}
 	
-	public Float fillColor(Graphics2D graphics2, Float rect, int index){
+	public Float fillRectColor(Graphics2D graphics2, Float rect, int index){
 		
 		if(indexToBeColored.contains(index)) {
 			graphics2.setColor(color);
