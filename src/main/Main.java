@@ -16,10 +16,9 @@ public class Main {
 		LudoGame ludoGame = new LudoGame();
 		ludoGame.startGame();
 		
-		
 		//simulando uma jogada
 		
-		List<Piece> pieces = new ArrayList<Piece>();
+		/*List<Piece> pieces = new ArrayList<Piece>();
 		
 		Piece peca1 = new Piece(0,5, Color.BLUE, true);
 		Piece peca2 = new Piece(1,7, Color.BLUE, true);
@@ -47,7 +46,7 @@ public class Main {
 		pieces.add(peca13);pieces.add(peca14);pieces.add(peca15);pieces.add(peca16);
 
 		
-		ludoGame.drawNextRound(pieces);
+		ludoGame.drawNextRound(pieces);*/
 
 	}
 	

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Random;
+
+import main.LudoGame;
+
 import java.awt.Color;
 
 import models.Piece;
@@ -121,6 +124,8 @@ public class GameRules {
 		}		
 		
 		p.setIndex(newPos);
+		
+		
 	}
 	
 }
