@@ -11,6 +11,8 @@ import javax.swing.JSplitPane;
 
 import models.Piece;
 
+// This is the frame that contains both the ControlPanel and the BoardPanel
+
 public class LudoGameFrame extends JFrame {
 	
 	private final int WIDTH_DEFAULT=1200;
@@ -18,7 +20,7 @@ public class LudoGameFrame extends JFrame {
 
 	
 	BoardPanel boardPanel;
-	JPanel controlPanel;
+	ControlPanel controlPanel;
 	
 	public LudoGameFrame() {		
 		
@@ -32,7 +34,7 @@ public class LudoGameFrame extends JFrame {
 	private void buildSplitPanel() {
 		
 		boardPanel = buildBoardPanel();
-		controlPanel = buildControlPanel();
+		setControlPanel(buildControlPanel());
 		
 		JSplitPane splitPane = new JSplitPane();
         splitPane.setSize(WIDTH_DEFAULT, HEIGHT_DEFAULT);
@@ -41,7 +43,7 @@ public class LudoGameFrame extends JFrame {
         splitPane.setDividerLocation(WIDTH_DEFAULT*2/3);
         splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setLeftComponent(boardPanel);
-        splitPane.setRightComponent(controlPanel);
+        splitPane.setRightComponent(getControlPanel());
         
         this.add(splitPane);
 	}
@@ -56,7 +58,7 @@ public class LudoGameFrame extends JFrame {
 		return boardPanel;
 	}
 		
-	private JPanel buildControlPanel() {
+	private ControlPanel buildControlPanel() {
 		ControlPanel controlPanel = new ControlPanel();
 		controlPanel.setSize(WIDTH_DEFAULT,HEIGHT_DEFAULT);
 		controlPanel.setBackground(Color.GRAY);		
@@ -78,6 +80,14 @@ public class LudoGameFrame extends JFrame {
 	
 	public void setNewPieces(List<Piece> pieces) {
 		boardPanel.setNewPieces(pieces);
+	}
+
+	public ControlPanel getControlPanel() {
+		return controlPanel;
+	}
+
+	public void setControlPanel(ControlPanel controlPanel) {
+		this.controlPanel = controlPanel;
 	}
 	
 

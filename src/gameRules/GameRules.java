@@ -11,6 +11,8 @@ import java.awt.Color;
 
 import models.Piece;
 
+// This is the class which controls all the game's rules
+
 public class GameRules {
 	
 	public List<Piece> pieces;
