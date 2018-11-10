@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
@@ -364,6 +365,13 @@ public class BoardPanel extends JPanel {
 			boardPosition = boardPositions[piece.getIndex()];
 			circle = new Ellipse2D.Double(boardPosition.getX() + initialSquareSize / 30,
 					boardPosition.getY() + initialSquareSize / 30, radius, radius);
+			
+			//only to draw a 'border'
+			//to avoid cases when for example
+			// blue piece is in a blue board position
+			graphics2.setColor(Color.WHITE);
+			graphics2.draw(circle);
+			
 			graphics2.setColor(piece.getColor());
 			graphics2.fill(circle);
 		} else {
@@ -378,14 +386,31 @@ public class BoardPanel extends JPanel {
 				// same color
 				circle = new Ellipse2D.Double(boardPosition.getX() + initialSquareSize / 30,
 						boardPosition.getY() + initialSquareSize / 30, radius, radius);
-				graphics2.setColor(piece1.getColor());
-				graphics2.setStroke(new BasicStroke(5));
+				
+				//only to draw a 'border'
+				//to avoid cases when for example
+				// blue piece is in a blue board position
+				graphics2.setStroke(new BasicStroke(6));
+				graphics2.setColor(Color.WHITE);
 				graphics2.draw(circle);
+				
+				graphics2.setColor(piece1.getColor());
+				graphics2.fill(circle);
+				
+				
 				Ellipse2D.Double internCircle = new Ellipse2D.Double(
 						boardPosition.getX() + initialSquareSize / 30 + radius / 4,
 						boardPosition.getY() + initialSquareSize / 30 + radius / 4, radius / 2, radius / 2);
-
+				
+				Stroke currentStroke = graphics2.getStroke();
+				graphics2.setStroke(new BasicStroke(6));
+				graphics2.setColor(Color.WHITE);
+				graphics2.draw(internCircle);
+				
+				graphics2.setColor(piece2.getColor());
 				graphics2.fill(internCircle);
+				
+				graphics2.setStroke(currentStroke);
 			} else {
 				// same board position
 				// different color
@@ -399,7 +424,6 @@ public class BoardPanel extends JPanel {
 						boardPosition.getY() + initialSquareSize / 30 + radius / 4, radius / 2, radius / 2);
 				graphics2.setColor(piece2.getColor());
 				graphics2.fill(internCircle);
-				System.out.println("same board position, different color");
 
 			}
 

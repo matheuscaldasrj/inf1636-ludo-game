@@ -54,9 +54,9 @@ public class LudoGame implements BoardEventListener {
 	public void simulatePieces() {
 		
 		Piece piece2 = new Piece(1, 23, Color.RED, false);
-		Piece piece4 = new Piece(3, 71, Color.BLUE, false);
+		Piece piece4 = new Piece(3, 53, Color.BLUE, false);
 		Piece piece5 = new Piece(4, 53, Color.BLUE, false);
-		Piece piece8 = new Piece(7, 10, Color.YELLOW, false);
+		Piece piece8 = new Piece(7, 54, Color.BLUE, false);
 		Piece piece10 = new Piece(9, 0, Color.GREEN, false);
 		Piece piece6 = new Piece(5, 34, Color.GREEN, true);
 		Piece piece11 = new Piece(8, 34, Color.RED, true);
