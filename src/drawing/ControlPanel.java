@@ -56,7 +56,7 @@ public class ControlPanel extends JPanel {
 	
 	// Sets which side of the die will be displayed by the paint component
 	public void setDieSide(int dieSide) {
-		this.dieSide = dieSide;
+		this.dieSide = dieSide-1;
 		
 		repaint();
 	}
