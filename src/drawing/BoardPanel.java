@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -11,28 +14,33 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import listeners.BoardEventListener;
 import models.BoardPosition;
+import models.InitialSquare;
 import models.Piece;
 import models.PointPosition;
 
-public class BoardPanel extends JPanel {
+public class BoardPanel extends JPanel{
 	
+	private final List<BoardEventListener> boardListeners = new ArrayList<BoardEventListener>();
+	 
 	private Graphics2D graphics2;
 	private float initialSquareSize;
 	private float centerSquareSize;
 	private int boardSize;
 	private float rectSide;
 	
-	private BoardPosition[] boardPositions =  new BoardPosition[88]; 
+	private BoardPosition[] boardPositions =  new BoardPosition[72]; 
 	
 	private List<Piece> pieces = new ArrayList<Piece>();
 	
 	
 	public BoardPanel() {
+		addMouseClickLister();
 	}
 	
-	
-	@Override
+
+   	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);		
 		graphics2 = (Graphics2D) g;		
@@ -45,6 +53,67 @@ public class BoardPanel extends JPanel {
 		paintBoardSquares();
 		
 	}
+   	
+	private void addMouseClickLister() {
+		this.addMouseListener(new MouseAdapter() {
+		     @Override
+		     public void mouseClicked(MouseEvent event) {
+		        int eventX = event.getX();
+		        int eventY = event.getY();
+		        Object resultClickEvent = findClickPosition(eventX, eventY);
+		       //lets notify listeners
+		        notifyListeners(resultClickEvent);
+		     }
+		  });
+	}
+	
+	
+	private Object findClickPosition(int eventX, int eventY) {
+		 int boardPositionX;
+	        int boardPositionY;
+	        int indexInTheBoard = 0;
+	        boolean hasFound = false;
+	        
+	        for(BoardPosition boardPosition: boardPositions) {
+	        	boardPositionX = (int) boardPosition.getX();
+	        	boardPositionY = (int) boardPosition.getY();
+	        	hasFound = eventX > boardPositionX  && ( eventX < (boardPositionX + rectSide ) ) && eventY > boardPositionY  && ( eventY < (boardPositionY + rectSide ) ) ;
+	        	if(hasFound) {
+	        		break ;
+	        	}
+	        	
+	        	indexInTheBoard++;
+	        }
+	        
+	        if(!hasFound) {
+	        	//we havent found it yet, lets try in the inital squares
+	         	float rectX = (float) (getSize().getWidth() - initialSquareSize);
+	    		float rectY = (float) (getSize().getHeight() - initialSquareSize);
+	    		
+	    		if(eventX > 0 && eventX < initialSquareSize && eventY > 0 && eventY < initialSquareSize) {
+	    			return InitialSquare.VERMELHO;
+	    		} else if (eventX > rectX && eventX < (rectX + initialSquareSize) && eventY > 0 && eventY < initialSquareSize) {
+	    			return InitialSquare.VERDE;
+	    		} else if (eventX > 0 && eventX < initialSquareSize && eventY >  rectY && eventY < (initialSquareSize + rectY) ) {
+	    			return InitialSquare.AZUL;
+	    		} else if (eventX > rectX && eventX < (rectX + initialSquareSize) && eventY >  rectY && eventY < (initialSquareSize + rectY) ) {
+	    			return InitialSquare.AMARELO;
+	    		} else {
+	    			//a click was detected but the place is unknown
+	    			return null;
+	    		}
+	        } else {
+	        	// a board position was found, lets check if there is a piece
+	        	for(Piece piece: pieces) {
+	        		if(piece.getIndex() == indexInTheBoard) {
+	        			return piece;
+	        		}
+	        	}
+	        	return null;
+	        }
+	}
+	
+	
 	
 	private void keepAspectRatio() {
 		//lets keep aspect ratio
@@ -273,4 +342,25 @@ public class BoardPanel extends JPanel {
 		//when setting new pieces, lets repaint all board
 		repaint();
 	}
+	
+    private void notifyListeners(Object objectClicked) {
+    	boolean isPiece = false;
+        for (BoardEventListener listener : boardListeners) {
+        	if(objectClicked instanceof Piece) {
+        		isPiece = true;
+        	}
+        	listener.notifyBoardClicks(objectClicked, isPiece);
+        }
+    }
+    
+    public void addBoardListener(BoardEventListener listener) {
+    	boardListeners.add(listener); 
+    }
+    public void removeBoardListener(BoardEventListener listener) {
+    	boardListeners.remove(listener);
+    }
+    
+	    
+
+
 }

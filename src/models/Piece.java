@@ -19,6 +19,16 @@ public class Piece {
 		hasFinished = false;
 	}
 	
+	
+	@Override
+	public String toString() {
+		String ret;
+		ret = "id: '" + this.id + "', Index: '" + this.index;
+		ret += "', IsBarrier: '" + this.isBarrier + "', hasFinished: '" + this.hasFinished + "'" ;
+		ret += "', Color: '" + this.color + "'";
+		return ret;
+	}
+	
 	// Index
 	public int getIndex() {
 		return index;
