@@ -1,22 +1,20 @@
 package main;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import drawing.LudoGameFrame;
-import drawing.ControlPanel;
 import gameRules.GameRules;
 import listeners.BoardEventListener;
 import models.InitialSquare;
 import models.Piece;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 // This is the class that contains everything. It controls the flow of the game
-
-public class LudoGame implements ActionListener, BoardEventListener {
+public class LudoGame implements BoardEventListener {
 	
 	LudoGameFrame ludoGameFrame = new LudoGameFrame();
 	List<Piece> pieces = new ArrayList<Piece>();
@@ -43,11 +41,32 @@ public class LudoGame implements ActionListener, BoardEventListener {
 				ludoGameFrame.getControlPanel().setDieSide(roll);
 			}
 		});
-		Piece piece = new Piece(2, 5, Color.red, false);
-		drawNextRound(Arrays.asList(piece), Color.red);
+		
+		
+		
 		ludoGameFrame.addBoardListener(this);
+		
+		simulatePieces();
+		
 	}
-
+	
+	
+	public void simulatePieces() {
+		
+		Piece piece2 = new Piece(1, 23, Color.RED, false);
+		Piece piece4 = new Piece(3, 71, Color.BLUE, false);
+		Piece piece5 = new Piece(4, 53, Color.BLUE, false);
+		Piece piece8 = new Piece(7, 10, Color.YELLOW, false);
+		Piece piece10 = new Piece(9, 0, Color.GREEN, false);
+		Piece piece6 = new Piece(5, 34, Color.GREEN, true);
+		Piece piece11 = new Piece(8, 34, Color.RED, true);
+		Piece piece7 = new Piece(6, 25, Color.YELLOW, true);
+		Piece piece3 = new Piece(2, 25, Color.RED, true);
+		Piece piece9 = new Piece(8, 2, Color.RED, true);
+		Piece piece1 = new Piece(0, 2, Color.RED, false);
+		
+		drawNextRound(Arrays.asList(piece1, piece2, piece3,piece4, piece5, piece6, piece7, piece8, piece9, piece10, piece11), Color.red);
+	}
 	
 	
 	// Redraws the whole board with the updated piece positions
@@ -62,8 +81,8 @@ public class LudoGame implements ActionListener, BoardEventListener {
 		System.out.println("NotifyBoardclicks no LudoGame");
 		
 		if(isPiece) {
-			Piece piece = (Piece) returnClick;
-			System.out.println(piece);
+			List<Piece> pieces = (List<Piece>) returnClick;
+			System.out.println(pieces);
 		} else if(returnClick != null) {
 			//is the enum
 			InitialSquare initialSquare = (InitialSquare) returnClick;
@@ -72,11 +91,7 @@ public class LudoGame implements ActionListener, BoardEventListener {
 			//returnClick is null, its a unkown event
 			System.out.println("Click identificado, mas nao eh um local inicial nem uma peca");
 		}
-
-
 		
 	}
-
-
 	
 }
