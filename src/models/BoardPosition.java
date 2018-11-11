@@ -2,30 +2,30 @@ package models;
 
 public class BoardPosition {
 	
-	private float x;
-	private float y;
+	private double x;
+	private double y;
 	private int index;
 	
-	public BoardPosition(float x, float y) {
-		this.x = x;
-		this.y = y;
+	public BoardPosition(double d, double e) {
+		this.x = d;
+		this.y = e;
 	}
 	
 	
-	public float getX() {
+	public double getX() {
 		return x;
 	}
-	public void setX(float x) {
+	public void setX(double x) {
 		this.x = x;
 	}
-	public float getY() {
+	public double getY() {
 		return y;
 	}
-	public void setY(float y) {
+	public void setY(double y) {
 		this.y = y;
 	}
 	
-	public float getIndex() {
+	public double getIndex() {
 		return index;
 	}
 	public void setIndex(int index) {

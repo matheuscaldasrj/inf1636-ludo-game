@@ -6,14 +6,16 @@ import java.awt.Polygon;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Float;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import models.PointPosition;
 
 public class GreenBoardColorImpl extends AbstractBoardColor implements BoardColorInterface {
 	
-	static Color color = Color.GREEN;
-	static Map<Integer, Integer> indexMap;
+	static final int initialCircleBoardIndex = 80;
+	static final Color color = Color.GREEN;
+	static final Map<Integer, Integer> indexMap;
 	
 	public GreenBoardColorImpl() {
 		super(color, indexMap);
@@ -63,6 +65,23 @@ public class GreenBoardColorImpl extends AbstractBoardColor implements BoardColo
 		Polygon polygon = new Polygon(xPoints, yPoints, 3);
 
 		return polygon;
+	}
+
+
+	@Override
+	public int getInitialCircleBoardIndex() {
+		return initialCircleBoardIndex;
+	}
+
+
+	@Override
+	public double getAdjustInitialXCircle() {
+		return 0.997;
+	}
+
+	@Override
+	public double getAdjustInitialYCircle() {
+		return 0.98;
 	}
 
 

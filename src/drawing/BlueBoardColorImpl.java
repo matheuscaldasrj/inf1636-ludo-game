@@ -3,12 +3,14 @@ package drawing;
 import java.awt.Color;
 import java.awt.Polygon;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import models.PointPosition;
 
 public class BlueBoardColorImpl extends AbstractBoardColor implements BoardColorInterface {
 	
+	static final int initialCircleBoardIndex = 72;
 	static Color color = Color.BLUE;
 	static Map<Integer, Integer> indexMap;
 	
@@ -65,7 +67,20 @@ public class BlueBoardColorImpl extends AbstractBoardColor implements BoardColor
 		
 	}
 
+	@Override
+	public int getInitialCircleBoardIndex() {
+		return initialCircleBoardIndex;
+	}
 
+	@Override
+	public double getAdjustInitialXCircle() {
+		return 0.985;
+	}
+
+	@Override
+	public double getAdjustInitialYCircle() {
+		return 0.998;
+	}
 
 	
 
