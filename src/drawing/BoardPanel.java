@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.Rectangle2D.Float;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +35,7 @@ public class BoardPanel extends JPanel {
 	private int boardSize;
 	private float rectSide;
 
-	private BoardPosition[] boardPositions = new BoardPosition[72];
+	private BoardPosition[] boardPositions = new BoardPosition[88];
 
 	private List<Piece> pieces = new ArrayList<Piece>();
 
@@ -75,6 +76,9 @@ public class BoardPanel extends JPanel {
 		boolean hasFound = false;
 
 		for (BoardPosition boardPosition : boardPositions) {
+			if(indexInTheBoard == 72) {
+				break;
+			}
 			boardPositionX = (int) boardPosition.getX();
 			boardPositionY = (int) boardPosition.getY();
 			hasFound = eventX > boardPositionX && (eventX < (boardPositionX + rectSide)) && eventY > boardPositionY
@@ -179,34 +183,51 @@ public class BoardPanel extends JPanel {
 	}
 
 	private void drawInitialCicles() {
-		drawCircleByInitialSquarePosition(0, 0);
-		drawCircleByInitialSquarePosition(initialSquareSize + centerSquareSize, 0);
-		drawCircleByInitialSquarePosition(0, initialSquareSize + +centerSquareSize);
-		drawCircleByInitialSquarePosition(initialSquareSize + centerSquareSize, initialSquareSize + centerSquareSize);
+		
+		drawCircleByInitialSquarePosition(0, 0, new RedBoardColorImpl() );
+		drawCircleByInitialSquarePosition(initialSquareSize + centerSquareSize, 0, new GreenBoardColorImpl() );
+		drawCircleByInitialSquarePosition(0, initialSquareSize + +centerSquareSize, new BlueBoardColorImpl());
+		drawCircleByInitialSquarePosition(initialSquareSize + centerSquareSize, initialSquareSize + centerSquareSize,  new YellowBoardColorImpl());
 
 	}
 
-	void drawCircleByInitialSquarePosition(float poisitionX, float positionY) {
+	void drawCircleByInitialSquarePosition(float poisitionX, float positionY, BoardColorInterface boardColor) {
 		Ellipse2D.Double circle;
-		float radius = initialSquareSize / 7;
+		float initialRadius = initialSquareSize / 7;
+		int initialCircleBoardIndex = boardColor.getInitialCircleBoardIndex();
+		double adjustX = boardColor.getAdjustInitialXCircle();
+		double adjustY = boardColor.getAdjustInitialYCircle();
+		
 		graphics2.setColor(Color.WHITE);
-
-		circle = new Ellipse2D.Double(poisitionX + initialSquareSize / 6, positionY + initialSquareSize / 5, radius,
-				radius);
+		// first
+		circle = new Ellipse2D.Double(poisitionX + initialSquareSize / 6, positionY + initialSquareSize / 5, initialRadius,
+				initialRadius);
+		graphics2.fill(circle);	
+		boardPositions[initialCircleBoardIndex] = new BoardPosition(adjustX * (poisitionX + initialSquareSize / 6) - 2, adjustY * ( positionY + initialSquareSize / 5) - 2);
+		initialCircleBoardIndex++;
+		
+		//second
+		circle = new Ellipse2D.Double(poisitionX + 0.7 * initialSquareSize, positionY + initialSquareSize / 5, initialRadius,
+				initialRadius);
 		graphics2.fill(circle);
+		boardPositions[initialCircleBoardIndex] = new BoardPosition(adjustX * (poisitionX + 0.7 * initialSquareSize),  adjustY * ( positionY + initialSquareSize / 5));
+		initialCircleBoardIndex++;		
 
-		circle = new Ellipse2D.Double(poisitionX + 0.7 * initialSquareSize, positionY + initialSquareSize / 5, radius,
-				radius);
+		
+		//third
+		circle = new Ellipse2D.Double(poisitionX + initialSquareSize / 6, positionY + 0.6 * initialSquareSize, initialRadius,
+				initialRadius);
 		graphics2.fill(circle);
+		boardPositions[initialCircleBoardIndex] = new BoardPosition(adjustX * (poisitionX + initialSquareSize / 6) - 2,   adjustY * ( positionY + 0.6 * initialSquareSize) - 2);
+		initialCircleBoardIndex++;		
 
-		circle = new Ellipse2D.Double(poisitionX + initialSquareSize / 6, positionY + 0.6 * initialSquareSize, radius,
-				radius);
+		//fourth
+		circle = new Ellipse2D.Double(poisitionX + 0.7 * initialSquareSize, positionY + 0.6 * initialSquareSize, initialRadius,
+				initialRadius);
 		graphics2.fill(circle);
+		boardPositions[initialCircleBoardIndex] = new BoardPosition(adjustX * (poisitionX + 0.7 * initialSquareSize),  adjustY *( positionY + 0.6 * initialSquareSize));	
 
-		circle = new Ellipse2D.Double(poisitionX + 0.7 * initialSquareSize, positionY + 0.6 * initialSquareSize, radius,
-				radius);
-		graphics2.fill(circle);
-
+		
 		// back to black
 		graphics2.setColor(Color.BLACK);
 	}
