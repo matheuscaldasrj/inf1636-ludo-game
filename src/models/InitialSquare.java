@@ -1,15 +1,21 @@
 package models;
 import java.awt.Color;
 
+import drawing.BoardColorInterface;
+import drawing.BlueBoardColorImpl;
+import drawing.RedBoardColorImpl;
+import drawing.GreenBoardColorImpl;
+import drawing.YellowBoardColorImpl;
+
 public enum InitialSquare {
-	 AZUL(Color.BLUE), 
-	 VERMELHO(Color.RED),
-	 VERDE(Color.GREEN),
-	 AMARELO(Color.YELLOW);
+	 AZUL(new BlueBoardColorImpl()), 
+	 VERMELHO(new RedBoardColorImpl()),
+	 VERDE(new GreenBoardColorImpl()),
+	 AMARELO(new YellowBoardColorImpl());
 
 	private final Color color;
 	
-	 private InitialSquare(Color color) {
-		 this.color = color;
+	 private InitialSquare(BoardColorInterface boardColor) {
+		 this.color = boardColor.getColor();
 	 }
 }

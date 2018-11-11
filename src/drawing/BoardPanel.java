@@ -305,7 +305,7 @@ public class BoardPanel extends JPanel {
 		xPoints[2] = (int) (initialSquareSize);
 		yPoints[2] = (int) (initialSquareSize + centerSquareSize);
 		triangle = new Polygon(xPoints, yPoints, 3);
-		drawCenterTriangle(triangle, Color.RED);
+		drawCenterTriangle(triangle, new RedBoardColorImpl().getColor());
 
 		// green triangle
 		xPoints[0] = (int) initialSquareSize;
@@ -315,7 +315,7 @@ public class BoardPanel extends JPanel {
 		xPoints[2] = (int) (initialSquareSize + centerSquareSize);
 		yPoints[2] = (int) (initialSquareSize);
 		triangle = new Polygon(xPoints, yPoints, 3);
-		drawCenterTriangle(triangle, Color.GREEN);
+		drawCenterTriangle(triangle, new GreenBoardColorImpl().getColor());
 
 		// yellow triangle
 		xPoints[0] = (int) initialSquareSize + centerSquareSize;
@@ -325,7 +325,7 @@ public class BoardPanel extends JPanel {
 		xPoints[2] = (int) (initialSquareSize + centerSquareSize);
 		yPoints[2] = (int) (initialSquareSize + centerSquareSize);
 		triangle = new Polygon(xPoints, yPoints, 3);
-		drawCenterTriangle(triangle, Color.YELLOW);
+		drawCenterTriangle(triangle, new YellowBoardColorImpl().getColor());
 
 		// blue triangle
 		xPoints[0] = (int) initialSquareSize;
@@ -335,7 +335,7 @@ public class BoardPanel extends JPanel {
 		xPoints[2] = (int) (initialSquareSize + centerSquareSize);
 		yPoints[2] = (int) (initialSquareSize + centerSquareSize);
 		triangle = new Polygon(xPoints, yPoints, 3);
-		drawCenterTriangle(triangle, Color.BLUE);
+		drawCenterTriangle(triangle, new BlueBoardColorImpl().getColor());
 
 	}
 
@@ -352,21 +352,25 @@ public class BoardPanel extends JPanel {
 
 		float rectX = (float) (getSize().getWidth() - initialSquareSize);
 		float rectY = (float) (getSize().getHeight() - initialSquareSize);
-
+		
+		//red
 		Rectangle2D.Float rect1 = new Rectangle2D.Float(0, 0, initialSquareSize, initialSquareSize);
-		graphics2.setColor(Color.RED);
+		graphics2.setColor((new RedBoardColorImpl().getColor()));
 		graphics2.fill(rect1);
 
+		//green
 		Rectangle2D.Float rect2 = new Rectangle2D.Float(rectX, 0, initialSquareSize, initialSquareSize);
-		graphics2.setColor(Color.GREEN);
+		graphics2.setColor((new GreenBoardColorImpl().getColor()));
 		graphics2.fill(rect2);
 
+		//blue
 		Rectangle2D.Float rect3 = new Rectangle2D.Float(0, rectY, initialSquareSize, initialSquareSize);
-		graphics2.setColor(Color.BLUE);
+		graphics2.setColor(new BlueBoardColorImpl().getColor());
 		graphics2.fill(rect3);
 
+		//yellow
 		Rectangle2D.Float rect4 = new Rectangle2D.Float(rectX, rectY, initialSquareSize, initialSquareSize);
-		graphics2.setColor(Color.YELLOW);
+		graphics2.setColor((new YellowBoardColorImpl().getColor()));
 		graphics2.fill(rect4);
 	}
 

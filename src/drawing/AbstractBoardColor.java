@@ -42,5 +42,9 @@ public class AbstractBoardColor {
 		return rect;
 		
 	}
+	
+	public Color getColor() {
+		return color;
+	}
 
 }

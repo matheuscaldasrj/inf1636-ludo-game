@@ -14,7 +14,7 @@ import models.PointPosition;
 public class RedBoardColorImpl extends AbstractBoardColor implements BoardColorInterface {
 	
 	static final int initialCircleBoardIndex = 76;
-	static final Color color = Color.RED;
+	static final Color color = new Color(215, 0, 0);
 	static final Map<Integer, Integer> indexMap;
 	
 	public RedBoardColorImpl() {
