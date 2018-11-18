@@ -18,4 +18,8 @@ public enum InitialSquare {
 	 private InitialSquare(BoardColorInterface boardColor) {
 		 this.color = boardColor.getColor();
 	 }
+
+	public Color getColor() {
+		return color;
+	}
 }

@@ -21,106 +21,126 @@ import models.Piece;
 public class LudoGame implements BoardEventListener {
 	
 	LudoGameFrame ludoGameFrame = new LudoGameFrame();
-	List<Piece> pieces = new ArrayList<Piece>();
+	ArrayList<Piece> pieces;
 	GameRules rules = new GameRules();
-	int roll;
-	Color playerTurn;
+	
+	int roll;			// How much the player got on his roll
+	int timesRolled6;	// How many times the player has rolled 6 on this turn
+	boolean hasRolled;	// Defines if the player has already rolled the die on his turn
+	Color playerTurn;	// Defines the color of the player that shall make a move
+	int playerId;		// Defines the id of the player that shall make a move
+	int turnsToFinishFirstRound; // Used to control when the pieces don't get to start on the first house
 	
 	public void startGame() {
+		pieces = new ArrayList<Piece>();
 		
 		//lets draw initial board
 		ludoGameFrame.setTitle("Ludo game");
 		ludoGameFrame.setVisible(true);		
 		
 		playerTurn = Color.BLUE;
+		playerId = 0;
+		hasRolled = false;
+		timesRolled6 = 0;
+		turnsToFinishFirstRound = 4;
 		
 		// creates the pieces
-		rules.createPieces();
+		pieces = rules.createPieces(pieces);
 		
 		// Makes the button "rollDie" (ControlPanel) get a random number and display it as an image in it's panel
+		// If the player has already rolled the die on his turn, he may not roll again
 		ludoGameFrame.getControlPanel().getRollDieButton().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {		
-				roll = rules.rollDie();
 				
-				ludoGameFrame.getControlPanel().setDieSide(roll);
+				if(!hasRolled) {
+					roll = rules.rollDie();
+					
+					if(roll == 6)
+						timesRolled6++;
+					
+					if(turnsToFinishFirstRound > 0) {
+						rules.moveFromInitialSquare(playerTurn, pieces);
+						turnsToFinishFirstRound--;
+						ludoGameFrame.setNewPieces(pieces);
+						
+					}
+					else if(roll == 5) {
+						if(rules.moveFromInitialSquare(/*squareColor,*/ playerTurn, pieces))
+							drawNextRound(pieces);
+					}
+					
+					ludoGameFrame.getControlPanel().setDieSide(roll);
+					hasRolled = true;					
+				}
 			}
 		});
 		
-		
-		
 		ludoGameFrame.addBoardListener(this);
-		
-		simulatePieces();
+		ludoGameFrame.setNewPieces(pieces);
 		
 	}
-	
-	
-	public void simulatePieces() {
+	@Override
+	public void notifyBoardClicks(Object returnClick, boolean isPiece) {
+		Piece p;
 		
-		Color yellowColor = new YellowBoardColorImpl().getColor();
-		Color blueColor = new BlueBoardColorImpl().getColor();
-		Color redColor = new RedBoardColorImpl().getColor();
-		Color greenColor = new GreenBoardColorImpl().getColor();
+		System.out.println("NotifyBoardclicks no LudoGame");
 		
-		Piece piece1 = new Piece(0, 72, blueColor, false);
-		Piece piece2 = new Piece(1, 73, blueColor, false);
-		Piece piece3 = new Piece(2, 74, blueColor, false);
-		Piece piece4 = new Piece(3, 75, blueColor, false);
-		
-		Piece piece5 = new Piece(4, 76, redColor, false);
-		Piece piece6 = new Piece(5, 77, redColor, false);
-		Piece piece7 = new Piece(6, 78, redColor, false);
-		Piece piece8 = new Piece(7, 79, redColor, false);
-		
-		Piece piece9 = new Piece(8, 80, greenColor, false);
-		Piece piece10 = new Piece(9, 81, greenColor, false);
-		Piece piece11 = new Piece(10, 82, greenColor, false);
-		Piece piece12 = new Piece(11, 83, greenColor, false);
-		
-		Piece piece13 = new Piece(12, 84, yellowColor, false);
-		Piece piece14 = new Piece(13, 85, yellowColor, false);
-		Piece piece15 = new Piece(14, 86, yellowColor, false);
-		Piece piece16 = new Piece(15, 87, yellowColor, false);
-		
-		
-		//more tests
-		Piece piece17 = new Piece(16, 50, yellowColor, false);
-		Piece piece18 = new Piece(17, 70, yellowColor, false);
-		Piece piece19 = new Piece(18, 36, yellowColor, false);
-		Piece piece20 = new Piece(20, 36, greenColor, false);
-		Piece piece21 = new Piece(19, 5, yellowColor, false);
-		Piece piece22 = new Piece(20, 5, yellowColor, false);
-		Piece piece23 = new Piece(21, 52, blueColor, false);
+		// If the player clicked on a piece ===================================================
+		if(isPiece) {
+			ArrayList<Piece> pieces = (ArrayList<Piece>) returnClick;
+			System.out.println(pieces);
 			
-		drawNextRound(Arrays.asList(piece1, piece2, piece3, piece4, piece5, piece6,
-				piece7 ,piece8, piece9, piece10, piece11, piece12, piece13, piece14,
-				piece15, piece16, piece17, piece18, piece19, piece20, piece21, piece22, piece23), Color.RED);
+			p = rules.checkIfCorrectColor(playerTurn, pieces);
+			if(p!=null) {
+					
+				if(rules.movePiece(p, roll)) {
+					drawNextRound(this.pieces);
+					
+					// In case the player rolled 6 and has already made a move, he may roll again
+					if(timesRolled6 > 0) {
+						hasRolled = false;
+						if(timesRolled6 == 2) 
+							rules.sendPieceToStart(rules.getLastMovedPiece(playerId));
+					}
+				}
+			}else {
+				System.out.println("Peca nao eh da cor do jogador");
+			}
+			
+		// Acho que, segundo as regras no documento, você não tem escolha ao tirar 5: Se puder mover o peão, tem que tirá-lo da casa inicial	
+			
+		/*// If the player clicked on a initial square ===========================================
+		} else if(returnClick != null) {
+			//is the enumerator
+			InitialSquare initialSquare = (InitialSquare) returnClick;
+			System.out.println(initialSquare);
+			
+			if(rules.moveFromInitialSquare(initialSquare.getColor(), roll, playerTurn, pieces) == true);
+		*/
+			
+		// If the player clicked on nothing ====================================================
+		} else {
+			//returnClick is null, its a unknown event
+			System.out.println("Click identificado, mas nao eh um local inicial nem uma peca");
+		}
 	}
 	
-	
-	// Redraws the whole board with the updated piece positions
-	public void drawNextRound(List<Piece> pieces, Color nextPlayerColor) {
+	// Gets and sets which is the next player to play and redraws the whole board with the updated piece positions
+	public void drawNextRound(ArrayList<Piece> pieces) {
+		
+		this.playerTurn = rules.getNextTurnColor(this.playerTurn);
+		this.playerId++;
+		if(this.playerId == 4)
+			this.playerId = 0;
+		
+		ludoGameFrame.getControlPanel().setTurnColor(playerTurn);
+		
 		System.out.println("Vamos desenhar as pecas");
 		System.out.println(pieces);
 		ludoGameFrame.setNewPieces(pieces);
+		
+		hasRolled = false;
 	}
 
-	@Override
-	public void notifyBoardClicks(Object returnClick, boolean isPiece) {
-		System.out.println("NotifyBoardclicks no LudoGame");
-		
-		if(isPiece) {
-			List<Piece> pieces = (List<Piece>) returnClick;
-			System.out.println(pieces);
-		} else if(returnClick != null) {
-			//is the enum
-			InitialSquare initialSquare = (InitialSquare) returnClick;
-			System.out.println(initialSquare);
-		} else {
-			//returnClick is null, its a unkown event
-			System.out.println("Click identificado, mas nao eh um local inicial nem uma peca");
-		}
-		
-	}
 	
 }

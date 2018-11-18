@@ -4,11 +4,11 @@ import java.awt.Color;
 
 public class Piece {
 	
+	private int id;					// Identifies the piece in the pieces ArrayList
 	private int index; 				// The piece's position in the board
 	private Color color; 			// The piece's color
 	private boolean isBarrier;		// States if the piece is a barrier or not
 	private boolean hasFinished;	// States if the piece has reached the final position
-	private int id;					// Identifies the piece in the pieces ArrayList
 	
 	public Piece(int id, int index, Color color, boolean isBarrier) {
 		this.id = id;
