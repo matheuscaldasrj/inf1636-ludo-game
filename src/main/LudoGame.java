@@ -54,6 +54,8 @@ public class LudoGame implements BoardEventListener {
 				
 				if(!hasRolled) {
 					roll = rules.rollDie();
+					ludoGameFrame.getControlPanel().setDieSide(roll);
+					hasRolled = true;					
 					
 					if(roll == 6)
 						timesRolled6++;
@@ -65,12 +67,12 @@ public class LudoGame implements BoardEventListener {
 						
 					}
 					else if(roll == 5) {
-						if(rules.moveFromInitialSquare(/*squareColor,*/ playerTurn, pieces))
+						if(rules.moveFromInitialSquare(/*squareColor,*/ playerTurn, pieces)) {
 							drawNextRound(pieces);
+							hasRolled = false;
+						}
 					}
 					
-					ludoGameFrame.getControlPanel().setDieSide(roll);
-					hasRolled = true;					
 				}
 			}
 		});
@@ -87,21 +89,24 @@ public class LudoGame implements BoardEventListener {
 		
 		// If the player clicked on a piece ===================================================
 		if(isPiece) {
-			ArrayList<Piece> pieces = (ArrayList<Piece>) returnClick;
-			System.out.println(pieces);
-			
-			p = rules.checkIfCorrectColor(playerTurn, pieces);
-			if(p!=null) {
+			if(hasRolled) {
+				ArrayList<Piece> pieces = (ArrayList<Piece>) returnClick;
+				System.out.println(pieces);
+				
+				p = rules.checkIfCorrectColor(playerTurn, pieces);
+				if(p!=null) {
 					
-				if(rules.movePiece(p, roll)) {
-					drawNextRound(this.pieces);
-					
-					// In case the player rolled 6 and has already made a move, he may roll again
-					if(timesRolled6 > 0) {
-						hasRolled = false;
-						if(timesRolled6 == 2) 
-							rules.sendPieceToStart(rules.getLastMovedPiece(playerId));
+					if(rules.movePiece(p, roll)) {
+						drawNextRound(this.pieces);
+						
+						// In case the player rolled 6 and has already made a move, he may roll again
+						if(timesRolled6 > 0) {
+							hasRolled = false;
+							if(timesRolled6 == 2) 
+								rules.sendPieceToStart(rules.getLastMovedPiece(playerId));
+						}
 					}
+				
 				}
 			}else {
 				System.out.println("Peca nao eh da cor do jogador");

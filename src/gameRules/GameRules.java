@@ -12,9 +12,7 @@ import java.awt.Color;
 import models.InitialSquare;
 import models.Piece;
 
-class BoardSpace{
-	Piece p1, p2;
-}
+import gameRules.BoardSpace;
 
 // This is the class which controls all the game's rules
 
@@ -65,8 +63,10 @@ public class GameRules {
 		return pieces;
 	}
 	
+	// Sends the received piece to one of it's color's initial houses
 	public void sendPieceToStart(Piece p) {
 		Color pieceColor = p.getColor();
+		int pieceIndex = p.getIndex();
 		int i, iMax, minIndex, maxIndex;
 		
 		if(pieceColor == Color.BLUE) {
@@ -80,7 +80,18 @@ public class GameRules {
 		}
 		
 		for(i = minIndex; i<maxIndex ; i++) {
-			if(boardSpaces[i] == null) {
+			if(boardSpaces[i].p1 == null) {
+				if(boardSpaces[pieceIndex].p1.getId() == p.getId()) {
+					if(boardSpaces[pieceIndex].p2 == null) {
+						boardSpaces[pieceIndex].p1 = null; 
+					}else {
+						boardSpaces[pieceIndex].p1 = boardSpaces[pieceIndex].p2;  
+						boardSpaces[pieceIndex].p2 = null; 
+					}	
+				}else 
+					boardSpaces[p.getIndex()].p2 = null;
+				
+				p.setIndex(i);
 				boardSpaces[i].p1 = p;
 			}
 		}
@@ -105,7 +116,12 @@ public class GameRules {
 		
 		// Removing from the previous position
 		if(boardSpaces[pieceIndex - roll].p1.getId() == p.getId()) {
-			boardSpaces[pieceIndex - roll].p1 = null;
+			if(boardSpaces[pieceIndex - roll].p2 == null) {
+				boardSpaces[pieceIndex - roll].p1 = null;				
+			}else {
+				boardSpaces[pieceIndex - roll].p1 = boardSpaces[pieceIndex - roll].p2;
+				boardSpaces[pieceIndex - roll].p2 = null;
+			}
 		} else {
 			boardSpaces[pieceIndex - roll].p2 = null;
 		}
@@ -138,10 +154,73 @@ public class GameRules {
 		return null;	
 	}
 	
+	// Returns the color of the space:
+	// If it's a first space, returns the color of the player
+	// If it's a shelter, returns black
+	// If it's a regular space, return white
+	private Color checkIfSpecialSpace(int index) {
+		Color spaceColor = Color.WHITE; // This represents the normal spaces
+		
+		if (index == 0)		spaceColor = Color.BLUE;
+		else if(index == 13) 	spaceColor = Color.RED;
+		else if(index == 26) spaceColor = Color.GREEN;
+		else if(index == 39)	spaceColor = Color.YELLOW;
+		else if(index == 9 || index == 22 || index == 35 || index == 48) // This space is a shelter
+			spaceColor = Color.BLACK;
+		return spaceColor;
+	}
+	
 	// Checks the next spaces to see if there is a barrier or a piece of another player. 
-	// Returns a list with the other player's pieces that were on the way, if there were any or
-	// returns null if there is another player's barrier on the way
-	//private List<Piece> checkPath( <<<<<<<<<+==========================================================
+	// If the player captured a piece, returns a reference to it
+	// returns null if there is another player's barrier on the way or if the ending space is unavailable
+	// returns a "filler piece" if the piece can move but no piece was captured
+	// If the move forms a barrier, sets "isBarrier" as true
+	private Piece checkPath(Piece piece, int newPos){
+		int i = piece.getIndex()+1;
+		
+		int shelterPosition = 13; 
+		Piece fillerPiece = new Piece(0, 0, Color.BLACK, false);
+		Color pieceColor = piece.getColor();
+		Color spaceColor;
+		
+		if(boardSpaces[newPos].p1 == null) { // Space is empty
+			return fillerPiece;
+			
+		}else if(boardSpaces[newPos].p2 == null) { // Space isn't empty, but can have one more piece
+			
+			spaceColor = checkIfSpecialSpace(newPos);
+			
+			if(boardSpaces[newPos].p1.getColor() == piece.getColor()) { // The pieces are the same color
+				System.out.println("Cor da peça na pos final: " + boardSpaces[newPos].p1.getColor());
+				if(spaceColor != Color.WHITE) { // There can't be two pieces in a special space if they are of the same color
+					System.out.println(spaceColor);
+					return null;
+				}else { // It's a regular space. The pieces become a barrier
+					boardSpaces[newPos].p1.setIsBarrier(true);
+					piece.setIsBarrier(true);
+					return fillerPiece;
+				}
+				
+			} else { // The pieces are of different colors
+				if(spaceColor != Color.WHITE) {	// And the new position is a special space
+					if(boardSpaces[newPos].p1.getColor() == spaceColor || spaceColor == Color.BLACK) { // Two different colored pieces can occupy this space
+						return fillerPiece;
+					} else { // The piece that was in the space wasn't of the same color as it, so the piece was captured
+						return boardSpaces[newPos].p1;
+					}
+				} else { // It's a regular space, so the piece was captured
+					return boardSpaces[newPos].p1;
+				}
+			}
+		}
+		// Check if there is a barrier in the way
+		for(; i<=newPos ; i++) {
+			System.out.println("É uma barreira: " + boardSpaces[i].p1.getIsBarrier());
+			if(boardSpaces[i].p1.getIsBarrier())
+				return null;
+		}
+		return fillerPiece;
+	}
 	
 	// Corrects the position to which the piece will move so it follows the board's rules
 	private int correctPieceNewPos(int index, int newPos, int minIndex, int maxIndex, int firstTrailPos) {
@@ -166,6 +245,7 @@ public class GameRules {
 		int firstTrailPos=0, finishingPos=0;	// The first position and the finishing position of a colored trail, respectively
 		int firstPos = 0;							// The first position of the board, relative to the color of the piece
 		boolean posReset = false;
+		Piece capturedPiece;
 		
 		index = piece.getIndex();
 		newPos = index + numSpaces;
@@ -196,13 +276,24 @@ public class GameRules {
 			posReset = true;
 		}
 		
-		//if(checkPath(boardSpaces, piece, newPos))
+		capturedPiece = checkPath(piece, newPos);
 		
-		if(newPos == finishingPos) 
+		if(newPos == finishingPos) {	// The piece has reached it's final space
 			piece.setHasFinished(true);
+			
+		} else if(capturedPiece == null) { // The piece can't move
+			System.out.println("A peça não pode se mover");
+			return false;			
 		
+		}else if(capturedPiece.getColor() != Color.BLACK){ // A piece was captured
+			System.out.println("Capturou a peça!");
+			sendPieceToStart(capturedPiece);
+		}
+			
 		piece.setIndex(newPos);
+		System.out.println("Atualizou a posição");
 		updateBoardSpaces(piece, numSpaces);
+		System.out.println("Atualizou o vetor de espaços");
 		
 		// Saves this player's last moved piece
 		for(int i = 0 ; i < 4 ; i++) {
