@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import listeners.BoardEventListener;
+import listeners.ControlEventListener;
 import models.Piece;
 
 // This is the frame that contains both the ControlPanel and the BoardPanel
@@ -51,6 +52,10 @@ public class LudoGameFrame extends JFrame {
 	
 	public void addBoardListener(BoardEventListener listener) {
 		boardPanel.addBoardListener(listener);
+	}
+	
+	public void addControlListener(ControlEventListener listener) {
+		controlPanel.addControlListener(listener);
 	}
 	
 	private BoardPanel buildBoardPanel() {

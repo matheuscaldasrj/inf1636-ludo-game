@@ -3,24 +3,24 @@ package main;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import drawing.BlueBoardColorImpl;
-import drawing.GreenBoardColorImpl;
 import drawing.LudoGameFrame;
-import drawing.RedBoardColorImpl;
-import drawing.YellowBoardColorImpl;
 import gameRules.GameRules;
 import listeners.BoardEventListener;
-import models.InitialSquare;
+import listeners.ControlEventListener;
+import models.FileGame;
 import models.Piece;
+import saveRestore.SaveAndRestoreGame;
 
 // This is the class that contains everything. It controls the flow of the game
-public class LudoGame implements BoardEventListener {
+public class LudoGame implements BoardEventListener, ControlEventListener {
 	
 	LudoGameFrame ludoGameFrame = new LudoGameFrame();
+	SaveAndRestoreGame saveAndRestoreGame = new SaveAndRestoreGame();
 	ArrayList<Piece> pieces;
 	GameRules rules = new GameRules();
 	
@@ -75,8 +75,14 @@ public class LudoGame implements BoardEventListener {
 			}
 		});
 		
-		ludoGameFrame.addBoardListener(this);
+		addListeners();
+		
 		ludoGameFrame.setNewPieces(pieces);
+	}
+	
+	private void addListeners() {
+		ludoGameFrame.addBoardListener(this);
+		ludoGameFrame.addControlListener(this);
 		
 	}
 	@Override
@@ -126,7 +132,7 @@ public class LudoGame implements BoardEventListener {
 	}
 	
 	// Gets and sets which is the next player to play and redraws the whole board with the updated piece positions
-	public void drawNextRound(ArrayList<Piece> pieces) {
+	public void drawNextRound(List<Piece> pieces) {
 		
 		this.playerTurn = rules.getNextTurnColor(this.playerTurn);
 		this.playerId++;
@@ -140,6 +146,51 @@ public class LudoGame implements BoardEventListener {
 		ludoGameFrame.setNewPieces(pieces);
 		
 		hasRolled = false;
+	}
+
+	@Override
+	public void onNewGameButtonClicked(ActionEvent event) {
+		System.out.println("Ludo game - onNewGameButtonClicked");
+		System.out.println(event);
+		
+	}
+
+	@Override
+	public void onLoadGameButtonClicked(ActionEvent event, File file) {
+		System.out.println("Ludo game - onLoadGameButtonClicked");
+		System.out.println(event);
+		System.out.println(file.getName());
+		
+		// TODO
+		//precisamos definir quem é o proximo jogador e as pecas que foram salvas
+		//assim como as posicoes finais
+		
+		FileGame fileGame = saveAndRestoreGame.loadGame(file);
+		List<Piece> pieces = fileGame.getPieces();
+		playerTurn = fileGame.getPlayerTurn();
+		
+		//COMO DESENHAR JOGO QUE FOI LOAD ?
+		drawNextRound(pieces);
+	}
+
+	@Override
+	public void onSaveGameClicked(ActionEvent event, File file) {
+		System.out.println("Ludo game - onSaveGameClicked");
+		System.out.println(event);
+		System.out.println(file.getName());
+		
+		FileGame fileGame = new FileGame();
+		fileGame.setPieces(Arrays.asList());
+		fileGame.setPlayerTurn(playerTurn);
+		fileGame.setFile(file);
+				
+		saveAndRestoreGame.saveGame(fileGame);
+	}
+
+	@Override
+	public void onRollDiceClicked(ActionEvent event) {
+		System.out.println("Ludo game - onRollDiceClicked");
+		System.out.println(event);
 	}
 
 	
