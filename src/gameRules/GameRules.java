@@ -100,6 +100,7 @@ public class GameRules {
 	// Places the moved piece in it's new position in the BoardSpaces array and removes it from it's previous position
 	private void updateBoardSpaces(Piece p, int roll) {
 		int pieceIndex = p.getIndex();
+		int previousIndex = pieceIndex - roll;
 		
 		// Placing in the new position
 		if(boardSpaces[pieceIndex].p1 == null) {
@@ -114,16 +115,20 @@ public class GameRules {
 			boardSpaces[pieceIndex].p1 = p;
 		}
 		
+		if(previousIndex < 0) {
+			previousIndex += 52;
+		}
+		
 		// Removing from the previous position
-		if(boardSpaces[pieceIndex - roll].p1.getId() == p.getId()) {
-			if(boardSpaces[pieceIndex - roll].p2 == null) {
-				boardSpaces[pieceIndex - roll].p1 = null;				
+		if(boardSpaces[previousIndex].p1.getId() == p.getId()) {
+			if(boardSpaces[previousIndex].p2 == null) {
+				boardSpaces[previousIndex].p1 = null;				
 			}else {
-				boardSpaces[pieceIndex - roll].p1 = boardSpaces[pieceIndex - roll].p2;
-				boardSpaces[pieceIndex - roll].p2 = null;
+				boardSpaces[previousIndex].p1 = boardSpaces[pieceIndex - roll].p2;
+				boardSpaces[previousIndex].p2 = null;
 			}
 		} else {
-			boardSpaces[pieceIndex - roll].p2 = null;
+			boardSpaces[previousIndex].p2 = null;
 		}
 	}
 	
@@ -177,6 +182,7 @@ public class GameRules {
 	// If the move forms a barrier, sets "isBarrier" as true
 	private Piece checkPath(Piece piece, int newPos){
 		int i = piece.getIndex()+1;
+		int minIndex=0,maxIndex=0,firstTrailPos=0, finishingPos=0;
 		
 		int shelterPosition = 13; 
 		Piece fillerPiece = new Piece(0, 0, Color.BLACK, false);
@@ -213,8 +219,26 @@ public class GameRules {
 				}
 			}
 		}
+		
+		if(piece.getColor() == Color.BLUE) {
+			minIndex = 45; maxIndex = 50; firstTrailPos = 52; finishingPos = 57;
+		
+		//RED Pieces
+		}else if(piece.getColor() == Color.RED) {
+			minIndex = 6; maxIndex = 11; firstTrailPos = 57; finishingPos = 62;
+			
+		//GREEN Pieces
+		}else if(piece.getColor() == Color.GREEN) {
+			minIndex = 19; maxIndex = 24; firstTrailPos = 62; finishingPos = 67;
+			
+		//YELLOW Pieces	
+		}else if(piece.getColor() == Color.YELLOW) {
+			minIndex = 32; maxIndex = 37; firstTrailPos = 67; finishingPos = 72;
+		}
+		
 		// Check if there is a barrier in the way
 		for(; i<=newPos ; i++) {
+			int tempNewPos = correctPieceNewPos(i, tempNewPos, minIndex, maxIndex, firstTrailPos); // <============================== corrigir
 			System.out.println("É uma barreira: " + boardSpaces[i].p1.getIsBarrier());
 			if(boardSpaces[i].p1.getIsBarrier())
 				return null;
@@ -243,7 +267,7 @@ public class GameRules {
 		int index, newPos;						// The last position and the one the piece will move to, respectively
 		int minIndex=0, maxIndex=0; 			// The max and min positions a piece can be to get in the colored trail in one move
 		int firstTrailPos=0, finishingPos=0;	// The first position and the finishing position of a colored trail, respectively
-		int firstPos = 0;							// The first position of the board, relative to the color of the piece
+		int firstPos = 0;						// The first position of the board, relative to the color of the piece
 		boolean posReset = false;
 		Piece capturedPiece;
 		
@@ -269,10 +293,11 @@ public class GameRules {
 		}
 		
 		newPos = correctPieceNewPos(index, newPos, minIndex, maxIndex, firstTrailPos);
-		
+		System.out.println("Pre correção " + newPos);
 		// The board finished a lap, so the index must reset, starting from 0
 		if(newPos > 51 && index <= 51 && index >= 46 ) { 
 			newPos -= 52;
+			System.out.println("Pos correção " + newPos);
 			posReset = true;
 		}
 		
