@@ -238,6 +238,7 @@ public class GameRules {
 		// Check if there is a barrier in the way
 		for(; i<=newPos ; i++) {
 			int tempNewPos = 0; // <============================== corrigir
+//			int tempNewPos = correctPieceNewPos(i, tempNewPos, minIndex, maxIndex, firstTrailPos); 
 			System.out.println("É uma barreira: " + boardSpaces[i].getP1().getIsBarrier());
 			if(boardSpaces[i].getP1().getIsBarrier())
 				return null;
