@@ -1,6 +1,8 @@
 package models;
 
-public class BoardSpace {
+import java.io.Serializable;
+
+public class BoardSpace implements Serializable {
 	Piece p1, p2;
 
 	public Piece getP1() {
