@@ -47,36 +47,6 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		// creates the pieces
 		pieces = rules.createPieces(pieces);
 		
-		// Makes the button "rollDie" (ControlPanel) get a random number and display it as an image in it's panel
-		// If the player has already rolled the die on his turn, he may not roll again
-		ludoGameFrame.getControlPanel().getRollDieButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {		
-				
-				if(!hasRolled) {
-					roll = rules.rollDie();
-					ludoGameFrame.getControlPanel().setDieSide(roll);
-					hasRolled = true;					
-					
-					if(roll == 6)
-						timesRolled6++;
-					
-					if(turnsToFinishFirstRound > 0) {
-						rules.moveFromInitialSquare(playerTurn, pieces);
-						turnsToFinishFirstRound--;
-						ludoGameFrame.setNewPieces(pieces);
-						
-					}
-					else if(roll == 5) {
-						if(rules.moveFromInitialSquare(/*squareColor,*/ playerTurn, pieces)) {
-							drawNextRound(pieces);
-							hasRolled = false;
-						}
-					}
-					
-				}
-			}
-		});
-		
 		addListeners();
 		
 		ludoGameFrame.setNewPieces(pieces);
@@ -196,6 +166,30 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 	public void onRollDiceClicked(ActionEvent event) {
 		System.out.println("Ludo game - onRollDiceClicked");
 		System.out.println(event);
+		// Makes the button "rollDie" (ControlPanel) get a random number and display it as an image in it's panel
+		// If the player has already rolled the die on his turn, he may not roll again
+		if(!hasRolled) {
+			roll = rules.rollDie();
+			ludoGameFrame.getControlPanel().setDieSide(roll);
+			hasRolled = true;					
+			
+			if(roll == 6)
+				timesRolled6++;
+			
+			if(turnsToFinishFirstRound > 0) {
+				rules.moveFromInitialSquare(playerTurn, pieces);
+				turnsToFinishFirstRound--;
+				ludoGameFrame.setNewPieces(pieces);
+				
+			}
+			else if(roll == 5) {
+				if(rules.moveFromInitialSquare(/*squareColor,*/ playerTurn, pieces)) {
+					drawNextRound(pieces);
+					hasRolled = false;
+				}
+			}
+			
+		}
 	}
 
 	
