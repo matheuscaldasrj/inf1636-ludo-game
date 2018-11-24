@@ -9,10 +9,9 @@ import main.LudoGame;
 
 import java.awt.Color;
 
+import models.BoardSpace;
 import models.InitialSquare;
 import models.Piece;
-
-import gameRules.BoardSpace;
 
 // This is the class which controls all the game's rules
 
@@ -39,25 +38,25 @@ public class GameRules {
 		// Create BLUE
 		for(; i<76 ; i++, id++) {
 			pieces.add(new Piece(id, i,Color.BLUE,false));
-			boardSpaces[i].p1 = pieces.get(id);
+			boardSpaces[i].setP1(pieces.get(id));
 		}
 		
 		// Create RED
 		for(; i<80 ; i++, id++) {
 			pieces.add(new Piece(id,i,Color.RED, false));
-			boardSpaces[i].p1 = pieces.get(id);
+			boardSpaces[i].setP1(pieces.get(id));
 		}
 		
 		// Create GREEN
 		for(; i<84 ; i++, id++) {
 			pieces.add(new Piece(id,i,Color.GREEN, false));
-			boardSpaces[i].p1 = pieces.get(id);
+			boardSpaces[i].setP1(pieces.get(id));
 		}
 		
 		// Create YELLOW
 		for(; i<88 ; i++, id++) {
 			pieces.add(new Piece(id,i,Color.YELLOW, false));
-			boardSpaces[i].p1 = pieces.get(id);
+			boardSpaces[i].setP1(pieces.get(id));
 		}
 		 
 		return pieces;
@@ -80,19 +79,19 @@ public class GameRules {
 		}
 		
 		for(i = minIndex; i<maxIndex ; i++) {
-			if(boardSpaces[i].p1 == null) {
-				if(boardSpaces[pieceIndex].p1.getId() == p.getId()) {
-					if(boardSpaces[pieceIndex].p2 == null) {
-						boardSpaces[pieceIndex].p1 = null; 
+			if(boardSpaces[i].getP1() == null) {
+				if(boardSpaces[pieceIndex].getP1().getId() == p.getId()) {
+					if(boardSpaces[pieceIndex].getP2() == null) {
+						boardSpaces[pieceIndex].setP1(null);
 					}else {
-						boardSpaces[pieceIndex].p1 = boardSpaces[pieceIndex].p2;  
-						boardSpaces[pieceIndex].p2 = null; 
+						boardSpaces[pieceIndex].setP1(boardSpaces[pieceIndex].getP2());  
+						boardSpaces[pieceIndex].setP2(null); 
 					}	
 				}else 
-					boardSpaces[p.getIndex()].p2 = null;
+					boardSpaces[p.getIndex()].setP2(null);
 				
 				p.setIndex(i);
-				boardSpaces[i].p1 = p;
+				boardSpaces[i].setP1(p);
 			}
 		}
 	}
@@ -103,16 +102,16 @@ public class GameRules {
 		int previousIndex = pieceIndex - roll;
 		
 		// Placing in the new position
-		if(boardSpaces[pieceIndex].p1 == null) {
-			boardSpaces[pieceIndex].p1 = p;
+		if(boardSpaces[pieceIndex].getP1() == null) {
+			boardSpaces[pieceIndex].setP1(p);
 			
-		}else if(boardSpaces[pieceIndex].p1.getColor() == p.getColor()) {
-			boardSpaces[pieceIndex].p2 = p;
-			boardSpaces[pieceIndex].p1.setIsBarrier(true);
+		}else if(boardSpaces[pieceIndex].getP1().getColor() == p.getColor()) {
+			boardSpaces[pieceIndex].setP2(p);
+			boardSpaces[pieceIndex].getP1().setIsBarrier(true);
 			
 		}else {
-			sendPieceToStart(boardSpaces[pieceIndex].p1);
-			boardSpaces[pieceIndex].p1 = p;
+			sendPieceToStart(boardSpaces[pieceIndex].getP1());
+			boardSpaces[pieceIndex].setP1(p);
 		}
 		
 		if(previousIndex < 0) {
@@ -120,15 +119,15 @@ public class GameRules {
 		}
 		
 		// Removing from the previous position
-		if(boardSpaces[previousIndex].p1.getId() == p.getId()) {
-			if(boardSpaces[previousIndex].p2 == null) {
-				boardSpaces[previousIndex].p1 = null;				
+		if(boardSpaces[previousIndex].getP1().getId() == p.getId()) {
+			if(boardSpaces[previousIndex].getP2() == null) {
+				boardSpaces[previousIndex].setP1(null);				
 			}else {
-				boardSpaces[previousIndex].p1 = boardSpaces[pieceIndex - roll].p2;
-				boardSpaces[previousIndex].p2 = null;
+				boardSpaces[previousIndex].setP1(boardSpaces[pieceIndex - roll].getP2());
+				boardSpaces[previousIndex].setP2(null);;
 			}
 		} else {
-			boardSpaces[previousIndex].p2 = null;
+			boardSpaces[previousIndex].setP2(null);
 		}
 	}
 	
@@ -189,33 +188,33 @@ public class GameRules {
 		Color pieceColor = piece.getColor();
 		Color spaceColor;
 		
-		if(boardSpaces[newPos].p1 == null) { // Space is empty
+		if(boardSpaces[newPos].getP1() == null) { // Space is empty
 			return fillerPiece;
 			
-		}else if(boardSpaces[newPos].p2 == null) { // Space isn't empty, but can have one more piece
+		}else if(boardSpaces[newPos].getP2() == null) { // Space isn't empty, but can have one more piece
 			
 			spaceColor = checkIfSpecialSpace(newPos);
 			
-			if(boardSpaces[newPos].p1.getColor() == piece.getColor()) { // The pieces are the same color
-				System.out.println("Cor da peça na pos final: " + boardSpaces[newPos].p1.getColor());
+			if(boardSpaces[newPos].getP1().getColor() == piece.getColor()) { // The pieces are the same color
+				System.out.println("Cor da peça na pos final: " + boardSpaces[newPos].getP1().getColor());
 				if(spaceColor != Color.WHITE) { // There can't be two pieces in a special space if they are of the same color
 					System.out.println(spaceColor);
 					return null;
 				}else { // It's a regular space. The pieces become a barrier
-					boardSpaces[newPos].p1.setIsBarrier(true);
+					boardSpaces[newPos].getP1().setIsBarrier(true);
 					piece.setIsBarrier(true);
 					return fillerPiece;
 				}
 				
 			} else { // The pieces are of different colors
 				if(spaceColor != Color.WHITE) {	// And the new position is a special space
-					if(boardSpaces[newPos].p1.getColor() == spaceColor || spaceColor == Color.BLACK) { // Two different colored pieces can occupy this space
+					if(boardSpaces[newPos].getP1().getColor() == spaceColor || spaceColor == Color.BLACK) { // Two different colored pieces can occupy this space
 						return fillerPiece;
 					} else { // The piece that was in the space wasn't of the same color as it, so the piece was captured
-						return boardSpaces[newPos].p1;
+						return boardSpaces[newPos].getP1();
 					}
 				} else { // It's a regular space, so the piece was captured
-					return boardSpaces[newPos].p1;
+					return boardSpaces[newPos].getP1();
 				}
 			}
 		}
@@ -238,9 +237,9 @@ public class GameRules {
 		
 		// Check if there is a barrier in the way
 		for(; i<=newPos ; i++) {
-			int tempNewPos = correctPieceNewPos(i, tempNewPos, minIndex, maxIndex, firstTrailPos); // <============================== corrigir
-			System.out.println("É uma barreira: " + boardSpaces[i].p1.getIsBarrier());
-			if(boardSpaces[i].p1.getIsBarrier())
+			int tempNewPos = 0; // <============================== corrigir
+			System.out.println("É uma barreira: " + boardSpaces[i].getP1().getIsBarrier());
+			if(boardSpaces[i].getP1().getIsBarrier())
 				return null;
 		}
 		return fillerPiece;
@@ -351,19 +350,19 @@ public class GameRules {
 					Piece piece = p.get(i);
 					
 					if(piece.getIndex() >= minIndex && piece.getIndex() < maxIndex) {
-						if(boardSpaces[startingPos].p1 != null) {
+						if(boardSpaces[startingPos].getP1() != null) {
 							System.out.println("Posição não é null");
-							if(boardSpaces[startingPos].p1.getColor() == piece.getColor()) {
+							if(boardSpaces[startingPos].getP1().getColor() == piece.getColor()) {
 								return false;
 								
 							}else {
 								piece.setIndex(startingPos);
-								boardSpaces[startingPos].p2 = piece;
+								boardSpaces[startingPos].setP2(piece);
 								return true;
 							}
 						}else {
 							piece.setIndex(startingPos);
-							boardSpaces[startingPos].p1 = piece;
+							boardSpaces[startingPos].setP1(piece);
 							return true;
 						}
 						
