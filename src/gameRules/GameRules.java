@@ -1,6 +1,5 @@
 package gameRules;
 
-import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Random;
@@ -31,7 +30,7 @@ public class GameRules {
 	
 	// Creates all the pieces of the game, setting their colors and initial positions.
 	// Stores them in the "pieces" ArrayList
-	public ArrayList<Piece> createPieces(ArrayList<Piece> pieces) {		
+	public List<Piece> createPieces(List<Piece> pieces) {		
 		
 		int i=72, id=0;
 		
@@ -150,7 +149,7 @@ public class GameRules {
 	}
 	
 	// Checks if the piece clicked is of the same color as this turn player's color
-	public Piece checkIfCorrectColor(Color player, ArrayList<Piece> p){
+	public Piece checkIfCorrectColor(Color player, List<Piece> p){
 		for(Piece piece : p) {
 			if(piece.getColor() == player)
 				return piece;
@@ -330,7 +329,7 @@ public class GameRules {
 		return true;
 	}
 	
-	public boolean moveFromInitialSquare(/*Color squareColor,*/ /*int roll,*/ Color playerColor, ArrayList<Piece> p) {
+	public boolean moveFromInitialSquare(/*Color squareColor,*/ /*int roll,*/ Color playerColor, List<Piece> p) {
 		int i, iMax;			// The min and max id of the pieces of each team
 		int minIndex, maxIndex; // The indexes the pieces of each color occupy on the initial square
 		int startingPos;		// The index of the initial space for each color
@@ -373,8 +372,21 @@ public class GameRules {
 		//}
 		return false;
 	}
+	
 	public Piece getLastMovedPiece(int playerId) {
 		return lastMovedPiece[playerId];
+	}
+	
+	public void setLastMovedPiece(int playerId,Piece piece) {
+		lastMovedPiece[playerId] = piece;;
+	}
+	
+	public void setBoardSpaces(BoardSpace[] boardSpaces){
+		this.boardSpaces = boardSpaces;
+	}
+	
+	public BoardSpace[] getBoardSpaces(){
+		return boardSpaces;
 	}
 }
 	

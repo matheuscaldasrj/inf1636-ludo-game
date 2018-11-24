@@ -2,6 +2,7 @@ package models;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,13 +11,30 @@ import drawing.GreenBoardColorImpl;
 import drawing.RedBoardColorImpl;
 import drawing.YellowBoardColorImpl;
 
-public class FileGame {
+public class FileGame implements Serializable {
 	
 	File file;
 	List<Piece> pieces;
 	Color playerTurn;
-	Piece lastMovedPiece;
-//	List<BoardSpace> boardSpaces;
+	int playerId;
+	BoardSpace[] boardSpaces;
+	
+	private int numPieces = 0;
+	private int numBoardSpace = 0;
+	
+	public FileGame(File file, List<Piece> pieces, Color playerTurn, int playerId, BoardSpace[] boardSpaces) {
+		this.file = file;
+		this.playerTurn = playerTurn;
+		this.playerId = playerId;
+		
+		//method handles size
+		setBoardSpaces(boardSpaces);
+		setPieces(this.pieces);
+	}
+	
+	public FileGame() {
+		
+	}
 	
 	public File getFile() {
 		return file;
@@ -28,9 +46,10 @@ public class FileGame {
 		return pieces;
 	}
 	public void setPieces(List<Piece> pieces) {
-		//TODO
-		// nao simular
-		this.pieces = simulatePieces();
+		
+		this.pieces = pieces;
+		this.numPieces = this.pieces.size();
+//		this.pieces = simulatePieces();
 	}
 	public Color getPlayerTurn() {
 		return playerTurn;
@@ -40,21 +59,20 @@ public class FileGame {
 	}
 	
 	
-	public Piece getLastMovedPiece() {
-		return lastMovedPiece;
+	public int getPlayerId() {
+		return playerId;
 	}
-	public void setLastMovedPiece(Piece lastMovedPiece) {
-		this.lastMovedPiece = lastMovedPiece;
+	public void setPlayerId(int playerId) {
+		this.playerId = playerId;
 	}
 	
-	
-	
-//	public List<BoardSpace> getBoardSpaces() {
-//		return boardSpaces;
-//	}
-//	public void setBoardSpaces(List<BoardSpace> boardSpaces) {
-//		this.boardSpaces = boardSpaces;
-//	}
+	public BoardSpace[] getBoardSpaces() {
+		return boardSpaces;
+	}
+	public void setBoardSpaces(BoardSpace[] boardSpaces) {
+		this.boardSpaces = boardSpaces;
+		this.numBoardSpace = boardSpaces.length;
+	}
 	private List<Piece> simulatePieces() {
 		Color yellowColor = new YellowBoardColorImpl().getColor();
 		Color blueColor = new BlueBoardColorImpl().getColor();

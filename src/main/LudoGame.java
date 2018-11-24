@@ -2,16 +2,15 @@ package main;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import drawing.LudoGameFrame;
 import gameRules.GameRules;
 import listeners.BoardEventListener;
 import listeners.ControlEventListener;
+import models.BoardSpace;
 import models.FileGame;
 import models.Piece;
 import saveRestore.SaveAndRestoreGame;
@@ -21,7 +20,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 	
 	LudoGameFrame ludoGameFrame = new LudoGameFrame();
 	SaveAndRestoreGame saveAndRestoreGame = new SaveAndRestoreGame();
-	ArrayList<Piece> pieces;
+	List<Piece> pieces;
 	GameRules rules = new GameRules();
 	
 	int roll;			// How much the player got on his roll
@@ -136,15 +135,20 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		System.out.println(event);
 		System.out.println(file.getName());
 		
-		// TODO
-		//precisamos definir quem é o proximo jogador e as pecas que foram salvas
-		//assim como as posicoes finais
-		
+		//retriving fileGame
 		FileGame fileGame = saveAndRestoreGame.loadGame(file);
-		List<Piece> pieces = fileGame.getPieces();
-		playerTurn = fileGame.getPlayerTurn();
 		
-		//COMO DESENHAR JOGO QUE FOI LOAD ?
+		if(fileGame == null) {
+			//error trying to read file
+			return ;
+		}
+		
+		//setting file game
+		pieces = fileGame.getPieces();
+		playerTurn = fileGame.getPlayerTurn();
+		rules.setBoardSpaces(fileGame.getBoardSpaces());
+		playerId = fileGame.getPlayerId();
+
 		drawNextRound(pieces);
 	}
 
@@ -154,11 +158,10 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		System.out.println(event);
 		System.out.println(file.getName());
 		
-		FileGame fileGame = new FileGame();
-		fileGame.setPieces(Arrays.asList());
-		fileGame.setPlayerTurn(playerTurn);
-		fileGame.setFile(file);
-				
+		BoardSpace[] boardSpaces = rules.getBoardSpaces();
+		//building file game
+		FileGame fileGame = new FileGame(file, pieces, playerTurn, playerId, boardSpaces);
+		//saving it
 		saveAndRestoreGame.saveGame(fileGame);
 	}
 
