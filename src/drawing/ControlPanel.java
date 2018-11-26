@@ -43,6 +43,7 @@ public class ControlPanel extends JPanel {
 	
 	private Image dieSides[] = new Image[6];
 	private int dieSide = 0;
+	private boolean showDieSide = false;
 	private Color turnColor;
 	Rectangle2D.Float rect = new Rectangle2D.Float(130, 360, 140, 140);
 	
@@ -171,7 +172,9 @@ public class ControlPanel extends JPanel {
 
 		g2.setColor(turnColor);
 		g2.fill(rect);
-		g2.drawImage(dieSides[dieSide], 150, 380, null);
+		if(showDieSide) {
+			g2.drawImage(dieSides[dieSide], 150, 380, null);			
+		}
 
 	}
 
@@ -191,6 +194,9 @@ public class ControlPanel extends JPanel {
 		this.turnColor = turnColor;
 
 		repaint();
+	}
+	public void setShowDieSide(boolean showDieSide) {
+		this.showDieSide = showDieSide;
 	}
 
 	private void notifyNewGameButtonListeners(ActionEvent objectClicked) {

@@ -14,12 +14,17 @@ import models.Piece;
 
 import gameRules.BoardSpace;
 
+import java.util.concurrent.TimeUnit;
+
 // This is the class which controls all the game's rules
 
 public class GameRules {
 	
 	private BoardSpace[] boardSpaces = new BoardSpace[88];
 	private Piece lastMovedPiece[] = new Piece[4]; // 0 = blue / 1 = red / 2 = green / 3 = yellow 
+	
+	private boolean posReset = false;
+	private boolean canMoveAnotherPiece = false;
 	
 	public GameRules() {
 		for(int i = 0 ; i<88 ; i++) {
@@ -36,11 +41,21 @@ public class GameRules {
 		
 		int i=72, id=0;
 		
-		// Create BLUE
+		pieces.add(new Piece(0, 72, Color.BLUE, false));
+		pieces.add(new Piece(1, 2, Color.BLUE, false));
+		pieces.add(new Piece(2, 3, Color.BLUE, false));
+		pieces.add(new Piece(3, 73, Color.BLUE, false));
+		boardSpaces[72].p1 = pieces.get(0);
+		boardSpaces[2].p1 = pieces.get(1);
+		boardSpaces[3].p1 = pieces.get(2);
+		boardSpaces[73].p1 = pieces.get(3);
+		id=4;
+		i=76;
+		/*// Create BLUE
 		for(; i<76 ; i++, id++) {
 			pieces.add(new Piece(id, i,Color.BLUE,false));
 			boardSpaces[i].p1 = pieces.get(id);
-		}
+		}*/
 		
 		// Create RED
 		for(; i<80 ; i++, id++) {
@@ -54,12 +69,31 @@ public class GameRules {
 			boardSpaces[i].p1 = pieces.get(id);
 		}
 		
-		// Create YELLOW
+		/*// Create YELLOW
 		for(; i<88 ; i++, id++) {
 			pieces.add(new Piece(id,i,Color.YELLOW, false));
 			boardSpaces[i].p1 = pieces.get(id);
-		}
-		 
+		}*/
+		
+		/*pieces.add(new Piece(4, ));
+		pieces.add(new Piece(5, ));
+		pieces.add(new Piece(6, ));
+		pieces.add(new Piece(7, ));
+		
+		pieces.add(new Piece(8, ));
+		pieces.add(new Piece(9, ));
+		pieces.add(new Piece(10, ));
+		pieces.add(new Piece(11, ));*/
+		
+		pieces.add(new Piece(12, 84,Color.YELLOW, false));
+		pieces.add(new Piece(13, 85,Color.YELLOW, false));
+		pieces.add(new Piece(14, 86,Color.YELLOW, false));
+		pieces.add(new Piece(15, 51,Color.YELLOW, false));
+		boardSpaces[84].p1 = pieces.get(12);
+		boardSpaces[85].p1 = pieces.get(13);
+		boardSpaces[86].p1 = pieces.get(14);
+		boardSpaces[51].p1 = pieces.get(15);
+		
 		return pieces;
 	}
 	
@@ -67,7 +101,9 @@ public class GameRules {
 	public void sendPieceToStart(Piece p) {
 		Color pieceColor = p.getColor();
 		int pieceIndex = p.getIndex();
-		int i, iMax, minIndex, maxIndex;
+		int i, iMax=0, minIndex=0, maxIndex=0;
+		
+		System.out.println("Id of the piece in the "+ pieceIndex + "position: "+ boardSpaces[pieceIndex].p1.getId());
 		
 		if(pieceColor == Color.BLUE) {
 			i=0; iMax = 4; minIndex = 72; maxIndex = 76;  
@@ -75,21 +111,24 @@ public class GameRules {
 			i=4; iMax = 8; minIndex = 76; maxIndex = 80; 
 		} else if(pieceColor == Color.GREEN){
 			i=8; iMax=12; minIndex = 80; maxIndex = 84;
-		} else {
+		} else if(pieceColor == Color.YELLOW) {
 			i=12; iMax=16; minIndex = 84; maxIndex = 88;
 		}
 		
+		// Searches the initial space for a vacant one. When it finds one, moves the desired piece from it's current space to an initial space
 		for(i = minIndex; i<maxIndex ; i++) {
 			if(boardSpaces[i].p1 == null) {
-				if(boardSpaces[pieceIndex].p1.getId() == p.getId()) {
+				if(boardSpaces[pieceIndex].p1 != null && boardSpaces[pieceIndex].p1.getId() == p.getId()) {
 					if(boardSpaces[pieceIndex].p2 == null) {
 						boardSpaces[pieceIndex].p1 = null; 
-					}else {
+					}
+					else {
 						boardSpaces[pieceIndex].p1 = boardSpaces[pieceIndex].p2;  
 						boardSpaces[pieceIndex].p2 = null; 
 					}	
-				}else 
-					boardSpaces[p.getIndex()].p2 = null;
+				}
+				else 
+					boardSpaces[pieceIndex].p2 = null;
 				
 				p.setIndex(i);
 				boardSpaces[i].p1 = p;
@@ -124,12 +163,15 @@ public class GameRules {
 			if(boardSpaces[previousIndex].p2 == null) {
 				boardSpaces[previousIndex].p1 = null;				
 			}else {
-				boardSpaces[previousIndex].p1 = boardSpaces[pieceIndex - roll].p2;
+				boardSpaces[previousIndex].p1 = boardSpaces[previousIndex].p2;
 				boardSpaces[previousIndex].p2 = null;
 			}
 		} else {
 			boardSpaces[previousIndex].p2 = null;
 		}
+		// If the pieces on previousIndex were forming a barrier, change "isBarrier" to false on the moved piece
+		// There isn't a problem to ALWAYS set this as false after moving, as it will only make a difference if there was a barrier already
+		p.setIsBarrier(false); 
 	}
 	
 	public Color getNextTurnColor(Color playerTurn) {
@@ -147,13 +189,14 @@ public class GameRules {
 	public int rollDie() {
 		Random rand = new Random();
 		
-		return 5; //rand.nextInt(6)+1;
+		return 6; //rand.nextInt(6)+1;
 	}
 	
 	// Checks if the piece clicked is of the same color as this turn player's color
-	public Piece checkIfCorrectColor(Color player, ArrayList<Piece> p){
+	// If the piece formed a barrier, returns the top piece (p1) 
+	public Piece checkIfCorrectColor(Color playerColor, ArrayList<Piece> p){
 		for(Piece piece : p) {
-			if(piece.getColor() == player)
+			if(piece.getColor() == playerColor)
 				return piece;
 		}
 		return null;	
@@ -179,70 +222,83 @@ public class GameRules {
 	// If the player captured a piece, returns a reference to it
 	// returns null if there is another player's barrier on the way or if the ending space is unavailable
 	// returns a "filler piece" if the piece can move but no piece was captured
-	// If the move forms a barrier, sets "isBarrier" as true
+	// If the move forms a barrier, sets "isBarrier" as true on the top piece (p1)
 	private Piece checkPath(Piece piece, int newPos){
-		int i = piece.getIndex()+1;
-		int minIndex=0,maxIndex=0,firstTrailPos=0, finishingPos=0;
+		int i = piece.getIndex();
+		int minIndex=0,maxIndex=0,firstTrailPos=0;
 		
-		int shelterPosition = 13; 
 		Piece fillerPiece = new Piece(0, 0, Color.BLACK, false);
-		Color pieceColor = piece.getColor();
 		Color spaceColor;
 		
-		if(boardSpaces[newPos].p1 == null) { // Space is empty
-			return fillerPiece;
+		if(piece.getColor() == Color.BLUE) {
+			minIndex = 45; maxIndex = 50; firstTrailPos = 52;
+		
+		//RED Pieces
+		}else if(piece.getColor() == Color.RED) {
+			minIndex = 6; maxIndex = 11; firstTrailPos = 57; 
 			
-		}else if(boardSpaces[newPos].p2 == null) { // Space isn't empty, but can have one more piece
+		//GREEN Pieces
+		}else if(piece.getColor() == Color.GREEN) {
+			minIndex = 19; maxIndex = 24; firstTrailPos = 62;
+			
+		//YELLOW Pieces	
+		}else if(piece.getColor() == Color.YELLOW) {
+			minIndex = 32; maxIndex = 37; firstTrailPos = 67; 
+		}
+		
+		i = correctPieceNewPos(i, i+1, minIndex, maxIndex, firstTrailPos);
+		
+		// Check if there is a barrier in the way
+		for(; i<=newPos || (i > newPos && posReset) ; i=correctPieceNewPos(i, i+1, minIndex, maxIndex, firstTrailPos) ) {
+			if(boardSpaces[i].p1 != null && (boardSpaces[i].p1.getIsBarrier() && boardSpaces[i].p1.getColor() != piece.getColor()))
+				return null;
+	
+			// In case the index finishes a lap, it certainly is less or equal to the newPos
+			// In that case, we don't need to use this flag anymore
+			if(i==0) 
+				posReset = false;
+		}
+		
+		if(boardSpaces[newPos].p1 == null) { // Space is empty
+			System.out.println("Space is empty");
+			return fillerPiece;
+		}
+		else if(boardSpaces[newPos].p2 == null) { // Space isn't empty, but can have one more piece
 			
 			spaceColor = checkIfSpecialSpace(newPos);
 			
 			if(boardSpaces[newPos].p1.getColor() == piece.getColor()) { // The pieces are the same color
 				System.out.println("Cor da peça na pos final: " + boardSpaces[newPos].p1.getColor());
 				if(spaceColor != Color.WHITE) { // There can't be two pieces in a special space if they are of the same color
-					System.out.println(spaceColor);
+					System.out.println("Space is special and the colors are the same");
 					return null;
-				}else { // It's a regular space. The pieces become a barrier
+				}
+				else { // It's a regular space. The pieces become a barrier
+					System.out.println("Made a barrier!");
 					boardSpaces[newPos].p1.setIsBarrier(true);
 					piece.setIsBarrier(true);
 					return fillerPiece;
 				}
 				
-			} else { // The pieces are of different colors
+			} 
+			else { // The pieces are of different colors
 				if(spaceColor != Color.WHITE) {	// And the new position is a special space
 					if(boardSpaces[newPos].p1.getColor() == spaceColor || spaceColor == Color.BLACK) { // Two different colored pieces can occupy this space
+						System.out.println("Different colors and is a special space");
 						return fillerPiece;
-					} else { // The piece that was in the space wasn't of the same color as it, so the piece was captured
+					} 
+					else { // The piece that was in the space wasn't of the same color as it, so the piece was captured
+						System.out.println("Piece was captured in another pieces starting!");
 						return boardSpaces[newPos].p1;
 					}
-				} else { // It's a regular space, so the piece was captured
+				} 
+				else { // It's a regular space, so the piece was captured
+					System.out.println("Piece " + boardSpaces[newPos].p1.getId()+ "captured normally");
 					return boardSpaces[newPos].p1;
 				}
 			}
 		}
 		
-		if(piece.getColor() == Color.BLUE) {
-			minIndex = 45; maxIndex = 50; firstTrailPos = 52; finishingPos = 57;
-		
-		//RED Pieces
-		}else if(piece.getColor() == Color.RED) {
-			minIndex = 6; maxIndex = 11; firstTrailPos = 57; finishingPos = 62;
-			
-		//GREEN Pieces
-		}else if(piece.getColor() == Color.GREEN) {
-			minIndex = 19; maxIndex = 24; firstTrailPos = 62; finishingPos = 67;
-			
-		//YELLOW Pieces	
-		}else if(piece.getColor() == Color.YELLOW) {
-			minIndex = 32; maxIndex = 37; firstTrailPos = 67; finishingPos = 72;
-		}
-		
-		// Check if there is a barrier in the way
-		for(; i<=newPos ; i++) {
-			int tempNewPos = correctPieceNewPos(i, tempNewPos, minIndex, maxIndex, firstTrailPos); // <============================== corrigir
-			System.out.println("É uma barreira: " + boardSpaces[i].p1.getIsBarrier());
-			if(boardSpaces[i].p1.getIsBarrier())
-				return null;
-		}
 		return fillerPiece;
 	}
 	
@@ -252,6 +308,12 @@ public class GameRules {
 		if(newPos > maxIndex && index >= minIndex && index <=maxIndex) 
 			newPos += (firstTrailPos - 1 - maxIndex);
 					
+		// The board finished a lap, so the index must reset, starting from 0
+		else if(newPos > 51 && index <= 51 && index >= 46 ) { 
+			newPos -= 52;
+			posReset = true;
+		}
+		
 		// If the piece is in the colored trail
 		else if(newPos >= firstTrailPos) {
 						
@@ -268,9 +330,9 @@ public class GameRules {
 		int minIndex=0, maxIndex=0; 			// The max and min positions a piece can be to get in the colored trail in one move
 		int firstTrailPos=0, finishingPos=0;	// The first position and the finishing position of a colored trail, respectively
 		int firstPos = 0;						// The first position of the board, relative to the color of the piece
-		boolean posReset = false;
-		Piece capturedPiece;
 		
+		canMoveAnotherPiece = false;	// Resets this flag
+		Piece capturedPiece;
 		index = piece.getIndex();
 		newPos = index + numSpaces;
 		
@@ -293,16 +355,8 @@ public class GameRules {
 		}
 		
 		newPos = correctPieceNewPos(index, newPos, minIndex, maxIndex, firstTrailPos);
-		System.out.println("Pre correção " + newPos);
-		// The board finished a lap, so the index must reset, starting from 0
-		if(newPos > 51 && index <= 51 && index >= 46 ) { 
-			newPos -= 52;
-			System.out.println("Pos correção " + newPos);
-			posReset = true;
-		}
-		
+		System.out.println("Logo antes do checkpath");
 		capturedPiece = checkPath(piece, newPos);
-		
 		if(newPos == finishingPos) {	// The piece has reached it's final space
 			piece.setHasFinished(true);
 			
@@ -313,12 +367,11 @@ public class GameRules {
 		}else if(capturedPiece.getColor() != Color.BLACK){ // A piece was captured
 			System.out.println("Capturou a peça!");
 			sendPieceToStart(capturedPiece);
+			canMoveAnotherPiece = true;
 		}
 			
 		piece.setIndex(newPos);
-		System.out.println("Atualizou a posição");
-		updateBoardSpaces(piece, numSpaces);
-		System.out.println("Atualizou o vetor de espaços");
+		updateBoardSpaces(piece, numSpaces);	
 		
 		// Saves this player's last moved piece
 		for(int i = 0 ; i < 4 ; i++) {
@@ -375,6 +428,9 @@ public class GameRules {
 	}
 	public Piece getLastMovedPiece(int playerId) {
 		return lastMovedPiece[playerId];
+	}
+	public boolean getCanMoveAnotherPiece() {
+		return canMoveAnotherPiece;
 	}
 }
 	
