@@ -2,16 +2,15 @@ package main;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import drawing.LudoGameFrame;
 import gameRules.GameRules;
 import listeners.BoardEventListener;
 import listeners.ControlEventListener;
+import models.BoardSpace;
 import models.FileGame;
 import models.Piece;
 import saveRestore.SaveAndRestoreGame;
@@ -21,7 +20,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 	
 	LudoGameFrame ludoGameFrame = new LudoGameFrame();
 	SaveAndRestoreGame saveAndRestoreGame = new SaveAndRestoreGame();
-	ArrayList<Piece> pieces;
+	List<Piece> pieces;
 	GameRules rules = new GameRules();
 	
 	int roll;			// How much the player got on his roll
@@ -46,41 +45,6 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		
 		// creates the pieces
 		pieces = rules.createPieces(pieces);
-		
-		// Makes the button "rollDie" (ControlPanel) get a random number and display it as an image in it's panel
-		// If the player has already rolled the die on his turn, he may not roll again
-		ludoGameFrame.getControlPanel().getRollDieButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {		
-				
-				if(!hasRolled) {
-					
-					roll = rules.rollDie();
-					ludoGameFrame.getControlPanel().setDieSide(roll);
-					hasRolled = true;
-					ludoGameFrame.getControlPanel().setShowDieSide(true);
-					
-					if(roll == 6) {
-						timesRolled6++;
-						System.out.println("Rolled 6!! Times rolled: " + timesRolled6);
-					}
-					
-					// On the first round, each player, on their turn, starts with a piece at the first position
-					if(turnsToFinishFirstRound > 0) {
-						rules.moveFromInitialSquare(playerTurn, pieces);
-						turnsToFinishFirstRound--;
-						ludoGameFrame.setNewPieces(pieces);
-						
-					}
-					else if(roll == 5) {
-						if(rules.moveFromInitialSquare(/*squareColor,*/ playerTurn, pieces)) {
-							drawNextRound(pieces);
-							hasRolled = false;
-						}
-					}
-					
-				}
-			}
-		});
 		
 		addListeners();
 		
@@ -107,31 +71,14 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 				p = rules.checkIfCorrectColor(playerTurn, pieces);
 				if(p!=null) {
 					
-					// In case the player rolled 6 and has already made a move, he may roll again
-					if(timesRolled6 > 0) {
-						hasRolled = false;
-						ludoGameFrame.getControlPanel().setShowDieSide(false);
-						if(timesRolled6 == 3) {
-							rules.sendPieceToStart(rules.getLastMovedPiece(playerId));
-							timesRolled6=0;
-						}
-					} // <<<<<<<<<<<<<<<<<<<<< FIX THE ROLLING 6 TIMES ISSUE
-					
 					if(rules.movePiece(p, roll)) {
-						if(timesRolled6>0) {
-							ludoGameFrame.setNewPieces(this.pieces);
-						}
-						// Used when the player captures a piece
-						if(rules.getCanMoveAnotherPiece()) {
-							roll=6;
-							ludoGameFrame.getControlPanel().setDieSide(roll);
-							ludoGameFrame.setNewPieces(this.pieces);
-						}
-						// if the player hasn't rolled 6, we can pass the turn to the next player
-						else if(timesRolled6 == 0){ 
-							ludoGameFrame.getControlPanel().setShowDieSide(false);
-							drawNextRound(this.pieces);
-
+						drawNextRound(this.pieces);
+						
+						// In case the player rolled 6 and has already made a move, he may roll again
+						if(timesRolled6 > 0) {
+							hasRolled = false;
+							if(timesRolled6 == 2) 
+								rules.sendPieceToStart(rules.getLastMovedPiece(playerId));
 						}
 					}
 				
@@ -172,7 +119,6 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		System.out.println(pieces);
 		ludoGameFrame.setNewPieces(pieces);
 		
-		timesRolled6 = 0;
 		hasRolled = false;
 	}
 
@@ -189,15 +135,20 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		System.out.println(event);
 		System.out.println(file.getName());
 		
-		// TODO
-		//precisamos definir quem é o proximo jogador e as pecas que foram salvas
-		//assim como as posicoes finais
-		
+		//retriving fileGame
 		FileGame fileGame = saveAndRestoreGame.loadGame(file);
-		List<Piece> pieces = fileGame.getPieces();
-		playerTurn = fileGame.getPlayerTurn();
 		
-		//COMO DESENHAR JOGO QUE FOI LOAD ?
+		if(fileGame == null) {
+			//error trying to read file
+			return ;
+		}
+		
+		//setting file game
+		pieces = fileGame.getPieces();
+		playerTurn = fileGame.getPlayerTurn();
+		rules.setBoardSpaces(fileGame.getBoardSpaces());
+		playerId = fileGame.getPlayerId();
+
 		drawNextRound(pieces);
 	}
 
@@ -207,11 +158,10 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		System.out.println(event);
 		System.out.println(file.getName());
 		
-		FileGame fileGame = new FileGame();
-		fileGame.setPieces(Arrays.asList());
-		fileGame.setPlayerTurn(playerTurn);
-		fileGame.setFile(file);
-				
+		BoardSpace[] boardSpaces = rules.getBoardSpaces();
+		//building file game
+		FileGame fileGame = new FileGame(file, pieces, playerTurn, playerId, boardSpaces);
+		//saving it
 		saveAndRestoreGame.saveGame(fileGame);
 	}
 
@@ -219,6 +169,30 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 	public void onRollDiceClicked(ActionEvent event) {
 		System.out.println("Ludo game - onRollDiceClicked");
 		System.out.println(event);
+		// Makes the button "rollDie" (ControlPanel) get a random number and display it as an image in it's panel
+		// If the player has already rolled the die on his turn, he may not roll again
+		if(!hasRolled) {
+			roll = rules.rollDie();
+			ludoGameFrame.getControlPanel().setDieSide(roll);
+			hasRolled = true;					
+			
+			if(roll == 6)
+				timesRolled6++;
+			
+			if(turnsToFinishFirstRound > 0) {
+				rules.moveFromInitialSquare(playerTurn, pieces);
+				turnsToFinishFirstRound--;
+				ludoGameFrame.setNewPieces(pieces);
+				
+			}
+			else if(roll == 5) {
+				if(rules.moveFromInitialSquare(/*squareColor,*/ playerTurn, pieces)) {
+					drawNextRound(pieces);
+					hasRolled = false;
+				}
+			}
+			
+		}
 	}
 
 	

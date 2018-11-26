@@ -1,8 +1,9 @@
 package models;
 
 import java.awt.Color;
+import java.io.Serializable;
 
-public class Piece {
+public class Piece implements Serializable {
 	
 	private int id;					// Identifies the piece in the pieces ArrayList
 	private int index; 				// The piece's position in the board
