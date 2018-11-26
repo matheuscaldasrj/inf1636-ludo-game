@@ -75,11 +75,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 					if(timesRolled6 > 0) {
 						hasRolled = false;
 						ludoGameFrame.getControlPanel().setShowDieSide(false);
-						if(timesRolled6 == 3) {
-							rules.sendPieceToStart(rules.getLastMovedPiece(playerId));
-							timesRolled6=0;
-						}
-					} // <<<<<<<<<<<<<<<<<<<<< FIX THE ROLLING 6 TIMES ISSUE
+					} 
 					
 					if(rules.movePiece(p, roll)) {
 						if(timesRolled6>0) {
@@ -98,7 +94,6 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 
 						}
 					}
-				
 				}
 			}else {
 				System.out.println("Peca nao eh da cor do jogador");
@@ -153,7 +148,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		System.out.println(event);
 		System.out.println(file.getName());
 		
-		//retriving fileGame
+		//retrieving fileGame
 		FileGame fileGame = saveAndRestoreGame.loadGame(file);
 		
 		if(fileGame == null) {
@@ -199,7 +194,15 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 			if(roll == 6) {
 				timesRolled6++;
 				System.out.println("Rolled 6!! Times rolled: " + timesRolled6);
+				if(timesRolled6 == 3) {
+					System.out.println("Oh no! You rolled 6 three times! Your last piece is returned");
+					
+					rules.sendPieceToStart(rules.getLastMovedPiece(playerId));
+					timesRolled6=0;
+					drawNextRound(this.pieces);
+				}
 			}
+			
 			
 			// On the first round, each player, on their turn, starts with a piece at the first position
 			if(turnsToFinishFirstRound > 0) {

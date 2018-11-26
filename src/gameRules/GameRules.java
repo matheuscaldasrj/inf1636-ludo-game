@@ -106,7 +106,7 @@ public class GameRules {
 		// Searches the initial space for a vacant one. When it finds one, moves the desired piece from it's current space to an initial space
 		for(i = minIndex; i<maxIndex ; i++) {
 			if(boardSpaces[i].getP1() == null) {
-				if(boardSpaces[pieceIndex].getP1().getId() == p.getId()) {
+				if(boardSpaces[pieceIndex].getP1() != null && boardSpaces[pieceIndex].getP1().getId() == p.getId()) {
 					if(boardSpaces[pieceIndex].getP2() == null) {
 						boardSpaces[pieceIndex].setP1(null);
 					}else {
