@@ -1,0 +1,12 @@
+diff a/src/gameRules/GameRules.java b/src/gameRules/GameRules.java	(rejected hunks)
+@@ -315,7 +315,9 @@
+ 		}
+ 			
+ 		piece.setIndex(newPos);
+-		updateBoardSpaces(piece, numSpaces);	
++		System.out.println("Atualizou a posi��o");
++		updateBoardSpaces(piece, numSpaces);
++		System.out.println("Atualizou o vetor de espa�os");
+ 		
+ 		// Saves this player's last moved piece
+ 		for(int i = 0 ; i < 4 ; i++) {
