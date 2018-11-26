@@ -46,41 +46,6 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		// creates the pieces
 		pieces = rules.createPieces(pieces);
 		
-		// Makes the button "rollDie" (ControlPanel) get a random number and display it as an image in it's panel
-		// If the player has already rolled the die on his turn, he may not roll again
-		ludoGameFrame.getControlPanel().getRollDieButton().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {		
-				
-				if(!hasRolled) {
-					
-					roll = rules.rollDie();
-					ludoGameFrame.getControlPanel().setDieSide(roll);
-					hasRolled = true;
-					ludoGameFrame.getControlPanel().setShowDieSide(true);
-					
-					if(roll == 6) {
-						timesRolled6++;
-						System.out.println("Rolled 6!! Times rolled: " + timesRolled6);
-					}
-					
-					// On the first round, each player, on their turn, starts with a piece at the first position
-					if(turnsToFinishFirstRound > 0) {
-						rules.moveFromInitialSquare(playerTurn, pieces);
-						turnsToFinishFirstRound--;
-						ludoGameFrame.setNewPieces(pieces);
-						
-					}
-					else if(roll == 5) {
-						if(rules.moveFromInitialSquare(/*squareColor,*/ playerTurn, pieces)) {
-							drawNextRound(pieces);
-							hasRolled = false;
-						}
-					}
-					
-				}
-			}
-		});
-		
 		addListeners();
 		
 		ludoGameFrame.setNewPieces(pieces);
@@ -225,13 +190,18 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		// Makes the button "rollDie" (ControlPanel) get a random number and display it as an image in it's panel
 		// If the player has already rolled the die on his turn, he may not roll again
 		if(!hasRolled) {
+			
 			roll = rules.rollDie();
 			ludoGameFrame.getControlPanel().setDieSide(roll);
-			hasRolled = true;					
+			hasRolled = true;
+			ludoGameFrame.getControlPanel().setShowDieSide(true);
 			
-			if(roll == 6)
+			if(roll == 6) {
 				timesRolled6++;
+				System.out.println("Rolled 6!! Times rolled: " + timesRolled6);
+			}
 			
+			// On the first round, each player, on their turn, starts with a piece at the first position
 			if(turnsToFinishFirstRound > 0) {
 				rules.moveFromInitialSquare(playerTurn, pieces);
 				turnsToFinishFirstRound--;
@@ -243,10 +213,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 					drawNextRound(pieces);
 					hasRolled = false;
 				}
-			}
-			
+			}		
 		}
 	}
-
-	
 }

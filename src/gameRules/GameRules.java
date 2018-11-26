@@ -41,18 +41,18 @@ public class GameRules {
 		pieces.add(new Piece(1, 2, Color.BLUE, false));
 		pieces.add(new Piece(2, 3, Color.BLUE, false));
 		pieces.add(new Piece(3, 73, Color.BLUE, false));
-		boardSpaces[72].p1 = pieces.get(0);
-		boardSpaces[2].p1 = pieces.get(1);
-		boardSpaces[3].p1 = pieces.get(2);
-		boardSpaces[73].p1 = pieces.get(3);
+		boardSpaces[72].setP1(pieces.get(0));
+		boardSpaces[2].setP1(pieces.get(1));
+		boardSpaces[3].setP1(pieces.get(2));
+		boardSpaces[73].setP1(pieces.get(3));
 		id=4;
 		i=76;
+		
 		/*// Create BLUE
-		// Create BLUE
 		for(; i<76 ; i++, id++) {
 			pieces.add(new Piece(id, i,Color.BLUE,false));
 			boardSpaces[i].setP1(pieces.get(id));
-		}
+		}*/
 		
 		// Create RED
 		for(; i<80 ; i++, id++) {
@@ -66,7 +66,7 @@ public class GameRules {
 			boardSpaces[i].setP1(pieces.get(id));
 		}
 		
-		// Create YELLOW
+		/*// Create YELLOW
 		for(; i<88 ; i++, id++) {
 			pieces.add(new Piece(id,i,Color.YELLOW, false));
 			boardSpaces[i].p1 = pieces.get(id);
@@ -77,12 +77,10 @@ public class GameRules {
 		pieces.add(new Piece(13, 85,Color.YELLOW, false));
 		pieces.add(new Piece(14, 86,Color.YELLOW, false));
 		pieces.add(new Piece(15, 51,Color.YELLOW, false));
-		boardSpaces[84].p1 = pieces.get(12);
-		boardSpaces[85].p1 = pieces.get(13);
-		boardSpaces[86].p1 = pieces.get(14);
-		boardSpaces[51].p1 = pieces.get(15);
-			boardSpaces[i].setP1(pieces.get(id));
-		}
+		boardSpaces[84].setP1(pieces.get(12));
+		boardSpaces[85].setP1(pieces.get(13));
+		boardSpaces[86].setP1(pieces.get(14));
+		boardSpaces[51].setP1(pieces.get(15));
 		 
 		return pieces;
 	}
@@ -93,7 +91,7 @@ public class GameRules {
 		int pieceIndex = p.getIndex();
 		int i, iMax=0, minIndex=0, maxIndex=0;
 		
-		System.out.println("Id of the piece in the "+ pieceIndex + "position: "+ boardSpaces[pieceIndex].p1.getId());
+		System.out.println("Id of the piece in the "+ pieceIndex + "position: "+ boardSpaces[pieceIndex].getP1().getId());
 		
 		if(pieceColor == Color.BLUE) {
 			i=0; iMax = 4; minIndex = 72; maxIndex = 76;  
@@ -240,43 +238,14 @@ public class GameRules {
 		
 		// Check if there is a barrier in the way
 		for(; i<=newPos || (i > newPos && posReset) ; i=correctPieceNewPos(i, i+1, minIndex, maxIndex, firstTrailPos) ) {
-			if(boardSpaces[i].p1 != null && (boardSpaces[i].p1.getIsBarrier() && boardSpaces[i].p1.getColor() != piece.getColor()))
+			if(boardSpaces[i].getP1() != null && (boardSpaces[i].getP1().getIsBarrier() && boardSpaces[i].getP1().getColor() != piece.getColor()))
 				return null;
 	
 			// In case the index finishes a lap, it certainly is less or equal to the newPos
 			// In that case, we don't need to use this flag anymore
 			if(i==0) 
 				posReset = false;
-		}
-		
-		if(piece.getColor() == Color.BLUE) {
-			minIndex = 45; maxIndex = 50; firstTrailPos = 52;
-		
-		//RED Pieces
-		}else if(piece.getColor() == Color.RED) {
-			minIndex = 6; maxIndex = 11; firstTrailPos = 57; 
-			
-		//GREEN Pieces
-		}else if(piece.getColor() == Color.GREEN) {
-			minIndex = 19; maxIndex = 24; firstTrailPos = 62;
-			
-		//YELLOW Pieces	
-		}else if(piece.getColor() == Color.YELLOW) {
-			minIndex = 32; maxIndex = 37; firstTrailPos = 67; 
-		}
-		
-		i = correctPieceNewPos(i, i+1, minIndex, maxIndex, firstTrailPos);
-		
-		// Check if there is a barrier in the way
-		for(; i<=newPos || (i > newPos && posReset) ; i=correctPieceNewPos(i, i+1, minIndex, maxIndex, firstTrailPos) ) {
-			if(boardSpaces[i].p1 != null && (boardSpaces[i].p1.getIsBarrier() && boardSpaces[i].p1.getColor() != piece.getColor()))
-				return null;
-	
-			// In case the index finishes a lap, it certainly is less or equal to the newPos
-			// In that case, we don't need to use this flag anymore
-			if(i==0) 
-				posReset = false;
-		}
+		}		
 		
 		if(boardSpaces[newPos].getP1() == null) { // Space is empty
 			return fillerPiece;
@@ -307,31 +276,6 @@ public class GameRules {
 					return boardSpaces[newPos].getP1();
 				}
 			}
-		}
-		
-		if(piece.getColor() == Color.BLUE) {
-			minIndex = 45; maxIndex = 50; firstTrailPos = 52; finishingPos = 57;
-		
-		//RED Pieces
-		}else if(piece.getColor() == Color.RED) {
-			minIndex = 6; maxIndex = 11; firstTrailPos = 57; finishingPos = 62;
-			
-		//GREEN Pieces
-		}else if(piece.getColor() == Color.GREEN) {
-			minIndex = 19; maxIndex = 24; firstTrailPos = 62; finishingPos = 67;
-			
-		//YELLOW Pieces	
-		}else if(piece.getColor() == Color.YELLOW) {
-			minIndex = 32; maxIndex = 37; firstTrailPos = 67; finishingPos = 72;
-		}
-		
-		// Check if there is a barrier in the way
-		for(; i<=newPos ; i++) {
-			int tempNewPos = 0; // <============================== corrigir
-//			int tempNewPos = correctPieceNewPos(i, tempNewPos, minIndex, maxIndex, firstTrailPos); 
-			System.out.println("É uma barreira: " + boardSpaces[i].getP1().getIsBarrier());
-			if(boardSpaces[i].getP1().getIsBarrier())
-				return null;
 		}
 		return fillerPiece;
 	}
@@ -414,10 +358,8 @@ public class GameRules {
 		}
 			
 		piece.setIndex(newPos);
-		System.out.println("Atualizou a posição");
 		updateBoardSpaces(piece, numSpaces);
-		System.out.println("Atualizou o vetor de espaços");
-		
+
 		// Saves this player's last moved piece
 		for(int i = 0 ; i < 4 ; i++) {
 			if(piece.getColor() == lastMovedPiece[i].getColor()) {
@@ -477,6 +419,7 @@ public class GameRules {
 	}
 	public boolean getCanMoveAnotherPiece() {
 		return canMoveAnotherPiece;
+	}
 	
 	public void setLastMovedPiece(int playerId,Piece piece) {
 		lastMovedPiece[playerId] = piece;;
