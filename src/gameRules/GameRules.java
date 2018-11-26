@@ -255,7 +255,7 @@ public class GameRules {
 			spaceColor = checkIfSpecialSpace(newPos);
 			
 			if(boardSpaces[newPos].getP1().getColor() == piece.getColor()) { // The pieces are the same color
-				System.out.println("Cor da peça na pos final: " + boardSpaces[newPos].getP1().getColor());
+				System.out.println("Cor da peï¿½a na pos final: " + boardSpaces[newPos].getP1().getColor());
 				if(spaceColor != Color.WHITE) { // There can't be two pieces in a special space if they are of the same color
 					System.out.println(spaceColor);
 					return null;
@@ -334,11 +334,11 @@ public class GameRules {
 		}
 		
 		newPos = correctPieceNewPos(index, newPos, minIndex, maxIndex, firstTrailPos);
-		System.out.println("Pre correção " + newPos);
+		System.out.println("Pre correï¿½ï¿½o " + newPos);
 		// The board finished a lap, so the index must reset, starting from 0
 		if(newPos > 51 && index <= 51 && index >= 46 ) { 
 			newPos -= 52;
-			System.out.println("Pos correção " + newPos);
+			System.out.println("Pos correï¿½ï¿½o " + newPos);
 			posReset = true;
 		}
 		
@@ -348,11 +348,11 @@ public class GameRules {
 			piece.setHasFinished(true);
 			
 		} else if(capturedPiece == null) { // The piece can't move
-			System.out.println("A peça não pode se mover");
+			System.out.println("A peï¿½a nï¿½o pode se mover");
 			return false;			
 		
 		}else if(capturedPiece.getColor() != Color.BLACK){ // A piece was captured
-			System.out.println("Capturou a peça!");
+			System.out.println("Capturou a peï¿½a!");
 			sendPieceToStart(capturedPiece);
 			canMoveAnotherPiece = true;
 		}
@@ -392,7 +392,7 @@ public class GameRules {
 					
 					if(piece.getIndex() >= minIndex && piece.getIndex() < maxIndex) {
 						if(boardSpaces[startingPos].getP1() != null) {
-							System.out.println("Posição não é null");
+							System.out.println("Posiï¿½ï¿½o nï¿½o ï¿½ null");
 							if(boardSpaces[startingPos].getP1().getColor() == piece.getColor()) {
 								return false;
 								
@@ -417,6 +417,15 @@ public class GameRules {
 	public Piece getLastMovedPiece(int playerId) {
 		return lastMovedPiece[playerId];
 	}
+	
+	public Piece[] getLastMovedPieceArray() {
+		return lastMovedPiece;
+	}
+	
+	public void setLastMovedPieceArray(Piece[] lastMovedPieceArray) {
+		this.lastMovedPiece = lastMovedPieceArray;
+	}
+	
 	public boolean getCanMoveAnotherPiece() {
 		return canMoveAnotherPiece;
 	}

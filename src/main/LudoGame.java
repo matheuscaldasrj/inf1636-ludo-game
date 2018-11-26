@@ -160,8 +160,8 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		pieces = fileGame.getPieces();
 		playerTurn = fileGame.getPlayerTurn();
 		rules.setBoardSpaces(fileGame.getBoardSpaces());
-		playerId = fileGame.getPlayerId();
-
+		rules.setLastMovedPieceArray(fileGame.getLastMovedPieceArray());
+		
 		drawNextRound(pieces);
 	}
 
@@ -173,7 +173,8 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		
 		BoardSpace[] boardSpaces = rules.getBoardSpaces();
 		//building file game
-		FileGame fileGame = new FileGame(file, pieces, playerTurn, playerId, boardSpaces);
+		Piece[] lastMovedPiece = rules.getLastMovedPieceArray();
+		FileGame fileGame = new FileGame(file, pieces, playerTurn, lastMovedPiece, boardSpaces);
 		//saving it
 		saveAndRestoreGame.saveGame(fileGame);
 	}
