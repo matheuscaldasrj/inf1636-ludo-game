@@ -180,14 +180,25 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 	}
 
 	@Override
-	public void onRollDiceClicked(ActionEvent event) {
+	public void onRollDiceClicked(ActionEvent event, Integer fakeValue) {
 		System.out.println("Ludo game - onRollDiceClicked");
+		System.out.println("FakeValue: " + fakeValue);
 		System.out.println(event);
+		
+		
+		
+		
+		
 		// Makes the button "rollDie" (ControlPanel) get a random number and display it as an image in it's panel
 		// If the player has already rolled the die on his turn, he may not roll again
 		if(!hasRolled) {
 			
-			roll = rules.rollDie();
+			if(fakeValue == null) {
+				roll = rules.rollDie();				
+			} else {
+				//its a fake roll, use defined value
+				roll = fakeValue;
+			}
 			ludoGameFrame.getControlPanel().setDieSide(roll);
 			hasRolled = true;
 			ludoGameFrame.getControlPanel().setShowDieSide(true);
