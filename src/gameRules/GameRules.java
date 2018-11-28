@@ -175,7 +175,8 @@ public class GameRules {
 	public int rollDie() {
 		Random rand = new Random();
 		
-		return 6; //rand.nextInt(6)+1;
+		//	return 6; 
+		return rand.nextInt(6)+1;
 	}
 	
 	// Checks if the piece clicked is of the same color as this turn player's color
