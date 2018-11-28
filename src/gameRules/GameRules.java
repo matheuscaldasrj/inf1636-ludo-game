@@ -4,6 +4,8 @@ package gameRules;
 import java.util.List;
 import java.util.Random;
 
+import javax.sound.midi.Synthesizer;
+
 import main.LudoGame;
 
 import java.awt.Color;
@@ -38,11 +40,11 @@ public class GameRules {
 		int i=72, id=0;
 		
 		pieces.add(new Piece(0, 72, Color.BLUE, false));
-		pieces.add(new Piece(1, 2, Color.BLUE, false));
+		pieces.add(new Piece(1, 1, Color.BLUE, false));
 		pieces.add(new Piece(2, 3, Color.BLUE, false));
 		pieces.add(new Piece(3, 73, Color.BLUE, false));
 		boardSpaces[72].setP1(pieces.get(0));
-		boardSpaces[2].setP1(pieces.get(1));
+		boardSpaces[1].setP1(pieces.get(1));
 		boardSpaces[3].setP1(pieces.get(2));
 		boardSpaces[73].setP1(pieces.get(3));
 		id=4;
@@ -91,20 +93,20 @@ public class GameRules {
 		int pieceIndex = p.getIndex();
 		int i, iMax=0, minIndex=0, maxIndex=0;
 		
-		System.out.println("Id of the piece in the "+ pieceIndex + "position: "+ boardSpaces[pieceIndex].getP1().getId());
-		
 		if(pieceColor == Color.BLUE) {
 			i=0; iMax = 4; minIndex = 72; maxIndex = 76;  
 		} else if(pieceColor == Color.RED) {
-			i=4; iMax = 8; minIndex = 76; maxIndex = 80; 
+			i=4; iMax = 8; minIndex = 76; maxIndex = 80;
 		} else if(pieceColor == Color.GREEN){
 			i=8; iMax=12; minIndex = 80; maxIndex = 84;
 		} else if(pieceColor == Color.YELLOW) {
 			i=12; iMax=16; minIndex = 84; maxIndex = 88;
-		}
+		}			
 		
 		// Searches the initial space for a vacant one. When it finds one, moves the desired piece from it's current space to an initial space
 		for(i = minIndex; i<maxIndex ; i++) {
+			if(boardSpaces[i].getP1() != null)
+			
 			if(boardSpaces[i].getP1() == null) {
 				if(boardSpaces[pieceIndex].getP1() != null && boardSpaces[pieceIndex].getP1().getId() == p.getId()) {
 					if(boardSpaces[pieceIndex].getP2() == null) {
@@ -118,7 +120,8 @@ public class GameRules {
 				
 				p.setIndex(i);
 				boardSpaces[i].setP1(p);
-			}
+				break;
+			}	
 		}
 	}
 	
@@ -248,31 +251,37 @@ public class GameRules {
 		}		
 		
 		if(boardSpaces[newPos].getP1() == null) { // Space is empty
+			System.out.println("Space is empty");
 			return fillerPiece;
-			
-		}else if(boardSpaces[newPos].getP2() == null) { // Space isn't empty, but can have one more piece
+		}
+		else if(boardSpaces[newPos].getP2() == null) { // Space isn't empty, but can have one more piece
 			
 			spaceColor = checkIfSpecialSpace(newPos);
 			
 			if(boardSpaces[newPos].getP1().getColor() == piece.getColor()) { // The pieces are the same color
-				System.out.println("Cor da peça na pos final: " + boardSpaces[newPos].getP1().getColor());
 				if(spaceColor != Color.WHITE) { // There can't be two pieces in a special space if they are of the same color
-					System.out.println(spaceColor);
+					System.out.println("Duas peças de mesma cor");
 					return null;
-				}else { // It's a regular space. The pieces become a barrier
+				}
+				else { // It's a regular space. The pieces become a barrier
 					boardSpaces[newPos].getP1().setIsBarrier(true);
 					piece.setIsBarrier(true);
+					System.out.println("Became a barrier!");
 					return fillerPiece;
-				}
-				
-			} else { // The pieces are of different colors
+				}				
+			} 
+			else { // The pieces are of different colors
 				if(spaceColor != Color.WHITE) {	// And the new position is a special space
 					if(boardSpaces[newPos].getP1().getColor() == spaceColor || spaceColor == Color.BLACK) { // Two different colored pieces can occupy this space
+						System.out.println("");
 						return fillerPiece;
-					} else { // The piece that was in the space wasn't of the same color as it, so the piece was captured
+					} 
+					else { // The piece that was in the space wasn't of the same color as it, so the piece was captured
 						return boardSpaces[newPos].getP1();
 					}
-				} else { // It's a regular space, so the piece was captured
+				} 
+				else { // It's a regular space, so the piece was captured
+					System.out.println("Piece captured!");
 					return boardSpaces[newPos].getP1();
 				}
 			}
@@ -334,11 +343,9 @@ public class GameRules {
 		}
 		
 		newPos = correctPieceNewPos(index, newPos, minIndex, maxIndex, firstTrailPos);
-		System.out.println("Pre correção " + newPos);
 		// The board finished a lap, so the index must reset, starting from 0
 		if(newPos > 51 && index <= 51 && index >= 46 ) { 
 			newPos -= 52;
-			System.out.println("Pos correção " + newPos);
 			posReset = true;
 		}
 		
@@ -361,11 +368,19 @@ public class GameRules {
 		updateBoardSpaces(piece, numSpaces);
 
 		// Saves this player's last moved piece
-		for(int i = 0 ; i < 4 ; i++) {
-			if(piece.getColor() == lastMovedPiece[i].getColor()) {
-				lastMovedPiece[i] = piece;
-			}
-		}
+		int playerId;
+		if(piece.getColor() == Color.BLUE)
+			playerId = 0;
+		else if(piece.getColor() == Color.RED)
+			playerId = 1;
+		else if(piece.getColor() == Color.GREEN)
+			playerId = 2;
+		else 
+			playerId = 3;
+		
+		lastMovedPiece[playerId] = piece;
+		
+		System.out.println("Last moved piece: "+lastMovedPiece[playerId].getId());
 		
 		return true;
 	}
@@ -374,43 +389,45 @@ public class GameRules {
 		int i, iMax;			// The min and max id of the pieces of each team
 		int minIndex, maxIndex; // The indexes the pieces of each color occupy on the initial square
 		int startingPos;		// The index of the initial space for each color
+			
+		if(playerColor == Color.BLUE) {
+			i=0; iMax = 4; minIndex = 72; maxIndex = 76; startingPos = 0; 
+		} else if(playerColor == Color.RED) {
+			i=4; iMax = 8; minIndex = 76; maxIndex = 80; startingPos = 13;
+		} else if(playerColor == Color.GREEN){
+			i=8; iMax=12; minIndex = 80; maxIndex = 84; startingPos = 26;
+		} else {
+			i=12; iMax=16; minIndex = 84; maxIndex = 88; startingPos = 39;
+		}
 		
-	//	if(squareColor == playerColor) {
-			//if(roll == 5) {	
-				if(playerColor == Color.BLUE) {
-					i=0; iMax = 4; minIndex = 72; maxIndex = 76; startingPos = 0; 
-				} else if(playerColor == Color.RED) {
-					i=4; iMax = 8; minIndex = 76; maxIndex = 80; startingPos = 13;
-				} else if(playerColor == Color.GREEN){
-					i=8; iMax=12; minIndex = 80; maxIndex = 84; startingPos = 26;
-				} else {
-					i=12; iMax=16; minIndex = 84; maxIndex = 88; startingPos = 39;
-				}
-				
-				for(; i<iMax ; i++) {
-					Piece piece = p.get(i);
-					
-					if(piece.getIndex() >= minIndex && piece.getIndex() < maxIndex) {
-						if(boardSpaces[startingPos].getP1() != null) {
-							System.out.println("Posição não é null");
-							if(boardSpaces[startingPos].getP1().getColor() == piece.getColor()) {
-								return false;
-								
-							}else {
-								piece.setIndex(startingPos);
-								boardSpaces[startingPos].setP2(piece);
-								return true;
-							}
-						}else {
-							piece.setIndex(startingPos);
-							boardSpaces[startingPos].setP1(piece);
-							return true;
-						}
+		for(; i<iMax ; i++) {
+			Piece piece = p.get(i);
+			
+			if(piece.getIndex() >= minIndex && piece.getIndex() < maxIndex) {
+				if(boardSpaces[startingPos].getP1() != null) {
+					if(boardSpaces[startingPos].getP1().getColor() == piece.getColor()) { // Can't move out
+						return false;
 						
+					}else { // If there is a piece of different color in the first space, captures it
+						boardSpaces[piece.getIndex()].setP1(null);
+						
+						piece.setIndex(startingPos);
+						boardSpaces[startingPos].setP1(piece);
+						
+						sendPieceToStart(boardSpaces[startingPos].getP1());
+						canMoveAnotherPiece = true;
+						return true;
 					}
+				}else { // The first space is empty
+					boardSpaces[piece.getIndex()].setP1(null);
+					
+					piece.setIndex(startingPos);
+					
+					boardSpaces[startingPos].setP1(piece);
+					return true;
 				}
-			//}
-		//}
+			}
+		}
 		return false;
 	}
 	

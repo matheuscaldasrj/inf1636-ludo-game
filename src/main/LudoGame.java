@@ -66,7 +66,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		if(isPiece) {
 			if(hasRolled) {
 				ArrayList<Piece> pieces = (ArrayList<Piece>) returnClick;
-				System.out.println(pieces);
+				//System.out.println(pieces);
 				
 				p = rules.checkIfCorrectColor(playerTurn, pieces);
 				if(p!=null) {
@@ -79,6 +79,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 					
 					if(rules.movePiece(p, roll)) {
 						if(timesRolled6>0) {
+							ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(true);
 							ludoGameFrame.setNewPieces(this.pieces);
 						}
 						// Used when the player captures a piece
@@ -99,17 +100,6 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 				System.out.println("Peca nao eh da cor do jogador");
 			}
 			
-		// Acho que, segundo as regras no documento, você não tem escolha ao tirar 5: Se puder mover o peão, tem que tirá-lo da casa inicial	
-			
-		/*// If the player clicked on a initial square ===========================================
-		} else if(returnClick != null) {
-			//is the enumerator
-			InitialSquare initialSquare = (InitialSquare) returnClick;
-			System.out.println(initialSquare);
-			
-			if(rules.moveFromInitialSquare(initialSquare.getColor(), roll, playerTurn, pieces) == true);
-		*/
-			
 		// If the player clicked on nothing ====================================================
 		} else {
 			//returnClick is null, its a unknown event
@@ -127,12 +117,12 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		
 		ludoGameFrame.getControlPanel().setTurnColor(playerTurn);
 		
-		System.out.println("Vamos desenhar as pecas");
 		System.out.println(pieces);
 		ludoGameFrame.setNewPieces(pieces);
 		
 		timesRolled6 = 0;
 		hasRolled = false;
+		ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(true);
 	}
 
 	@Override
@@ -186,6 +176,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		// If the player has already rolled the die on his turn, he may not roll again
 		if(!hasRolled) {
 			
+			ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(false);
 			roll = rules.rollDie();
 			ludoGameFrame.getControlPanel().setDieSide(roll);
 			hasRolled = true;
@@ -193,24 +184,25 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 			
 			if(roll == 6) {
 				timesRolled6++;
-				System.out.println("Rolled 6!! Times rolled: " + timesRolled6);
 				if(timesRolled6 == 3) {
-					System.out.println("Oh no! You rolled 6 three times! Your last piece is returned");
 					
 					rules.sendPieceToStart(rules.getLastMovedPiece(playerId));
 					timesRolled6=0;
+					ludoGameFrame.getControlPanel().setShowDieSide(false);
 					drawNextRound(this.pieces);
+				}
+				else {
+					// On the first round, each player, on their turn, starts with a piece at the first position
+					if(turnsToFinishFirstRound > 0 && timesRolled6 <= 1) {
+						rules.moveFromInitialSquare(playerTurn, pieces);
+						turnsToFinishFirstRound--;
+						ludoGameFrame.setNewPieces(pieces);
+						System.out.println("Turns to finish the first round: "+ turnsToFinishFirstRound);
+					
+					}	
 				}
 			}
 			
-			
-			// On the first round, each player, on their turn, starts with a piece at the first position
-			if(turnsToFinishFirstRound > 0) {
-				rules.moveFromInitialSquare(playerTurn, pieces);
-				turnsToFinishFirstRound--;
-				ludoGameFrame.setNewPieces(pieces);
-				
-			}
 			else if(roll == 5) {
 				if(rules.moveFromInitialSquare(/*squareColor,*/ playerTurn, pieces)) {
 					drawNextRound(pieces);
