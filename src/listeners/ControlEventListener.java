@@ -7,5 +7,5 @@ public interface ControlEventListener  {
 	 public void onNewGameButtonClicked(ActionEvent event);
 	 public void onLoadGameButtonClicked(ActionEvent event, File file);
 	 public void onSaveGameClicked(ActionEvent event, File file);
-	 public void onRollDiceClicked(ActionEvent event);
+	 public void onRollDiceClicked(ActionEvent event, Integer fakeValue);
 }

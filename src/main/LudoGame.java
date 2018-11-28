@@ -150,8 +150,8 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		pieces = fileGame.getPieces();
 		playerTurn = fileGame.getPlayerTurn();
 		rules.setBoardSpaces(fileGame.getBoardSpaces());
-		playerId = fileGame.getPlayerId();
-
+		rules.setLastMovedPieceArray(fileGame.getLastMovedPieceArray());
+		
 		drawNextRound(pieces);
 	}
 
@@ -163,21 +163,37 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		
 		BoardSpace[] boardSpaces = rules.getBoardSpaces();
 		//building file game
-		FileGame fileGame = new FileGame(file, pieces, playerTurn, playerId, boardSpaces);
+		Piece[] lastMovedPiece = rules.getLastMovedPieceArray();
+		FileGame fileGame = new FileGame(file, pieces, playerTurn, lastMovedPiece, boardSpaces);
 		//saving it
 		saveAndRestoreGame.saveGame(fileGame);
 	}
 
 	@Override
-	public void onRollDiceClicked(ActionEvent event) {
+	public void onRollDiceClicked(ActionEvent event, Integer fakeValue) {
 		System.out.println("Ludo game - onRollDiceClicked");
+		System.out.println("FakeValue: " + fakeValue);
 		System.out.println(event);
+		
+		
+		
+		
+		
 		// Makes the button "rollDie" (ControlPanel) get a random number and display it as an image in it's panel
 		// If the player has already rolled the die on his turn, he may not roll again
 		if(!hasRolled) {
 			
+<<<<<<< HEAD
 			ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(false);
 			roll = rules.rollDie();
+=======
+			if(fakeValue == null) {
+				roll = rules.rollDie();				
+			} else {
+				//its a fake roll, use defined value
+				roll = fakeValue;
+			}
+>>>>>>> abfe433c769d2f4a0c3dd084dd474b090c3a18e1
 			ludoGameFrame.getControlPanel().setDieSide(roll);
 			hasRolled = true;
 			ludoGameFrame.getControlPanel().setShowDieSide(true);

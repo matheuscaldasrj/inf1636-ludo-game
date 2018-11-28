@@ -34,6 +34,15 @@ public class ControlPanel extends JPanel {
 	
 	JButton rollDieButton = new JButton ("Lançar dado");
 	
+	
+	//fake turns
+	JButton rollDieButton1 = new JButton ("1");
+	JButton rollDieButton2 = new JButton ("2");
+	JButton rollDieButton3 = new JButton ("3");
+	JButton rollDieButton4 = new JButton ("4");
+	JButton rollDieButton5 = new JButton ("5");
+	JButton rollDieButton6 = new JButton ("6");
+	
 	final JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 	
 	JButton newGameButton = new JButton ("Novo Jogo");
@@ -55,6 +64,7 @@ public class ControlPanel extends JPanel {
 
 		addButtonsAndLabels();
 		prepareActionButtons();
+		prepareFakeActionButtons();
 		
 		loadDieImages();
 	}
@@ -85,6 +95,31 @@ public class ControlPanel extends JPanel {
 		
 		rollDieButton.setBounds(122, 550, 150, 50);
 		this.add(rollDieButton);
+		
+		this.addFakeButtons();
+		
+	}
+	
+	private void addFakeButtons() {
+		rollDieButton1.setBounds(78, 620, 50, 50);
+		this.add(rollDieButton1);
+		
+		rollDieButton2.setBounds(180, 620, 50, 50);
+		this.add(rollDieButton2);
+		
+		rollDieButton3.setBounds(278, 620, 50, 50);
+		this.add(rollDieButton3);
+		
+		
+		rollDieButton4.setBounds(78, 700, 50, 50);
+		this.add(rollDieButton4);
+		
+		rollDieButton5.setBounds(180, 700, 50, 50);
+		this.add(rollDieButton5);
+		
+		rollDieButton6.setBounds(278, 700, 50, 50);
+		this.add(rollDieButton6);
+		
 		
 	}
 	
@@ -119,7 +154,7 @@ public class ControlPanel extends JPanel {
 		rollDieButton.addActionListener(new ActionListener(){
 			  public void actionPerformed(ActionEvent e)
 				  {
-				    notifyRollDiceButtonListeners(e);
+				    notifyRollDiceButtonListeners(e, null);
 				  }
 			});
 		
@@ -139,6 +174,29 @@ public class ControlPanel extends JPanel {
 			   }
 			});
 	}
+	
+	
+	private void prepareFakeActionButtons() {
+		
+		List<JButton> fakeButtons = new ArrayList<JButton>();
+		
+		fakeButtons.add(rollDieButton1);fakeButtons.add(rollDieButton2);
+		fakeButtons.add(rollDieButton3);fakeButtons.add(rollDieButton4);
+		fakeButtons.add(rollDieButton5);fakeButtons.add(rollDieButton6);
+		
+		for(JButton fakeButton : fakeButtons) {
+			fakeButton.addActionListener(new ActionListener(){
+				  public void actionPerformed(ActionEvent e)
+					  {
+					  	int rollValue = Integer.parseInt(fakeButton.getText());
+					  	System.out.println(rollValue);
+					    notifyRollDiceButtonListeners(e,rollValue);
+					  }
+				});
+		}
+		
+	}
+	
 	
 	private File showOpenFileDialog()  {
 		int returnValue = fileChooser.showOpenDialog(null);
@@ -217,9 +275,9 @@ public class ControlPanel extends JPanel {
 		}
 	}
 	
-	private void notifyRollDiceButtonListeners(ActionEvent objectClicked) {
+	private void notifyRollDiceButtonListeners(ActionEvent objectClicked, Integer fakeValue) {
 		for (ControlEventListener listener : controlEventListeners) {
-			listener.onRollDiceClicked(objectClicked);
+			listener.onRollDiceClicked(objectClicked, fakeValue);
 		}
 	}
 

@@ -178,7 +178,8 @@ public class GameRules {
 	public int rollDie() {
 		Random rand = new Random();
 		
-		return 6; //rand.nextInt(6)+1;
+		//	return 6; 
+		return rand.nextInt(6)+1;
 	}
 	
 	// Checks if the piece clicked is of the same color as this turn player's color
@@ -259,6 +260,10 @@ public class GameRules {
 			spaceColor = checkIfSpecialSpace(newPos);
 			
 			if(boardSpaces[newPos].getP1().getColor() == piece.getColor()) { // The pieces are the same color
+<<<<<<< HEAD
+=======
+				System.out.println("Cor da peï¿½a na pos final: " + boardSpaces[newPos].getP1().getColor());
+>>>>>>> abfe433c769d2f4a0c3dd084dd474b090c3a18e1
 				if(spaceColor != Color.WHITE) { // There can't be two pieces in a special space if they are of the same color
 					System.out.println("Duas peças de mesma cor");
 					return null;
@@ -355,11 +360,11 @@ public class GameRules {
 			piece.setHasFinished(true);
 			
 		} else if(capturedPiece == null) { // The piece can't move
-			System.out.println("A peça não pode se mover");
+			System.out.println("A peï¿½a nï¿½o pode se mover");
 			return false;			
 		
 		}else if(capturedPiece.getColor() != Color.BLACK){ // A piece was captured
-			System.out.println("Capturou a peça!");
+			System.out.println("Capturou a peï¿½a!");
 			sendPieceToStart(capturedPiece);
 			canMoveAnotherPiece = true;
 		}
@@ -434,6 +439,15 @@ public class GameRules {
 	public Piece getLastMovedPiece(int playerId) {
 		return lastMovedPiece[playerId];
 	}
+	
+	public Piece[] getLastMovedPieceArray() {
+		return lastMovedPiece;
+	}
+	
+	public void setLastMovedPieceArray(Piece[] lastMovedPieceArray) {
+		this.lastMovedPiece = lastMovedPieceArray;
+	}
+	
 	public boolean getCanMoveAnotherPiece() {
 		return canMoveAnotherPiece;
 	}
