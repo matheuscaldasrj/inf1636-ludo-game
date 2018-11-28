@@ -39,22 +39,11 @@ public class GameRules {
 		
 		int i=72, id=0;
 		
-		pieces.add(new Piece(0, 72, Color.BLUE, false));
-		pieces.add(new Piece(1, 1, Color.BLUE, false));
-		pieces.add(new Piece(2, 3, Color.BLUE, false));
-		pieces.add(new Piece(3, 73, Color.BLUE, false));
-		boardSpaces[72].setP1(pieces.get(0));
-		boardSpaces[1].setP1(pieces.get(1));
-		boardSpaces[3].setP1(pieces.get(2));
-		boardSpaces[73].setP1(pieces.get(3));
-		id=4;
-		i=76;
-		
-		/*// Create BLUE
+		// Create BLUE
 		for(; i<76 ; i++, id++) {
 			pieces.add(new Piece(id, i,Color.BLUE,false));
 			boardSpaces[i].setP1(pieces.get(id));
-		}*/
+		}
 		
 		// Create RED
 		for(; i<80 ; i++, id++) {
@@ -68,21 +57,11 @@ public class GameRules {
 			boardSpaces[i].setP1(pieces.get(id));
 		}
 		
-		/*// Create YELLOW
+		// Create YELLOW
 		for(; i<88 ; i++, id++) {
 			pieces.add(new Piece(id,i,Color.YELLOW, false));
-			boardSpaces[i].p1 = pieces.get(id);
-		}*/
-		
-		
-		pieces.add(new Piece(12, 84,Color.YELLOW, false));
-		pieces.add(new Piece(13, 85,Color.YELLOW, false));
-		pieces.add(new Piece(14, 86,Color.YELLOW, false));
-		pieces.add(new Piece(15, 51,Color.YELLOW, false));
-		boardSpaces[84].setP1(pieces.get(12));
-		boardSpaces[85].setP1(pieces.get(13));
-		boardSpaces[86].setP1(pieces.get(14));
-		boardSpaces[51].setP1(pieces.get(15));
+			boardSpaces[i].setP1(pieces.get(id));
+		}
 		 
 		return pieces;
 	}
@@ -105,7 +84,6 @@ public class GameRules {
 		
 		// Searches the initial space for a vacant one. When it finds one, moves the desired piece from it's current space to an initial space
 		for(i = minIndex; i<maxIndex ; i++) {
-			if(boardSpaces[i].getP1() != null)
 			
 			if(boardSpaces[i].getP1() == null) {
 				if(boardSpaces[pieceIndex].getP1() != null && boardSpaces[pieceIndex].getP1().getId() == p.getId()) {
@@ -178,7 +156,7 @@ public class GameRules {
 	public int rollDie() {
 		Random rand = new Random();
 		
-		//	return 6; 
+		//return 6; 
 		return rand.nextInt(6)+1;
 	}
 	
@@ -260,10 +238,7 @@ public class GameRules {
 			spaceColor = checkIfSpecialSpace(newPos);
 			
 			if(boardSpaces[newPos].getP1().getColor() == piece.getColor()) { // The pieces are the same color
-<<<<<<< HEAD
-=======
-				System.out.println("Cor da peï¿½a na pos final: " + boardSpaces[newPos].getP1().getColor());
->>>>>>> abfe433c769d2f4a0c3dd084dd474b090c3a18e1
+
 				if(spaceColor != Color.WHITE) { // There can't be two pieces in a special space if they are of the same color
 					System.out.println("Duas peças de mesma cor");
 					return null;
@@ -322,7 +297,6 @@ public class GameRules {
 		int firstTrailPos=0, finishingPos=0;	// The first position and the finishing position of a colored trail, respectively
 		int firstPos = 0;						// The first position of the board, relative to the color of the piece
 		
-		canMoveAnotherPiece = false;	// Resets this flag
 		boolean posReset = false;
 		Piece capturedPiece;
 		
@@ -360,11 +334,11 @@ public class GameRules {
 			piece.setHasFinished(true);
 			
 		} else if(capturedPiece == null) { // The piece can't move
-			System.out.println("A peï¿½a nï¿½o pode se mover");
+			System.out.println("A peca nao pode se mover");
 			return false;			
 		
 		}else if(capturedPiece.getColor() != Color.BLACK){ // A piece was captured
-			System.out.println("Capturou a peï¿½a!");
+			System.out.println("Capturou a peca!");
 			sendPieceToStart(capturedPiece);
 			canMoveAnotherPiece = true;
 		}
