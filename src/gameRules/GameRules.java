@@ -164,7 +164,7 @@ public class GameRules {
 	// If the piece formed a barrier, returns the top piece (p1) 
 	public Piece checkIfCorrectColor(Color player, List<Piece> p){
 		for(Piece piece : p) {
-			if(piece.getColor() == player)
+			if((piece.getColor().equals(player)))
 				return piece;
 		}
 		return null;	
@@ -200,19 +200,19 @@ public class GameRules {
 		Color pieceColor = piece.getColor();
 		Color spaceColor;
 		
-		if(piece.getColor() == Color.BLUE) {
+		if(piece.getColor().equals(Color.BLUE)) {
 			minIndex = 45; maxIndex = 50; firstTrailPos = 52;
 		
 		//RED Pieces
-		}else if(piece.getColor() == Color.RED) {
+		}else if(piece.getColor().equals(Color.RED)) {
 			minIndex = 6; maxIndex = 11; firstTrailPos = 57; 
 			
 		//GREEN Pieces
-		}else if(piece.getColor() == Color.GREEN) {
+		}else if(piece.getColor().equals(Color.GREEN)) {
 			minIndex = 19; maxIndex = 24; firstTrailPos = 62;
 			
 		//YELLOW Pieces	
-		}else if(piece.getColor() == Color.YELLOW) {
+		}else if(piece.getColor().equals(Color.YELLOW)) {
 			minIndex = 32; maxIndex = 37; firstTrailPos = 67; 
 		}
 		
@@ -237,10 +237,10 @@ public class GameRules {
 			
 			spaceColor = checkIfSpecialSpace(newPos);
 			
-			if(boardSpaces[newPos].getP1().getColor() == piece.getColor()) { // The pieces are the same color
+			if(boardSpaces[newPos].getP1().getColor().equals(piece.getColor())) { // The pieces are the same color
 
 				if(spaceColor != Color.WHITE) { // There can't be two pieces in a special space if they are of the same color
-					System.out.println("Duas peças de mesma cor");
+					System.out.println("Duas peï¿½as de mesma cor");
 					return null;
 				}
 				else { // It's a regular space. The pieces become a barrier
@@ -304,19 +304,19 @@ public class GameRules {
 		newPos = index + numSpaces;
 		
 		//BLUE Pieces
-		if(piece.getColor() == Color.BLUE) {
+		if(piece.getColor().equals(Color.BLUE)) {
 			minIndex = 45; maxIndex = 50; firstTrailPos = 52; finishingPos = 57; firstPos = 0;
 		
 		//RED Pieces
-		}else if(piece.getColor() == Color.RED) {
+		}else if(piece.getColor().equals(Color.RED)) {
 			minIndex = 6; maxIndex = 11; firstTrailPos = 57; finishingPos = 62; firstPos = 13;
 			
 		//GREEN Pieces
-		}else if(piece.getColor() == Color.GREEN) {
+		}else if(piece.getColor().equals(Color.GREEN)) {
 			minIndex = 19; maxIndex = 24; firstTrailPos = 62; finishingPos = 67; firstPos = 26;
 			
 		//YELLOW Pieces	
-		}else if(piece.getColor() == Color.YELLOW) {
+		}else if(piece.getColor().equals(Color.YELLOW)) {
 			minIndex = 32; maxIndex = 37; firstTrailPos = 67; finishingPos = 72; firstPos = 39;
 			
 		}
@@ -337,7 +337,7 @@ public class GameRules {
 			System.out.println("A peca nao pode se mover");
 			return false;			
 		
-		}else if(capturedPiece.getColor() != Color.BLACK){ // A piece was captured
+		}else if(! capturedPiece.getColor().equals(Color.BLACK)){ // A piece was captured
 			System.out.println("Capturou a peca!");
 			sendPieceToStart(capturedPiece);
 			canMoveAnotherPiece = true;
@@ -348,11 +348,11 @@ public class GameRules {
 
 		// Saves this player's last moved piece
 		int playerId;
-		if(piece.getColor() == Color.BLUE)
+		if(piece.getColor().equals(Color.BLUE))
 			playerId = 0;
-		else if(piece.getColor() == Color.RED)
+		else if(piece.getColor().equals(Color.RED))
 			playerId = 1;
-		else if(piece.getColor() == Color.GREEN)
+		else if(piece.getColor().equals(Color.GREEN))
 			playerId = 2;
 		else 
 			playerId = 3;
@@ -369,14 +369,17 @@ public class GameRules {
 		int minIndex, maxIndex; // The indexes the pieces of each color occupy on the initial square
 		int startingPos;		// The index of the initial space for each color
 			
-		if(playerColor == Color.BLUE) {
+		if(playerColor.equals(Color.BLUE)) {
 			i=0; iMax = 4; minIndex = 72; maxIndex = 76; startingPos = 0; 
-		} else if(playerColor == Color.RED) {
+		} else if(playerColor.equals(Color.RED)) {
 			i=4; iMax = 8; minIndex = 76; maxIndex = 80; startingPos = 13;
-		} else if(playerColor == Color.GREEN){
+		} else if(playerColor.equals(Color.GREEN)){
 			i=8; iMax=12; minIndex = 80; maxIndex = 84; startingPos = 26;
-		} else {
+		} else if(playerColor.equals(Color.YELLOW)){
 			i=12; iMax=16; minIndex = 84; maxIndex = 88; startingPos = 39;
+		} else {
+			System.err.println("Error trying to moveFromInitialSquare: unknown color");
+			return false;
 		}
 		
 		for(; i<iMax ; i++) {
@@ -384,7 +387,7 @@ public class GameRules {
 			
 			if(piece.getIndex() >= minIndex && piece.getIndex() < maxIndex) {
 				if(boardSpaces[startingPos].getP1() != null) {
-					if(boardSpaces[startingPos].getP1().getColor() == piece.getColor()) { // Can't move out
+					if(boardSpaces[startingPos].getP1().getColor().equals(piece.getColor())) { // Can't move out
 						return false;
 						
 					}else { // If there is a piece of different color in the first space, captures it

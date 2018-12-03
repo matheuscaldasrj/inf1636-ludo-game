@@ -162,7 +162,10 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		rules.setBoardSpaces(fileGame.getBoardSpaces());
 		rules.setLastMovedPieceArray(fileGame.getLastMovedPieceArray());
 		
-		drawNextRound(pieces);
+		
+		ludoGameFrame.getControlPanel().setTurnColor(playerTurn);
+		
+		ludoGameFrame.setNewPieces(pieces);
 	}
 
 	@Override
@@ -173,8 +176,8 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		
 		BoardSpace[] boardSpaces = rules.getBoardSpaces();
 		//building file game
-		Piece[] lastMovedPiece = rules.getLastMovedPieceArray();
-		FileGame fileGame = new FileGame(file, pieces, playerTurn, lastMovedPiece, boardSpaces);
+		Piece[] lastMovedPieceArray = rules.getLastMovedPieceArray();
+		FileGame fileGame = new FileGame(file, pieces, playerTurn, lastMovedPieceArray, boardSpaces);
 		//saving it
 		saveAndRestoreGame.saveGame(fileGame);
 	}
@@ -222,6 +225,8 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 			}
 			else if(roll == 5) {
 				if(rules.moveFromInitialSquare(playerTurn, pieces)) {
+					System.out.println("roll == 5, has been moved to initial square");
+					ludoGameFrame.getControlPanel().setShowDieSide(false);
 					drawNextRound(pieces);
 				}
 			}		
