@@ -342,38 +342,20 @@ public class GameRules {
 		index = piece.getIndex();
 		newPos = index + numSpaces;
 		
-		//BLUE Pieces
-		if(piece.getColor() == Color.BLUE) {
-			minIndex = 45; maxIndex = 50; firstTrailPos = 52; currentFinishingPos = 57; 
-		
-		//RED Pieces
-		}else if(piece.getColor() == Color.RED) {
-			minIndex = 6; maxIndex = 11; firstTrailPos = 57; currentFinishingPos = 62; 
-			
-		//GREEN Pieces
-		}else if(piece.getColor() == Color.GREEN) {
-			minIndex = 19; maxIndex = 24; firstTrailPos = 62; currentFinishingPos = 67; 
-			
-		//YELLOW Pieces	
-		}else if(piece.getColor() == Color.YELLOW) {
-			minIndex = 32; maxIndex = 37; firstTrailPos = 67; currentFinishingPos = 72; 
-=======
 		if(piece.getColor().equals(Color.BLUE)) {
-			minIndex = 45; maxIndex = 50; firstTrailPos = 52; finishingPos = 57; firstPos = 0;
+			minIndex = 45; maxIndex = 50; firstTrailPos = 52; currentFinishingPos = 57;
 		
 		//RED Pieces
 		}else if(piece.getColor().equals(Color.RED)) {
-			minIndex = 6; maxIndex = 11; firstTrailPos = 57; finishingPos = 62; firstPos = 13;
+			minIndex = 6; maxIndex = 11; firstTrailPos = 57; currentFinishingPos = 62; 
 			
 		//GREEN Pieces
 		}else if(piece.getColor().equals(Color.GREEN)) {
-			minIndex = 19; maxIndex = 24; firstTrailPos = 62; finishingPos = 67; firstPos = 26;
+			minIndex = 19; maxIndex = 24; firstTrailPos = 62; currentFinishingPos = 67; 
 			
 		//YELLOW Pieces	
 		}else if(piece.getColor().equals(Color.YELLOW)) {
-			minIndex = 32; maxIndex = 37; firstTrailPos = 67; finishingPos = 72; firstPos = 39;
-			
->>>>>>> 8a8c95787f1c2c3f13c9c6582e09769069235cd4
+			minIndex = 32; maxIndex = 37; firstTrailPos = 67; currentFinishingPos = 72; 
 		}
 		
 		newPosition = correctPieceNewPos(index, newPos, minIndex, maxIndex, firstTrailPos);
@@ -398,28 +380,18 @@ public class GameRules {
 		if(newPosition == currentFinishingPos) {
 			piece.setHasFinished(true);
 			removeFromPosition(piece, previousIndex);
-			
-<<<<<<< HEAD
+
 			return;
 		}
 		// If a piece was captured
-		else if(capturedPiece.getColor() != Color.BLACK){ 
-=======
-		} else if(capturedPiece == null) { // The piece can't move
-			System.out.println("A peca nao pode se mover");
-			return false;			
-		
-		}else if(! capturedPiece.getColor().equals(Color.BLACK)){ // A piece was captured
->>>>>>> 8a8c95787f1c2c3f13c9c6582e09769069235cd4
+		else if(! capturedPiece.getColor().equals(Color.BLACK)){ // A piece was captured
 			System.out.println("Capturou a peca!");
 			sendPieceToStart(capturedPiece);
 			canMoveAnotherPiece = true;
 		}
-<<<<<<< HEAD
-=======
 			
-		piece.setIndex(newPos);
-		updateBoardSpaces(piece, numSpaces);
+		piece.setIndex(newPosition);
+		updateBoardSpaces(piece, previousIndex);
 
 		// Saves this player's last moved piece
 		int playerId;
@@ -433,41 +405,16 @@ public class GameRules {
 			playerId = 3;
 		
 		lastMovedPiece[playerId] = piece;
->>>>>>> 8a8c95787f1c2c3f13c9c6582e09769069235cd4
-		
-		// Moving the piece and updating the pieces on the board:
-		piece.setIndex(newPosition);
-		updateBoardSpaces(piece, previousIndex);
-		
-		// Saves this player's last moved piece. Doesn't if the piece reached it's final position
-		if(!piece.getHasFinished()) {
-			int playerId;
-			if(piece.getColor() == Color.BLUE)
-				playerId = 0;
-			else if(piece.getColor() == Color.RED)
-				playerId = 1;
-			else if(piece.getColor() == Color.GREEN)
-				playerId = 2;
-			else 
-				playerId = 3;
+		System.out.println("Last moved piece: "+lastMovedPiece[playerId].getId());			
 			
-			lastMovedPiece[playerId] = piece;
-			System.out.println("Last moved piece: "+lastMovedPiece[playerId].getId());			
-		}
-		
 	}
 	
 	public boolean moveFromInitialSquare(Color playerColor, List<Piece> p) {
 		int i, iMax;			// The min and max id of the pieces of each team
 		int minIndex, maxIndex; // The indexes the pieces of each color occupy on the initial square
 		int startingPos;		// The index of the initial space for each color
-<<<<<<< HEAD
-
-		if(playerColor == Color.BLUE) {
-=======
 			
 		if(playerColor.equals(Color.BLUE)) {
->>>>>>> 8a8c95787f1c2c3f13c9c6582e09769069235cd4
 			i=0; iMax = 4; minIndex = 72; maxIndex = 76; startingPos = 0; 
 		} else if(playerColor.equals(Color.RED)) {
 			i=4; iMax = 8; minIndex = 76; maxIndex = 80; startingPos = 13;
