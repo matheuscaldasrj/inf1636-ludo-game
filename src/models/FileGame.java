@@ -29,7 +29,7 @@ public class FileGame implements Serializable {
 		
 		//method handles size
 		setBoardSpaces(boardSpaces);
-		setPieces(this.pieces);
+		setPieces(pieces);
 	}
 	
 	public FileGame() {
