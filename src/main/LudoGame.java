@@ -21,10 +21,11 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 	LudoGameFrame ludoGameFrame = new LudoGameFrame();
 	SaveAndRestoreGame saveAndRestoreGame = new SaveAndRestoreGame();
 	List<Piece> pieces;
-	GameRules rules = new GameRules();
+	GameRules rules = GameRules.getGameRules();
 	
 	int roll;			// How much the player got on his roll
 	int timesRolled6;	// How many times the player has rolled 6 on this turn
+	boolean hasAStored6;// If the player rolled 6 in his last roll
 	boolean hasRolled;	// Defines if the player has already rolled the die on his turn
 	Color playerTurn;	// Defines the color of the player that shall make a move
 	int playerId;		// Defines the id of the player that shall make a move
@@ -67,32 +68,48 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		if(isPiece) {
 			if(hasRolled) {
 				ArrayList<Piece> pieces = (ArrayList<Piece>) returnClick;
-				//System.out.println(pieces);
 				
 				p = rules.checkIfCorrectColor(playerTurn, pieces);
 				
+				/*
+				 *	The bonus movements the player has prioritize extra movements gained by:
+				 *	1) Capturing a piece
+				 *	2) Reaching the final space
+				 *	over rolls of 6. This happens because the player might get another extra move with the extra move he used, so we must spend it as soon as possible.
+				 *
+				 *	So, for example if the player rolls 6 and captures a piece, they'll be unable to roll again until they use up their extra move.
+				 */
 				if(p!=null) {						
 					
-					// Used when the player captured a piece on his last move
-					if(roll != 6 && rules.getCanMoveAnotherPiece()) {
-						System.out.println("You can move another piece!");
-						roll = 6;
-						hasChecked = true;
-						// Redraws the board to show the new die value. When the player clicks on another piece, he'll move 6 spaces
-						ludoGameFrame.getControlPanel().setDieSide(6);
-						ludoGameFrame.setNewPieces(this.pieces);
-					}
-					
-					if(rules.movePiece(p, roll)) {
+					// Will check if a move is possible
+					if(rules.checkIfCanMakeAMove(playerTurn, this.pieces, roll)) {
 						
+						rules.movePiece(p);
+						
+						// Used when the player captured a piece on his last move. Has priority over rolling again if rolled 6
+						if(rules.getCanMoveAnotherPiece()) {
+							System.out.println("You can move another piece!");
+							if(roll == 6) {
+								hasAStored6 = true;
+							}
+							roll = 6;
+							hasChecked = true;
+							
+							rules.setCanMoveAnotherPiece(false);
+							
+							// Redraws the board to show the new die value. When the player clicks on another piece, he'll move 6 spaces
+							ludoGameFrame.getControlPanel().setDieSide(6);
+							ludoGameFrame.setNewPieces(this.pieces);
+						}
 						// When a player rolls 6, they can play again. Instead of passing their turn, we just show the new piece positions
-						if(roll == 6 && !hasChecked) {  
+						else if(roll == 6 || hasAStored6) {  
 							System.out.println("Rolled 6!!");
 							hasRolled = false;
+							hasAStored6 = false;
+							
 							ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(true);
 							ludoGameFrame.setNewPieces(this.pieces);
 						}
-	
 						// if the player hasn't rolled 6 or captured a piece, we can pass the turn to the next player
 						else { 
 							System.out.println("Didn't roll 6");
@@ -105,6 +122,9 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 								drawNextRound(this.pieces);
 						}
 					}
+					// If there is no possible move, passes the turn to the next player
+					else
+						drawNextRound(this.pieces);
 				}
 			}else {
 				System.out.println("Peca nao eh da cor do jogador");
