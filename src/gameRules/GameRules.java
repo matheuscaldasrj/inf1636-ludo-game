@@ -335,13 +335,13 @@ public class GameRules {
 	
 	// Checks the rules to see if the selected piece can move "numSpaces" positions
 	public boolean checkIfCanMovePiece(Piece piece, int numSpaces) {
-		int index, newPos;						// The last position and the one the piece will move to, respectively
-		int minIndex=0, maxIndex=0; 			// The max and min positions a piece can be to get in the colored trail in one move
-		int firstTrailPos=0;	// The first position and the finishing position of a colored trail, respectively
+		int index;							// The last position and the one the piece will move to, respectively
+		int minIndex=0, maxIndex=0; 		// The max and min positions a piece can be to get in the colored trail in one move
+		int firstTrailPos=0;				// The first position and the finishing position of a colored trail, respectively
 		
 		index = piece.getIndex();
-		newPos = index + numSpaces;
-		
+		newPosition = index + numSpaces;
+		System.out.println(index+" + "+numSpaces+" = "+newPosition);
 		if(piece.getColor().equals(Color.BLUE)) {
 			minIndex = 45; maxIndex = 50; firstTrailPos = 52; currentFinishingPos = 57;
 		
@@ -358,17 +358,18 @@ public class GameRules {
 			minIndex = 32; maxIndex = 37; firstTrailPos = 67; currentFinishingPos = 72; 
 		}
 		
-		newPosition = correctPieceNewPos(index, newPos, minIndex, maxIndex, firstTrailPos);
+		newPosition = correctPieceNewPos(index, newPosition, minIndex, maxIndex, firstTrailPos);
 		
 		// If the piece moved further from it's final position
 		if(newPosition > currentFinishingPos){
 			return false;
 		} 
 		// If the piece can't move for some reason
-		else if((this.capturedPiece = checkPath(piece, newPosition)) == null) { 
+		else if((this.capturedPiece = checkPath(piece, newPosition)) == null) {
 			return false;			
 		}
-		
+			
+		System.out.println("This is the new position: "+newPosition);
 		return true;
 	}
 	
@@ -407,6 +408,8 @@ public class GameRules {
 		lastMovedPiece[playerId] = piece;
 		System.out.println("Last moved piece: "+lastMovedPiece[playerId].getId());			
 			
+		newPosition = 0;
+		capturedPiece = null;
 	}
 	
 	public boolean moveFromInitialSquare(Color playerColor, List<Piece> p) {
