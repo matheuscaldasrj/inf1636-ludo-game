@@ -167,6 +167,7 @@ public class GameRules {
 	
 	// Checks if the piece clicked is of the same color as this turn player's color
 	// If the piece formed a barrier, returns the top piece (p1) 
+	// If there are two pieces of different colors, returns the one with the same color as the player
 	public Piece checkIfCorrectColor(Color player, List<Piece> p){
 		for(Piece piece : p) {
 			if((piece.getColor().equals(player)))
@@ -183,9 +184,9 @@ public class GameRules {
 		Color spaceColor = Color.WHITE; // This represents the normal spaces
 		
 		if (index == 0)		spaceColor = Color.BLUE;
-		else if(index == 13) 	spaceColor = Color.RED;
+		else if(index == 13) spaceColor = Color.RED;
 		else if(index == 26) spaceColor = Color.GREEN;
-		else if(index == 39)	spaceColor = Color.YELLOW;
+		else if(index == 39) spaceColor = Color.YELLOW;
 		else if(index == 9 || index == 22 || index == 35 || index == 48) // This space is a shelter
 			spaceColor = Color.BLACK;
 		return spaceColor;
@@ -200,7 +201,6 @@ public class GameRules {
 		int i = piece.getIndex();
 		int minIndex=0,maxIndex=0,firstTrailPos=0;
 		
-		int shelterPosition = 13; 
 		Piece fillerPiece = new Piece(0, 0, Color.BLACK, false);
 		Color pieceColor = piece.getColor();
 		Color spaceColor;
@@ -225,7 +225,9 @@ public class GameRules {
 		
 		// Check if there is a barrier in the way
 		for(; i<=newPos || (i > newPos && posReset) ; i=correctPieceNewPos(i, i+1, minIndex, maxIndex, firstTrailPos) ) {
-			if(boardSpaces[i].getP1() != null && (boardSpaces[i].getP1().getIsBarrier() && boardSpaces[i].getP1().getColor() != piece.getColor()))
+			if(boardSpaces[i].getP1() != null && 
+					(boardSpaces[i].getP1().getIsBarrier() && 
+							boardSpaces[i].getP1().getColor() != piece.getColor()))
 				return null;
 	
 			// In case the index finishes a lap, it certainly is less or equal to the newPos
@@ -245,31 +247,34 @@ public class GameRules {
 			if(boardSpaces[newPos].getP1().getColor().equals(piece.getColor())) { // The pieces are the same color
 
 				if(spaceColor != Color.WHITE) { // There can't be two pieces in a special space if they are of the same color
-					System.out.println("Duas pe�as de mesma cor");
+					System.out.println("Duas pecas de mesma cor");
 					return null;
-				}
-				else { // It's a regular space. The pieces become a barrier
+					
+				}else { // It's a regular space. The pieces become a barrier
 					boardSpaces[newPos].getP1().setIsBarrier(true);
 					piece.setIsBarrier(true);
 					System.out.println("Became a barrier!");
 					return fillerPiece;
-				}				
-			} 
-			else { // The pieces are of different colors
-				if(spaceColor != Color.WHITE) {	// And the new position is a special space
-					if(boardSpaces[newPos].getP1().getColor() == spaceColor || spaceColor == Color.BLACK) { // Two different colored pieces can occupy this space
-						System.out.println("");
+				}	
+				
+			}else { // The pieces are of different colors
+				if(spaceColor == Color.WHITE) {	// And the new position is a normal space
+					System.out.println("Piece captured!");
+					return boardSpaces[newPos].getP1();
+					
+				}else if(spaceColor == Color.BLACK) { // It's a shelter, so they can occupy the same position
+					System.out.println("The space is a shelter!");
+					return fillerPiece;
+				}
+				else if(boardSpaces[newPos].getP1().getColor() == spaceColor) { // The position is a starting position with a piece of the same color there
+						System.out.println("Starting pos with piece color");
+						System.out.println("Piece color: "+boardSpaces[newPos].getP1().getColor()+ " Space color: "+spaceColor);
 						return fillerPiece;
 					} 
 					else { // The piece that was in the space wasn't of the same color as it, so the piece was captured
 						return boardSpaces[newPos].getP1();
 					}
 				} 
-				else { // It's a regular space, so the piece was captured
-					System.out.println("Piece captured!");
-					return boardSpaces[newPos].getP1();
-				}
-			}
 		}
 		return fillerPiece;
 	}
@@ -277,35 +282,44 @@ public class GameRules {
 	//Removes the "p" piece from the "index" location
 	private void removeFromPosition(Piece p, int index) {
 		
-		if(boardSpaces[index].getP1().getId() == p.getId()) {
+		if(boardSpaces[index].getP1()!=null && boardSpaces[index].getP1().getId() == p.getId()) {
+			System.out.println("P1 isn't null, the piece is in P1 and...");
 			if(boardSpaces[index].getP2() == null) {
+				System.out.println("P2 is null");
 				boardSpaces[index].setP1(null);				
 			}
 			else {
+				System.out.println("P2 isn't null");
 				boardSpaces[index].setP1(boardSpaces[index].getP2());
 				boardSpaces[index].setP2(null);
 			}
 		} 
 		else {
+			System.out.println("P1 is null or the piece isn't in P1");
 			boardSpaces[index].setP2(null);
 		}
 	}
 	
 	// Places the moved piece in it's new position in the BoardSpaces array and removes it from it's previous position
+	// We already consider that, if the piece moved piece would capture another, it already happened and the space is now empty
+	// We also consider that, if the piece couldn't move for some reason, it didn't. So, we don't take into account cases that would cause that
 	private void updateBoardSpaces(Piece p, int previousIndex) {
 		int pieceIndex = p.getIndex();
 		
 		// Placing in the new position
-		if(boardSpaces[pieceIndex].getP1() == null) {
+		
+		// If the position is free, just move the piece
+		if(boardSpaces[pieceIndex].getP1() == null) { 
 			boardSpaces[pieceIndex].setP1(p);
-			
-		}else if(boardSpaces[pieceIndex].getP1().getColor() == p.getColor()) {
+		
+		// If the colors are the same, forms a barrier
+		}else if(boardSpaces[pieceIndex].getP1().getColor().equals(p.getColor())) {
 			boardSpaces[pieceIndex].setP2(p);
 			boardSpaces[pieceIndex].getP1().setIsBarrier(true);
 			
-		}else {
-			sendPieceToStart(boardSpaces[pieceIndex].getP1());
-			boardSpaces[pieceIndex].setP1(p);
+		// If the colors aren't the same and is in a special space (can be shelter or first space)
+		}else if(! checkIfSpecialSpace(pieceIndex).equals(p.getColor())) {
+			boardSpaces[pieceIndex].setP2(p);	
 		}
 		
 		removeFromPosition(p, previousIndex);
@@ -321,12 +335,10 @@ public class GameRules {
 		// If the piece will enter the colored trail
 		if(newPos > maxIndex && index >= minIndex && index <=maxIndex) {
 			newPos += (firstTrailPos - 1 - maxIndex);
-			System.out.println("Vai entrar no caminho! Newpos = "+newPos);
 		}
 					
 		// The board finished a lap, so the index must reset, starting from 0
 		else if(newPos > 51 && index <= 51 && index >= 46 ) { 
-			System.out.println("NewPos: "+newPos);
 			newPos -= 52;
 			posReset = true;
 		}
@@ -341,7 +353,6 @@ public class GameRules {
 		
 		index = piece.getIndex();
 		newPosition = index + numSpaces;
-		System.out.println(index+" + "+numSpaces+" = "+newPosition);
 		if(piece.getColor().equals(Color.BLUE)) {
 			minIndex = 45; maxIndex = 50; firstTrailPos = 52; currentFinishingPos = 57;
 		
@@ -368,8 +379,6 @@ public class GameRules {
 		else if((this.capturedPiece = checkPath(piece, newPosition)) == null) {
 			return false;			
 		}
-			
-		System.out.println("This is the new position: "+newPosition);
 		return true;
 	}
 	
@@ -405,8 +414,7 @@ public class GameRules {
 		else 
 			playerId = 3;
 		
-		lastMovedPiece[playerId] = piece;
-		System.out.println("Last moved piece: "+lastMovedPiece[playerId].getId());			
+		lastMovedPiece[playerId] = piece;		
 			
 		newPosition = 0;
 		capturedPiece = null;

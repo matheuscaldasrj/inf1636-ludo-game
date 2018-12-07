@@ -82,44 +82,45 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 				 */
 				if(p!=null) {						
 					
-					System.out.println("<<<Can make a move>>>\nThe roll is: "+roll);
-					System.out.println("Selected piece index: " + p.getId());
-					
 					// If the player can move the selected piece, moves it
-					if(rules.checkIfCanMovePiece(p, roll)){
+					if(rules.checkIfCanMovePiece(p, roll)) {
 						rules.movePiece(p);
-					}
-					
-					// Used when the player captured a piece on his last move. Has priority over rolling again if rolled 6
-					if(rules.getCanMoveAnotherPiece()) {
-						System.out.println("You can move another piece!");
-						if(roll == 6) {
-							hasAStored6 = true;
+						
+						
+						// Used when the player captured a piece on his last move. Has priority over rolling again if rolled 6
+						if(rules.getCanMoveAnotherPiece()) {
+							System.out.println("You can move another piece!");
+							if(roll == 6) {
+								hasAStored6 = true;
+							}
+							roll = 6;
+							hasChecked = true;
+							
+							rules.setCanMoveAnotherPiece(false);
+							
+							// Redraws the board to show the new die value. When the player clicks on another piece, he'll move 6 spaces
+							ludoGameFrame.getControlPanel().setDieSide(6);
+							ludoGameFrame.setNewPieces(this.pieces);
 						}
-						roll = 6;
-						hasChecked = true;
-						
-						rules.setCanMoveAnotherPiece(false);
-						
-						// Redraws the board to show the new die value. When the player clicks on another piece, he'll move 6 spaces
-						ludoGameFrame.getControlPanel().setDieSide(6);
-						ludoGameFrame.setNewPieces(this.pieces);
-					}
-					// When a player rolls 6, they can play again. Instead of passing their turn, we just show the new piece positions
-					else if(roll == 6 || hasAStored6) {  
-						System.out.println("Rolled 6!!");
-						hasRolled = false;
-						hasAStored6 = false;
-						
-						ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(true);
-						ludoGameFrame.setNewPieces(this.pieces);
-					}
-					// if the player hasn't rolled 6 or captured a piece, we can pass the turn to the next player
-					else { 
-						System.out.println("Didn't roll 6");
-						ludoGameFrame.getControlPanel().setShowDieSide(false);
-						
-						drawNextRound(this.pieces);
+						// When a player rolls 6, they can play again. Instead of passing their turn, we just show the new piece positions
+						else if(roll == 6 || hasAStored6) {  
+							System.out.println("Rolled 6!!");
+							hasRolled = false;
+							hasAStored6 = false;
+							
+							ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(true);
+							ludoGameFrame.setNewPieces(this.pieces);
+						}
+						// if the player hasn't rolled 6 or captured a piece, we can pass the turn to the next player
+						else { 
+							System.out.println("Didn't roll 6");
+							ludoGameFrame.getControlPanel().setShowDieSide(false);
+							
+							drawNextRound(this.pieces);
+						}
+					// Can't move piece
+					}else {
+						System.out.println("Essa peca nao pode ser movida. Selecione outra");						
 					}
 				}
 			}else {
