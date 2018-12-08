@@ -378,11 +378,31 @@ public class BoardPanel extends JPanel {
 		BoardPosition boardPosition;
 		Ellipse2D.Double circle;
 
+
 		if (pieces.size() > 2) {
 			System.err.println("Recebeu mais de duas pecas na mesma posicao. Erro para desenhar");
 			return;
 		}
 
+		
+		if (pieces.size() == 2) {
+			if(pieces.get(0).getHasFinished() && pieces.get(1).getHasFinished()) {
+				//both of them has finished
+				return ;
+			}
+			
+			if(pieces.get(0).getHasFinished() && !pieces.get(1).getHasFinished() ) {
+				Piece tempPiece = pieces.get(1);
+				pieces = new ArrayList<>();
+				pieces.add(tempPiece);
+			} else if (!pieces.get(0).getHasFinished() && pieces.get(1).getHasFinished()  ){
+				Piece tempPiece = pieces.get(0);
+				pieces = new ArrayList<>();
+				pieces.add(tempPiece);
+				
+			}
+		}
+		
 		if (pieces.size() == 1) {
 			Piece piece = pieces.get(0);
 			if(piece.getHasFinished()) {
