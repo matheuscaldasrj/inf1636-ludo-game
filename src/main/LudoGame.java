@@ -339,14 +339,11 @@ private String translateColorName(Color color) {
 				if(roll == 6) {
 					timesRolled6++;
 					
-					if(timesRolled6 % 3 == 0) {
+					if(timesRolled6 == 3) {
 						rules.sendPieceToStart(rules.getLastMovedPiece(playerId));
 						ludoGameFrame.getControlPanel().setShowDieSide(false);
 						ludoGameFrame.setNewPieces(this.pieces);
-						
-						if(!rules.checkIfCanMakeAMove(playerTurn, this.pieces, roll)) {
-							drawNextRound(pieces);
-						}
+						drawNextRound(pieces);
 					}	
 					if(rules.breakBarriers(pieces, playerTurn)) {
 						ludoGameFrame.getControlPanel().setShowDieSide(false);
