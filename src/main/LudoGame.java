@@ -6,6 +6,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
 import drawing.LudoGameFrame;
 import gameRules.GameRules;
 import listeners.BoardEventListener;
@@ -65,6 +68,51 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		
 		firstTimeAddingListeners = false;
 	}
+	
+private String translateColorName(Color color) {
+		
+		if(color.equals(Color.BLUE)) {
+			return "Blue";
+		} else if(color.equals(Color.RED)) {
+			return "RED";
+		}else if(color.equals(Color.GREEN)) {
+			return "GREEN";
+		}else if(color.equals(Color.YELLOW)) {
+			return "YELLOW";
+		}
+		
+		return "Unknown";
+		
+	}
+	private void gameHasFinished(Color[] positions) {
+		
+		String message = "";
+		message += "1 lugar: " + translateColorName(positions[0]) + "\n";
+		message += "2 lugar: " + translateColorName(positions[1]) + "\n";
+		message += "3 lugar: " + translateColorName(positions[2]) + "\n";
+		message += "4 lugar: " + translateColorName(positions[3]) + "\n";
+		
+		JOptionPane.showMessageDialog(new JDialog(),
+				message,
+			    "Game has finished",
+			    JOptionPane.INFORMATION_MESSAGE);
+		
+		int whatToDo = JOptionPane.showConfirmDialog(new JDialog(),
+				"Game has finishied, do you want to play a new game?",
+			    "Game has finished",
+			    JOptionPane.YES_NO_OPTION);
+		
+		if(whatToDo == JOptionPane.YES_OPTION) {
+			System.out.println("new game");
+			restartGame();
+		} else if (whatToDo == JOptionPane.NO_OPTION  || whatToDo == JOptionPane.CLOSED_OPTION) {
+			System.out.println("Closing game by no button...");
+			System.out.println("Closing game...");
+			System.exit(0);
+		}
+		
+	}
+	
 	@Override
 	public void notifyBoardClicks(Object returnClick, boolean isPiece) {
 		Piece p;
@@ -94,9 +142,12 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 						System.out.println("Moved the piece!");
 						if(rules.getMovedFromInitialSquare()) {
 							rules.moveFromInitialSquare();
-						}else
-							rules.movePiece(p, this.pieces, playerTurn);
-						
+						}else {
+							Color[] playersPositions = rules.movePiece(p, this.pieces, playerTurn);
+							if(playersPositions != null) {
+								gameHasFinished(playersPositions);
+							}
+						}
 						// If the bonus move won't happen in this turn
 						if(!capturedInFirstRound) {
 							if(rules.getCanMoveAnotherPiece()) {

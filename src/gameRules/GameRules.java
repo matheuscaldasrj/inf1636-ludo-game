@@ -1,23 +1,18 @@
 package gameRules;
 
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Random;
-
-import javax.sound.midi.Synthesizer;
-
-import main.LudoGame;
-
-import java.awt.Color;
-
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import models.BoardSpace;
-import models.InitialSquare;
 import models.Piece;
 
 // This is the class which controls all the game's rules
 
 public class GameRules {
-	
+		
 	private BoardSpace[] boardSpaces = new BoardSpace[88];	//Represents all the board's spaces
 	private Piece lastMovedPiece[] = new Piece[4];			//0 = blue / 1 = red / 2 = green / 3 = yellow 
 	private Piece capturedPiece; 							//Where a captured piece will be stored
@@ -177,7 +172,6 @@ public class GameRules {
 	
 	public int rollDie() {
 		Random rand = new Random();
-		
 		//return 6; 
 		return rand.nextInt(6)+1;
 	}
@@ -440,8 +434,17 @@ public class GameRules {
 		return true;
 	}
 	
+
+	
+		
+	private Color[] getFinalPositions() {
+		Color[] colors = {Color.BLUE,Color.GREEN,Color.RED,Color.YELLOW};
+		return colors;
+	}
+	
+	
 	// Moves the piece to the "newPosition" index or removes it from the "boardSpaces" array if it reached it's finishing position.
-	public void movePiece(Piece piece, List<Piece> pieces, Color playerColor) {
+	public Color[] movePiece(Piece piece, List<Piece> pieces, Color playerColor) {
 		int previousIndex = piece.getIndex();	// The position the piece was in before being moved
 		
 		// The piece has reached it's final space. We must remove it from the boardSpaces array.
@@ -452,10 +455,11 @@ public class GameRules {
 			
 			if(checkIfPlayerWon(pieces, playerColor)) {
 				System.out.println("<<<<<<<<<<<<<<<< This player has won the game!!!!! >>>>>>>>>>>>>>>>>");
+				return getFinalPositions();
 			}
 			canMoveAnotherPiece = true;
 
-			return;
+			return null;
 		}
 		// If a piece was captured
 		else if(! capturedPiece.getColor().equals(Color.BLACK)){ // A piece was captured
@@ -482,6 +486,8 @@ public class GameRules {
 			
 		newPosition = 0;
 		capturedPiece = null;
+		
+		return null;
 	}
 	
 	// Checks if all of the player's pieces have finished (hasFinished == true)
