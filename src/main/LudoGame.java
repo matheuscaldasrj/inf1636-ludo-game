@@ -26,10 +26,13 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 	int roll;			// How much the player got on his roll
 	int timesRolled6;	// How many times the player has rolled 6 on this turn
 	boolean hasAStored6;// If the player rolled 6 in his last roll
+	int storedRoll;		// The roll the player had before bonus move rule (after capturing a piece) applied
 	boolean hasRolled;	// Defines if the player has already rolled the die on his turn
 	Color playerTurn;	// Defines the color of the player that shall make a move
 	int playerId;		// Defines the id of the player that shall make a move
-	int turnsToFinishFirstRound; // Used to control when the pieces don't get to start on the first house
+	int turnsToFinishFirstRound; 	// Used to control when the pieces don't get to start on the first house
+	boolean capturedInFirstRound;	//Used to check when a piece was captured after leaving the initial position on the first round
+	boolean hasUsedExtraMove;		//Used to control the extra moves
 	
 	public void startGame() {
 		pieces = new ArrayList<Piece>();
@@ -43,6 +46,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		hasRolled = false;
 		timesRolled6 = 0;
 		turnsToFinishFirstRound = 4;
+		hasUsedExtraMove = false;
 		
 		// creates the pieces
 		pieces = rules.createPieces(pieces);
@@ -60,7 +64,6 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 	@Override
 	public void notifyBoardClicks(Object returnClick, boolean isPiece) {
 		Piece p;
-		boolean hasChecked = false; // Used to determine when the player is going to move 6 spaces after capturing a piece
 		
 		System.out.println("NotifyBoardclicks no LudoGame");
 		
@@ -84,44 +87,62 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 					
 					// If the player can move the selected piece, moves it
 					if(rules.checkIfCanMovePiece(p, roll)) {
-						rules.movePiece(p);
+						System.out.println("Moved the piece!");
+						if(rules.getMovedFromInitialSquare()) {
+							rules.moveFromInitialSquare();
+						}else
+							rules.movePiece(p);
 						
-						
-						// Used when the player captured a piece on his last move. Has priority over rolling again if rolled 6
-						if(rules.getCanMoveAnotherPiece()) {
-							System.out.println("You can move another piece!");
-							if(roll == 6) {
-								hasAStored6 = true;
+						// If the bonus move won't happen in this turn
+						if(!capturedInFirstRound) {
+							if(rules.getCanMoveAnotherPiece()) {
+								System.out.println("You can move another piece!");
+								if(roll == 6) {
+									hasAStored6 = true;
+								}
+								
+								roll = 6;
+								hasUsedExtraMove = true;
+								rules.setCanMoveAnotherPiece(false);
+								
+								// Redraws the board to show the new die value. When the player clicks on another piece, he'll move 6 spaces
+								ludoGameFrame.getControlPanel().setDieSide(6);
+								ludoGameFrame.setNewPieces(this.pieces);
 							}
-							roll = 6;
-							hasChecked = true;
+							// When a player rolls 6, they can play again. Instead of passing their turn, we just show the new piece positions
+							else if((roll == 6 && !hasUsedExtraMove)|| hasAStored6) {  
+								System.out.println("Roll: "+roll+" !hasUsedExtraMove: "+!hasUsedExtraMove+" hasAStored6: "+hasAStored6);
+								hasRolled = false;
+								hasAStored6 = false;
+								
+								ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(true);
+								ludoGameFrame.setNewPieces(this.pieces);
+								
+								hasUsedExtraMove = false;
+							}
+							// if the player hasn't rolled 6 or captured a piece, we can pass the turn to the next player
+							else { 
+								System.out.println("Didn't roll 6");
+								ludoGameFrame.getControlPanel().setShowDieSide(false);
+								
+								drawNextRound(this.pieces);
+							}							
+							capturedInFirstRound = false;
+						
+						// If the bonus move of the first round was used this turn, sets the roll back to it's former value
+						}else {
+							roll = storedRoll;
+							capturedInFirstRound = false;
 							
-							rules.setCanMoveAnotherPiece(false);
-							
-							// Redraws the board to show the new die value. When the player clicks on another piece, he'll move 6 spaces
-							ludoGameFrame.getControlPanel().setDieSide(6);
+							ludoGameFrame.getControlPanel().setDieSide(roll);
 							ludoGameFrame.setNewPieces(this.pieces);
 						}
-						// When a player rolls 6, they can play again. Instead of passing their turn, we just show the new piece positions
-						else if(roll == 6 || hasAStored6) {  
-							System.out.println("Rolled 6!!");
-							hasRolled = false;
-							hasAStored6 = false;
-							
-							ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(true);
-							ludoGameFrame.setNewPieces(this.pieces);
-						}
-						// if the player hasn't rolled 6 or captured a piece, we can pass the turn to the next player
-						else { 
-							System.out.println("Didn't roll 6");
-							ludoGameFrame.getControlPanel().setShowDieSide(false);
-							
-							drawNextRound(this.pieces);
-						}
+						
 					// Can't move piece
 					}else {
 						System.out.println("Essa peca nao pode ser movida. Selecione outra");						
 					}
+					System.out.println(">>>>>>>>>>>>>>>>>>>TImes rolled 6: "+ timesRolled6);
 				}
 			}else {
 				System.out.println("Peca nao eh da cor do jogador");
@@ -143,6 +164,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 			this.playerId = 0;
 		
 		ludoGameFrame.getControlPanel().setTurnColor(playerTurn);
+		ludoGameFrame.getControlPanel().setShowDieSide(false);
 		
 		System.out.println(pieces);
 		ludoGameFrame.setNewPieces(pieces);
@@ -209,7 +231,8 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		
 		// Makes the button "rollDie" (ControlPanel) get a random number and display it as an image in it's panel
 		// If the player has already rolled the die on his turn, he may not roll again
-		if(!hasRolled) {				
+		if(!hasRolled) {
+			
 			ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(false);
 			
 			if(fakeValue == null) {
@@ -225,26 +248,45 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 			
 			// On the first round, each player, on their turn, starts with a piece at the first position
 			if(turnsToFinishFirstRound > 0 && timesRolled6 < 1) {
-				rules.moveFromInitialSquare(playerTurn, pieces);
+				rules.checkCanMoveFromInitialSquare(playerTurn, pieces);
+				rules.moveFromInitialSquare();
 				turnsToFinishFirstRound--;
 				ludoGameFrame.setNewPieces(pieces);
 				System.out.println("Turns to finish the first round: "+ turnsToFinishFirstRound);
 				
+				// Used when the player captured a piece on his last move during the first round.
+				if(rules.getCanMoveAnotherPiece()) {
+					System.out.println("You can move another piece in the first round!");
+					if(roll == 6) {
+						hasAStored6 = true;
+					}
+					
+					//We have to store the roll so we can use it after we use the bonus move
+					storedRoll = roll;
+					roll = 6;
+					capturedInFirstRound = true;
+					
+					rules.setCanMoveAnotherPiece(false);
+					
+					// Redraws the board to show the new die value. When the player clicks on another piece, he'll move 6 spaces
+					ludoGameFrame.getControlPanel().setDieSide(6);
+					ludoGameFrame.setNewPieces(this.pieces);
+				}
 			}
 			// If the player can't make any moves with their current roll, the game automatically passes their turn
 			if(rules.checkIfCanMakeAMove(playerTurn, this.pieces, roll)) {
 				
 				if(roll == 6) {
 					timesRolled6++;
-					if(timesRolled6 == 3) {
+					if(timesRolled6 % 3 == 0) {
 						rules.sendPieceToStart(rules.getLastMovedPiece(playerId));
-						timesRolled6=0;
 						ludoGameFrame.getControlPanel().setShowDieSide(false);
 						ludoGameFrame.setNewPieces(this.pieces);
 					}	
 				}
 				else if(roll == 5) {
-					if(rules.moveFromInitialSquare(playerTurn, pieces)) {
+					if(rules.checkCanMoveFromInitialSquare(playerTurn, pieces)) {
+						rules.moveFromInitialSquare();
 						System.out.println("roll == 5, has been moved to initial square");
 						ludoGameFrame.getControlPanel().setShowDieSide(false);
 						drawNextRound(pieces);

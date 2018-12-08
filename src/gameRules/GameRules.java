@@ -26,6 +26,14 @@ public class GameRules {
 	
 	private boolean posReset = false;						//The piece has passed the final index of the white spaces in the board, so we must reset the index
 	private boolean canMoveAnotherPiece = false;			//The piece captured another one, so it can move 6 spaces
+	private boolean movedFromInitialSquare = false;			//The piece was moved from it's initial square
+	
+	// Used for the moveFromInitialSquare method:
+	private Piece pieceToMove;								// The piece that will be moved
+	private int currentStartingPos;							// The current player's starting position
+	
+	private int turnsToFinishFirstRoundCopy = 4;			// Is a copy of the variable of similar name from LudoGame
+	
 	
 	// Used so the class can be a Singleton
 	private static GameRules rules = null;
@@ -97,12 +105,17 @@ public class GameRules {
 	}
 	
 	// Checks all the current player's pieces to see if they can make a move. If any of them can move, returns true. Else, false.
-	public boolean checkIfCanMakeAMove(Color playerColor, List<Piece> pieces, int numSpaces) {
+	public boolean checkIfCanMakeAMove(Color playerColor, List<Piece> pieces, int roll) {
 		int id = getPieceMinimunId(playerColor);
 		int maxId = id+4;
 		
+		if(roll == 5 && checkCanMoveFromInitialSquare(playerColor, pieces)) {
+			movedFromInitialSquare = true;
+			return true;
+		}
+		
 		for(; id<maxId ; id++) {
-			if(checkIfCanMovePiece(pieces.get(id), numSpaces)) {
+			if(checkIfCanMovePiece(pieces.get(id), roll)) {
 				return true;
 			}
 		}
@@ -113,16 +126,16 @@ public class GameRules {
 	public void sendPieceToStart(Piece p) {
 		Color pieceColor = p.getColor();
 		int pieceIndex = p.getIndex();
-		int i, iMax=0, minIndex=0, maxIndex=0;
+		int i, minIndex=0, maxIndex=0;
 		
 		if(pieceColor == Color.BLUE) {
-			i=0; iMax = 4; minIndex = 72; maxIndex = 76;  
+			i=0; minIndex = 72; maxIndex = 76;  
 		} else if(pieceColor == Color.RED) {
-			i=4; iMax = 8; minIndex = 76; maxIndex = 80;
+			i=4; minIndex = 76; maxIndex = 80;
 		} else if(pieceColor == Color.GREEN){
-			i=8; iMax=12; minIndex = 80; maxIndex = 84;
+			i=8; minIndex = 80; maxIndex = 84;
 		} else if(pieceColor == Color.YELLOW) {
-			i=12; iMax=16; minIndex = 84; maxIndex = 88;
+			i=12; minIndex = 84; maxIndex = 88;
 		}			
 		
 		// Searches the initial space for a vacant one. When it finds one, moves the desired piece from it's current space to an initial space
@@ -420,53 +433,71 @@ public class GameRules {
 		capturedPiece = null;
 	}
 	
-	public boolean moveFromInitialSquare(Color playerColor, List<Piece> p) {
+	public boolean checkCanMoveFromInitialSquare(Color playerColor, List<Piece> p) {
 		int i, iMax;			// The min and max id of the pieces of each team
 		int minIndex, maxIndex; // The indexes the pieces of each color occupy on the initial square
-		int startingPos;		// The index of the initial space for each color
 			
 		if(playerColor.equals(Color.BLUE)) {
-			i=0; iMax = 4; minIndex = 72; maxIndex = 76; startingPos = 0; 
+			i=0; iMax = 4; minIndex = 72; maxIndex = 76; currentStartingPos = 0; 
 		} else if(playerColor.equals(Color.RED)) {
-			i=4; iMax = 8; minIndex = 76; maxIndex = 80; startingPos = 13;
+			i=4; iMax = 8; minIndex = 76; maxIndex = 80; currentStartingPos = 13;
 		} else if(playerColor.equals(Color.GREEN)){
-			i=8; iMax=12; minIndex = 80; maxIndex = 84; startingPos = 26;
+			i=8; iMax=12; minIndex = 80; maxIndex = 84; currentStartingPos = 26;
 		} else if(playerColor.equals(Color.YELLOW)){
-			i=12; iMax=16; minIndex = 84; maxIndex = 88; startingPos = 39;
+			i=12; iMax=16; minIndex = 84; maxIndex = 88; currentStartingPos = 39;
 		} else {
 			System.err.println("Error trying to moveFromInitialSquare: unknown color");
 			return false;
 		}
 		
 		for(; i<iMax ; i++) {
-			Piece piece = p.get(i);
+			pieceToMove = p.get(i);
 			
-			if(piece.getIndex() >= minIndex && piece.getIndex() < maxIndex) {
-				if(boardSpaces[startingPos].getP1() != null) {
-					if(boardSpaces[startingPos].getP1().getColor().equals(piece.getColor())) { // Can't move out
+			// We look for the first piece that is available in the initial square
+			if(pieceToMove.getIndex() >= minIndex && pieceToMove.getIndex() < maxIndex) {
+				
+				if(boardSpaces[currentStartingPos].getP1() != null) {
+					
+					// There is a piece of the same color as the current player, so the piece can't move out
+					if(boardSpaces[currentStartingPos].getP1().getColor().equals(pieceToMove.getColor())) {
 						return false;
-						
-					}else { // If there is a piece of different color in the first space, captures it
-						boardSpaces[piece.getIndex()].setP1(null);
-						
-						piece.setIndex(startingPos);
-						boardSpaces[startingPos].setP1(piece);
-						
-						sendPieceToStart(boardSpaces[startingPos].getP1());
-						canMoveAnotherPiece = true;
-						return true;
+					
+					// The piece is of a different color, so it gets captured
+					}else {
+						capturedPiece = boardSpaces[currentStartingPos].getP1();
+						return true;						
 					}
-				}else { // The first space is empty
-					boardSpaces[piece.getIndex()].setP1(null);
-					
-					piece.setIndex(startingPos);
-					
-					boardSpaces[startingPos].setP1(piece);
+				// The first space is empty
+				}else {	
+					movedFromInitialSquare = true;
 					return true;
-				}
+				}	
 			}
 		}
-		return false;
+		// Eclipse doesn't allow the method to end without a return out of ifs or elses
+		return true;
+	}
+
+	// Gets the stored pieceToMove and moves it to the currentStartingPos
+	// If there is a different colored piece on the starting space, captures it
+	public void moveFromInitialSquare() {
+		
+		// If there is a piece in the first space, captures it. 
+		//(this piece being the same color as the moving piece was already contemplated on "checkCanMoveFromInitialSquare")
+		if(boardSpaces[currentStartingPos].getP1() != null) { 
+			System.out.println("Capturou a peca na saida!");
+			sendPieceToStart(capturedPiece);
+			canMoveAnotherPiece = true;
+			
+			capturedPiece = null;
+		}
+	
+		// Moving the piece to it's first position
+		boardSpaces[pieceToMove.getIndex()].setP1(null);			
+		pieceToMove.setIndex(currentStartingPos);
+		boardSpaces[currentStartingPos].setP1(pieceToMove);	
+		
+		movedFromInitialSquare = false;
 	}
 	
 	public Piece getLastMovedPiece(int playerId) {
@@ -498,6 +529,10 @@ public class GameRules {
 	
 	public BoardSpace[] getBoardSpaces(){
 		return boardSpaces;
+	}
+	
+	public boolean getMovedFromInitialSquare() {
+		return movedFromInitialSquare;
 	}
 }
 	
