@@ -449,9 +449,11 @@ public class GameRules {
 			piece.setHasFinished(true);
 			removeFromPosition(piece, previousIndex);
 			
+			
 			if(checkIfPlayerWon(pieces, playerColor)) {
 				System.out.println("<<<<<<<<<<<<<<<< This player has won the game!!!!! >>>>>>>>>>>>>>>>>");
 			}
+			canMoveAnotherPiece = true;
 
 			return;
 		}
@@ -503,6 +505,7 @@ public class GameRules {
 		return true;
 	}
 	
+	// Checks if it is possible to move the piece out of the initial position
 	public boolean checkCanMoveFromInitialSquare(Color playerColor, List<Piece> p) {
 		int i, iMax;			// The min and max id of the pieces of each team
 		int minIndex, maxIndex; // The indexes the pieces of each color occupy on the initial square
