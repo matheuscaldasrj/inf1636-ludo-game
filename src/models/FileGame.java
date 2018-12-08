@@ -18,14 +18,16 @@ public class FileGame implements Serializable {
 	Color playerTurn;
 	BoardSpace[] boardSpaces;
 	Piece[] getLastMovedPieceArray;
+	int turnsToFinishFirstRound;
 	
 	private int numPieces = 0;
 	private int numBoardSpace = 0;
 	
-	public FileGame(File file, List<Piece> pieces, Color playerTurn, Piece[] getLastMovedPieceArray, BoardSpace[] boardSpaces) {
+	public FileGame(File file, List<Piece> pieces, Color playerTurn, Piece[] getLastMovedPieceArray, BoardSpace[] boardSpaces, int turnsToFinishFirstRound) {
 		this.file = file;
 		this.playerTurn = playerTurn;
 		this.getLastMovedPieceArray = getLastMovedPieceArray;
+		this.turnsToFinishFirstRound = turnsToFinishFirstRound;
 		
 		//method handles size
 		setBoardSpaces(boardSpaces);
@@ -58,6 +60,13 @@ public class FileGame implements Serializable {
 		this.playerTurn = playerTurn;
 	}
 	
+	
+	public int getTurnsToFinishFirstRound() {
+		return turnsToFinishFirstRound;
+	}
+	public void setTurnsToFinishFirstRound(int turnsToFinish) {
+		this.turnsToFinishFirstRound = turnsToFinish;
+	}
 	
 	public Piece[] getLastMovedPieceArray() {
 		return getLastMovedPieceArray;
