@@ -295,17 +295,53 @@ public class GameRules {
 		return fillerPiece;
 	}
 	
+	// If there is a barrier, forces one of the pieces that make part of it to move
+	public boolean breakBarriers(List<Piece> pieces, Color playerColor) {
+		int barrierCount = 0;
+		int i = 0;
+		int maxIndex;
+		Piece pieceToMove = null;
+		
+		if(playerColor == Color.BLUE) i = 0;
+		else if(playerColor == Color.RED) i = 4;
+		else if(playerColor == Color.GREEN) i = 8;
+		else if(playerColor == Color.YELLOW) i = 12;
+		
+		maxIndex = i + 4;
+		for( ; i < maxIndex ; i++) {
+			if(pieces.get(i).getIsBarrier()) {
+				barrierCount++;
+				pieceToMove = pieces.get(i);
+				
+				//If there is more than one barrier, the player has to choose a piece to move either way, so it doesn't make a difference
+				if(barrierCount == 3) {
+					return false;
+				}
+			}
+		}
+		// This player has no barriers
+		if(barrierCount == 0) {
+			return false;
+		}
+		
+		if(checkIfCanMovePiece(pieceToMove, 6)) {
+			movePiece(pieceToMove);
+		}else
+			return false;
+		
+		return true;
+	}
+	
 	//Removes the "p" piece from the "index" location
 	private void removeFromPosition(Piece p, int index) {
 		
 		if(boardSpaces[index].getP1()!=null && boardSpaces[index].getP1().getId() == p.getId()) {
-			System.out.println("P1 isn't null, the piece is in P1 and...");
 			if(boardSpaces[index].getP2() == null) {
-				System.out.println("P2 is null");
+
 				boardSpaces[index].setP1(null);				
 			}
 			else {
-				System.out.println("P2 isn't null");
+
 				boardSpaces[index].setP1(boardSpaces[index].getP2());
 				boardSpaces[index].setP2(null);
 			}
@@ -366,6 +402,10 @@ public class GameRules {
 		int index;							// The last position and the one the piece will move to, respectively
 		int minIndex=0, maxIndex=0; 		// The max and min positions a piece can be to get in the colored trail in one move
 		int firstTrailPos=0;				// The first position and the finishing position of a colored trail, respectively
+		
+		//If the piece has finished, it can't be moved
+		if(piece.getHasFinished())
+			return false;
 		
 		index = piece.getIndex();
 		newPosition = index + numSpaces;
@@ -538,5 +578,6 @@ public class GameRules {
 	public boolean getMovedFromInitialSquare() {
 		return movedFromInitialSquare;
 	}
+
 }
 	

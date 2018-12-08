@@ -83,7 +83,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 				 *
 				 *	So, for example if the player rolls 6 and captures a piece, they'll be unable to roll again until they use up their extra move.
 				 */
-				if(p!=null) {						
+				if(p!=null && !p.getHasFinished()) {						
 					
 					// If the player can move the selected piece, moves it
 					if(rules.checkIfCanMovePiece(p, roll)) {
@@ -276,6 +276,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 				
 				if(roll == 6) {
 					timesRolled6++;
+					
 					if(timesRolled6 % 3 == 0) {
 						rules.sendPieceToStart(rules.getLastMovedPiece(playerId));
 						ludoGameFrame.getControlPanel().setShowDieSide(false);
@@ -285,6 +286,10 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 							drawNextRound(pieces);
 						}
 					}	
+					if(rules.breakBarriers(pieces, playerTurn)) {
+						ludoGameFrame.getControlPanel().setShowDieSide(false);
+						ludoGameFrame.setNewPieces(this.pieces);
+					}
 				}
 				else if(roll == 5) {
 					if(rules.checkCanMoveFromInitialSquare(playerTurn, pieces)) {
