@@ -33,6 +33,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 	int turnsToFinishFirstRound; 	// Used to control when the pieces don't get to start on the first house
 	boolean capturedInFirstRound;	//Used to check when a piece was captured after leaving the initial position on the first round
 	boolean hasUsedExtraMove;		//Used to control the extra moves
+	boolean firstTimeAddingListeners = true;
 	
 	public void startGame() {
 		pieces = new ArrayList<Piece>();
@@ -57,9 +58,12 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 	}
 	
 	private void addListeners() {
-		ludoGameFrame.addBoardListener(this);
-		ludoGameFrame.addControlListener(this);
+		if(firstTimeAddingListeners) {
+			ludoGameFrame.addBoardListener(this);
+			ludoGameFrame.addControlListener(this);			
+		}
 		
+		firstTimeAddingListeners = false;
 	}
 	@Override
 	public void notifyBoardClicks(Object returnClick, boolean isPiece) {
@@ -177,8 +181,14 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 	@Override
 	public void onNewGameButtonClicked(ActionEvent event) {
 		System.out.println("Ludo game - onNewGameButtonClicked");
-		System.out.println(event);
-		
+		restartGame();	
+	}
+	
+	public void restartGame() {
+		rules = rules.getResetGameRules();
+		this.startGame();
+		ludoGameFrame.getControlPanel().setTurnColor(playerTurn);
+		ludoGameFrame.getControlPanel().setShowDieSide(false);
 	}
 
 	@Override

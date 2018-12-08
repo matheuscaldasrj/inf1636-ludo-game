@@ -54,6 +54,11 @@ public class GameRules {
 		return rules;
 	}
 	
+	public GameRules getResetGameRules() {
+		return rules = new GameRules();
+		
+	}
+	
 	// Creates all the pieces of the game, setting their colors and initial positions.
 	// Stores them in the "pieces" ArrayList
 	public List<Piece> createPieces(List<Piece> pieces) {		
