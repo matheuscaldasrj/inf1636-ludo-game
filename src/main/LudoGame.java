@@ -111,7 +111,6 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 							}
 							// When a player rolls 6, they can play again. Instead of passing their turn, we just show the new piece positions
 							else if((roll == 6 && !hasUsedExtraMove)|| hasAStored6) {  
-								System.out.println("Roll: "+roll+" !hasUsedExtraMove: "+!hasUsedExtraMove+" hasAStored6: "+hasAStored6);
 								hasRolled = false;
 								hasAStored6 = false;
 								
@@ -142,7 +141,6 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 					}else {
 						System.out.println("Essa peca nao pode ser movida. Selecione outra");						
 					}
-					System.out.println(">>>>>>>>>>>>>>>>>>>TImes rolled 6: "+ timesRolled6);
 				}
 			}else {
 				System.out.println("Peca nao eh da cor do jogador");
@@ -232,7 +230,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		// Makes the button "rollDie" (ControlPanel) get a random number and display it as an image in it's panel
 		// If the player has already rolled the die on his turn, he may not roll again
 		if(!hasRolled) {
-			
+			System.out.println("We still havent rolled");
 			ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(false);
 			
 			if(fakeValue == null) {
@@ -282,6 +280,10 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 						rules.sendPieceToStart(rules.getLastMovedPiece(playerId));
 						ludoGameFrame.getControlPanel().setShowDieSide(false);
 						ludoGameFrame.setNewPieces(this.pieces);
+						
+						if(!rules.checkIfCanMakeAMove(playerTurn, this.pieces, roll)) {
+							drawNextRound(pieces);
+						}
 					}	
 				}
 				else if(roll == 5) {

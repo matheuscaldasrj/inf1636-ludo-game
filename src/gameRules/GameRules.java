@@ -110,15 +110,18 @@ public class GameRules {
 		int maxId = id+4;
 		
 		if(roll == 5 && checkCanMoveFromInitialSquare(playerColor, pieces)) {
+			System.out.println("Pode mover uma peca da casa inicial!!!!");
 			movedFromInitialSquare = true;
 			return true;
 		}
 		
 		for(; id<maxId ; id++) {
 			if(checkIfCanMovePiece(pieces.get(id), roll)) {
+				System.out.println("Pode mover uma peca normalmente");
 				return true;
 			}
 		}
+		System.out.println("Nao pode mover peca nenhuma!!!!!!");
 		return false;
 	}
 	
@@ -392,6 +395,7 @@ public class GameRules {
 		else if((this.capturedPiece = checkPath(piece, newPosition)) == null) {
 			return false;			
 		}
+		System.out.println("Can move the piece "+piece.getId()+" to the "+newPosition+" position");
 		return true;
 	}
 	
