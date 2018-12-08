@@ -10,7 +10,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Rectangle2D.Float;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -375,7 +374,6 @@ public class BoardPanel extends JPanel {
 	}
 
 	private void drawPieces(List<Piece> pieces) {
-
 		float radius = initialSquareSize / 10;
 		BoardPosition boardPosition;
 		Ellipse2D.Double circle;
@@ -387,6 +385,9 @@ public class BoardPanel extends JPanel {
 
 		if (pieces.size() == 1) {
 			Piece piece = pieces.get(0);
+			if(piece.getHasFinished()) {
+				return ;
+			}
 			boardPosition = boardPositions[piece.getIndex()];
 			circle = new Ellipse2D.Double(boardPosition.getX() + initialSquareSize / 30,
 					boardPosition.getY() + initialSquareSize / 30, radius, radius);
@@ -409,46 +410,59 @@ public class BoardPanel extends JPanel {
 			if (piece1.getColor() == piece2.getColor()) {
 				// same board position
 				// same color
-				circle = new Ellipse2D.Double(boardPosition.getX() + initialSquareSize / 30,
-						boardPosition.getY() + initialSquareSize / 30, radius, radius);
 				
-				//only to draw a 'border'
-				//to avoid cases when for example
-				// blue piece is in a blue board position
-				graphics2.setStroke(new BasicStroke(6));
-				graphics2.setColor(Color.WHITE);
-				graphics2.draw(circle);
+				if(!piece1.getHasFinished()) {
+					///piece 1
+					circle = new Ellipse2D.Double(boardPosition.getX() + initialSquareSize / 30,
+							boardPosition.getY() + initialSquareSize / 30, radius, radius);
+					
+					//only to draw a 'border'
+					//to avoid cases when for example
+					// blue piece is in a blue board position
+					graphics2.setStroke(new BasicStroke(6));
+					graphics2.setColor(Color.WHITE);
+					graphics2.draw(circle);
+					
+					graphics2.setColor(piece1.getColor());
+					graphics2.fill(circle);
+				}
+			
 				
-				graphics2.setColor(piece1.getColor());
-				graphics2.fill(circle);
+				if(!piece2.getHasFinished()) {
+					Ellipse2D.Double internCircle = new Ellipse2D.Double(
+							boardPosition.getX() + initialSquareSize / 30 + radius / 4,
+							boardPosition.getY() + initialSquareSize / 30 + radius / 4, radius / 2, radius / 2);
+					
+					Stroke currentStroke = graphics2.getStroke();
+					graphics2.setStroke(new BasicStroke(6));
+					graphics2.setColor(Color.WHITE);
+					graphics2.draw(internCircle);
+					
+					graphics2.setColor(piece2.getColor());
+					graphics2.fill(internCircle);
+					
+					graphics2.setStroke(currentStroke);
+				}
 				
-				
-				Ellipse2D.Double internCircle = new Ellipse2D.Double(
-						boardPosition.getX() + initialSquareSize / 30 + radius / 4,
-						boardPosition.getY() + initialSquareSize / 30 + radius / 4, radius / 2, radius / 2);
-				
-				Stroke currentStroke = graphics2.getStroke();
-				graphics2.setStroke(new BasicStroke(6));
-				graphics2.setColor(Color.WHITE);
-				graphics2.draw(internCircle);
-				
-				graphics2.setColor(piece2.getColor());
-				graphics2.fill(internCircle);
-				
-				graphics2.setStroke(currentStroke);
+			
 			} else {
 				// same board position
 				// different color
+				if(!piece1.getHasFinished()) {
+					graphics2.setColor(piece1.getColor());
+					circle = new Ellipse2D.Double(boardPosition.getX() + initialSquareSize / 30,
+							boardPosition.getY() + initialSquareSize / 30, radius, radius);
+					graphics2.fill(circle);
+				}
 
-				graphics2.setColor(piece1.getColor());
-				circle = new Ellipse2D.Double(boardPosition.getX() + initialSquareSize / 30,
-						boardPosition.getY() + initialSquareSize / 30, radius, radius);
-				graphics2.fill(circle);
-				Ellipse2D.Double internCircle = new Ellipse2D.Double(
-						boardPosition.getX() + initialSquareSize / 30 + radius / 4,
-						boardPosition.getY() + initialSquareSize / 30 + radius / 4, radius / 2, radius / 2);
-				graphics2.setColor(piece2.getColor());
-				graphics2.fill(internCircle);
+				if(!piece2.getHasFinished()) { 
+					Ellipse2D.Double internCircle = new Ellipse2D.Double(
+							boardPosition.getX() + initialSquareSize / 30 + radius / 4,
+							boardPosition.getY() + initialSquareSize / 30 + radius / 4, radius / 2, radius / 2);
+					graphics2.setColor(piece2.getColor());
+					graphics2.fill(internCircle);
+				}
+				
 
 			}
 
