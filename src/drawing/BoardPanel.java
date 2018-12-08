@@ -113,7 +113,7 @@ public class BoardPanel extends JPanel {
 			// a board position was found, lets check if there is a piece
 			List<Piece> piecesInThisBoardPosition = new ArrayList<>();
 			for (Piece piece : pieces) {
-				if (piece.getIndex() == indexInTheBoard) {
+				if (piece.getIndex() == indexInTheBoard && !piece.getHasFinished()) {
 					piecesInThisBoardPosition.add(piece);
 				}
 			}
