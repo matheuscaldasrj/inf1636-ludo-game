@@ -95,7 +95,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 						if(rules.getMovedFromInitialSquare()) {
 							rules.moveFromInitialSquare();
 						}else
-							rules.movePiece(p);
+							rules.movePiece(p, this.pieces, playerTurn);
 						
 						// If the bonus move won't happen in this turn
 						if(!capturedInFirstRound) {

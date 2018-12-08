@@ -32,9 +32,6 @@ public class GameRules {
 	private Piece pieceToMove;								// The piece that will be moved
 	private int currentStartingPos;							// The current player's starting position
 	
-	private int turnsToFinishFirstRoundCopy = 4;			// Is a copy of the variable of similar name from LudoGame
-	
-	
 	// Used so the class can be a Singleton
 	private static GameRules rules = null;
 	
@@ -115,18 +112,17 @@ public class GameRules {
 		int maxId = id+4;
 		
 		if(roll == 5 && checkCanMoveFromInitialSquare(playerColor, pieces)) {
-			System.out.println("Pode mover uma peca da casa inicial!!!!");
+
 			movedFromInitialSquare = true;
 			return true;
 		}
 		
 		for(; id<maxId ; id++) {
 			if(checkIfCanMovePiece(pieces.get(id), roll)) {
-				System.out.println("Pode mover uma peca normalmente");
+
 				return true;
 			}
 		}
-		System.out.println("Nao pode mover peca nenhuma!!!!!!");
 		return false;
 	}
 	
@@ -194,7 +190,7 @@ public class GameRules {
 			if((piece.getColor().equals(player)))
 				return piece;
 		}
-		return null;	
+		return null;
 	}
 	
 	// Returns the color of the space:
@@ -330,7 +326,7 @@ public class GameRules {
 		}
 		
 		if(checkIfCanMovePiece(pieceToMove, 6)) {
-			movePiece(pieceToMove);
+			movePiece(pieceToMove, pieces, playerColor);
 		}else
 			return false;
 		
@@ -445,13 +441,17 @@ public class GameRules {
 	}
 	
 	// Moves the piece to the "newPosition" index or removes it from the "boardSpaces" array if it reached it's finishing position.
-	public void movePiece(Piece piece) {
+	public void movePiece(Piece piece, List<Piece> pieces, Color playerColor) {
 		int previousIndex = piece.getIndex();	// The position the piece was in before being moved
 		
 		// The piece has reached it's final space. We must remove it from the boardSpaces array.
 		if(newPosition == currentFinishingPos) {
 			piece.setHasFinished(true);
 			removeFromPosition(piece, previousIndex);
+			
+			if(checkIfPlayerWon(pieces, playerColor)) {
+				System.out.println("<<<<<<<<<<<<<<<< This player has won the game!!!!! >>>>>>>>>>>>>>>>>");
+			}
 
 			return;
 		}
@@ -480,6 +480,27 @@ public class GameRules {
 			
 		newPosition = 0;
 		capturedPiece = null;
+	}
+	
+	// Checks if all of the player's pieces have finished (hasFinished == true)
+	private boolean checkIfPlayerWon(List<Piece> pieces, Color playerColor){
+		int i = 0;
+		int maxIndex;
+		
+		if(playerColor == Color.BLUE) i = 0;
+		else if(playerColor == Color.RED) i = 4;
+		else if(playerColor == Color.GREEN) i = 8;
+		else if(playerColor == Color.YELLOW) i = 12;
+		
+		maxIndex = i + 4; 
+		for(; i < maxIndex ; i++) {
+			System.out.println("Piece "+i);
+			// If one of the pieces hasn't finished, returns false
+			if(! pieces.get(i).getHasFinished()) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public boolean checkCanMoveFromInitialSquare(Color playerColor, List<Piece> p) {
