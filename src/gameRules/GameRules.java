@@ -127,13 +127,13 @@ public class GameRules {
 		int pieceIndex = p.getIndex();
 		int i, minIndex=0, maxIndex=0;
 		
-		if(pieceColor == Color.BLUE) {
+		if(pieceColor.equals(Color.BLUE)) {
 			i=0; minIndex = 72; maxIndex = 76;  
-		} else if(pieceColor == Color.RED) {
+		} else if(pieceColor.equals(Color.RED)) {
 			i=4; minIndex = 76; maxIndex = 80;
-		} else if(pieceColor == Color.GREEN){
+		} else if(pieceColor.equals(Color.GREEN)){
 			i=8; minIndex = 80; maxIndex = 84;
-		} else if(pieceColor == Color.YELLOW) {
+		} else if(pieceColor.equals(Color.YELLOW)) {
 			i=12; minIndex = 84; maxIndex = 88;
 		}			
 		
@@ -297,10 +297,10 @@ public class GameRules {
 		int maxIndex;
 		Piece pieceToMove = null;
 		
-		if(playerColor == Color.BLUE) i = 0;
-		else if(playerColor == Color.RED) i = 4;
-		else if(playerColor == Color.GREEN) i = 8;
-		else if(playerColor == Color.YELLOW) i = 12;
+		if(playerColor.equals(Color.BLUE)) i = 0;
+		else if(playerColor.equals(Color.RED)) i = 4;
+		else if(playerColor.equals(Color.GREEN)) i = 8;
+		else if(playerColor.equals(Color.YELLOW)) i = 12;
 		
 		maxIndex = i + 4;
 		for( ; i < maxIndex ; i++) {
@@ -560,10 +560,10 @@ public class GameRules {
 		int i = 0;
 		int maxIndex;
 		
-		if(playerColor == Color.BLUE) i = 0;
-		else if(playerColor == Color.RED) i = 4;
-		else if(playerColor == Color.GREEN) i = 8;
-		else if(playerColor == Color.YELLOW) i = 12;
+		if(playerColor.equals(Color.BLUE)) i = 0;
+		else if(playerColor.equals(Color.RED)) i = 4;
+		else if(playerColor.equals(Color.GREEN)) i = 8;
+		else if(playerColor.equals(Color.YELLOW)) i = 12;
 		
 		maxIndex = i + 4; 
 		for(; i < maxIndex ; i++) {
@@ -662,6 +662,14 @@ public class GameRules {
 	public void setCanMoveAnotherPiece(boolean canMoveAnotherPiece) {
 		this.canMoveAnotherPiece = canMoveAnotherPiece;
 	}
+	
+	public Piece getCapturedPiece() {
+		return capturedPiece;
+	}
+	public void setCapturedPiece(Piece capturedPiece) {
+		this.capturedPiece = capturedPiece;
+	}
+	
 	
 	public void setLastMovedPiece(int playerId,Piece piece) {
 		lastMovedPiece[playerId] = piece;;

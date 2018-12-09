@@ -278,7 +278,8 @@ private String translateColorName(Color color) {
 		playerTurn = fileGame.getPlayerTurn();
 		rules.setBoardSpaces(fileGame.getBoardSpaces());
 		rules.setLastMovedPieceArray(fileGame.getLastMovedPieceArray());
-		
+		rules.setCapturedPiece(fileGame.getCapturedPiece());
+		rules.setCanMoveAnotherPiece(fileGame.getCanMoveAnotherPiece());
 		turnsToFinishFirstRound = fileGame.getTurnsToFinishFirstRound();
 		
 		ludoGameFrame.getControlPanel().setTurnColor(playerTurn);
@@ -295,7 +296,11 @@ private String translateColorName(Color color) {
 		BoardSpace[] boardSpaces = rules.getBoardSpaces();
 		//building file game
 		Piece[] lastMovedPieceArray = rules.getLastMovedPieceArray();
-		FileGame fileGame = new FileGame(file, pieces, playerTurn, lastMovedPieceArray, boardSpaces, turnsToFinishFirstRound);
+		
+		Piece capturedPiece = rules.getCapturedPiece();
+		boolean canMoveAnotherPiece = rules.getCanMoveAnotherPiece();
+		
+		FileGame fileGame = new FileGame(file, pieces, playerTurn, lastMovedPieceArray, boardSpaces, turnsToFinishFirstRound,capturedPiece,canMoveAnotherPiece);
 		//saving it
 		saveAndRestoreGame.saveGame(fileGame);
 	}

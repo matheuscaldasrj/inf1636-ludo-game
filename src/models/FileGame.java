@@ -19,15 +19,27 @@ public class FileGame implements Serializable {
 	BoardSpace[] boardSpaces;
 	Piece[] getLastMovedPieceArray;
 	int turnsToFinishFirstRound;
+	Piece capturedPiece;
+	boolean canMoveAnotherPiece = false;	
+
 	
 	private int numPieces = 0;
 	private int numBoardSpace = 0;
 	
-	public FileGame(File file, List<Piece> pieces, Color playerTurn, Piece[] getLastMovedPieceArray, BoardSpace[] boardSpaces, int turnsToFinishFirstRound) {
+	public FileGame(File file,
+					List<Piece> pieces,
+					Color playerTurn,
+					Piece[] getLastMovedPieceArray,
+					BoardSpace[] boardSpaces,
+					int turnsToFinishFirstRound,
+					Piece capturedPiece,
+					boolean canMoveAnotherPiece) {
 		this.file = file;
 		this.playerTurn = playerTurn;
 		this.getLastMovedPieceArray = getLastMovedPieceArray;
 		this.turnsToFinishFirstRound = turnsToFinishFirstRound;
+		this.capturedPiece = capturedPiece;
+		this.canMoveAnotherPiece = canMoveAnotherPiece;
 		
 		//method handles size
 		setBoardSpaces(boardSpaces);
@@ -66,6 +78,20 @@ public class FileGame implements Serializable {
 	}
 	public void setTurnsToFinishFirstRound(int turnsToFinish) {
 		this.turnsToFinishFirstRound = turnsToFinish;
+	}
+	
+	public Piece getCapturedPiece() {
+		return capturedPiece;
+	}
+	public void setCapturedPiece(Piece capturedPiece) {
+		this.capturedPiece = capturedPiece;
+	}
+	
+	public boolean getCanMoveAnotherPiece() {
+		return canMoveAnotherPiece;
+	}
+	public void setCanMoveAnotherPiece(boolean canMoveAnotherPiece) {
+		this.canMoveAnotherPiece = canMoveAnotherPiece;
 	}
 	
 	public Piece[] getLastMovedPieceArray() {
