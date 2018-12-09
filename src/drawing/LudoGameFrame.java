@@ -100,7 +100,17 @@ public class LudoGameFrame extends JFrame {
 	}
 	
 	public void setShowDieSide(boolean show) {
-		getControlPanel().setShowDieSide(show);
+		this.controlPanel.setShowDieSide(show);
+	}
+	public void setDieSide(int dieSide) {
+		this.controlPanel.setDieSide(dieSide);
+	}
+	public void setEnableRollDieButton(boolean enable) {
+		this.controlPanel.getRollDieButton().setEnabled(enable);
+	}
+	
+	public void setTurnColor(Color playerTurn) {
+		this.controlPanel.setTurnColor(playerTurn);
 	}
 	
 

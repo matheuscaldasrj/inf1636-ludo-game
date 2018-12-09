@@ -194,7 +194,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 
 								// Redraws the board to show the new die value. When the player clicks on
 								// another piece, he'll move 6 spaces
-								ludoGameFrame.getControlPanel().setDieSide(6);
+								ludoGameFrame.setDieSide(6);
 								ludoGameFrame.setNewPieces(this.pieces);
 							}
 							// When a player rolls 6, they can play again. Instead of passing their turn, we
@@ -203,7 +203,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 								hasRolled = false;
 								hasAStored6 = false;
 
-								ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(true);
+								ludoGameFrame.setEnableRollDieButton(true);
 								ludoGameFrame.setNewPieces(this.pieces);
 
 								hasUsedExtraMove = false;
@@ -212,7 +212,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 							// the next player
 							else {
 								System.out.println("Didn't roll 6");
-								ludoGameFrame.getControlPanel().setShowDieSide(false);
+								ludoGameFrame.setShowDieSide(false);
 
 								drawNextRound(this.pieces);
 
@@ -226,7 +226,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 							roll = storedRoll;
 							capturedInFirstRound = false;
 
-							ludoGameFrame.getControlPanel().setDieSide(roll);
+							ludoGameFrame.setDieSide(roll);
 							ludoGameFrame.setNewPieces(this.pieces);
 						}
 
@@ -256,8 +256,8 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		if (this.playerId == 4)
 			this.playerId = 0;
 
-		ludoGameFrame.getControlPanel().setTurnColor(playerTurn);
-		ludoGameFrame.getControlPanel().setShowDieSide(false);
+		ludoGameFrame.setTurnColor(playerTurn);
+		ludoGameFrame.setShowDieSide(false);
 
 		System.out.println(pieces);
 		ludoGameFrame.setNewPieces(pieces);
@@ -266,7 +266,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		hasRolled = false;
 		hasAStored6 = false;
 		rules.setCanMoveAnotherPiece(false);
-		ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(true);
+		ludoGameFrame.setEnableRollDieButton(true);
 	}
 
 	@Override
@@ -278,8 +278,8 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 	public void restartGame() {
 		rules = rules.getResetGameRules();
 		this.startGame();
-		ludoGameFrame.getControlPanel().setTurnColor(playerTurn);
-		ludoGameFrame.getControlPanel().setShowDieSide(false);
+		ludoGameFrame.setTurnColor(playerTurn);
+		ludoGameFrame.setShowDieSide(false);
 	}
 
 	@Override
@@ -305,7 +305,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		rules.setCanMoveAnotherPiece(fileGame.getCanMoveAnotherPiece());
 		turnsToFinishFirstRound = fileGame.getTurnsToFinishFirstRound();
 
-		ludoGameFrame.getControlPanel().setTurnColor(playerTurn);
+		ludoGameFrame.setTurnColor(playerTurn);
 
 		ludoGameFrame.setNewPieces(pieces);
 	}
@@ -340,7 +340,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		// If the player has already rolled the die on his turn, he may not roll again
 		if (!hasRolled) {
 			System.out.println("We still havent rolled");
-			ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(false);
+			ludoGameFrame.setEnableRollDieButton(false);
 
 			if (fakeValue == null) {
 				roll = rules.rollDie();
@@ -350,8 +350,8 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 			}
 			hasRolled = true;
 
-			ludoGameFrame.getControlPanel().setDieSide(roll);
-			ludoGameFrame.getControlPanel().setShowDieSide(true);
+			ludoGameFrame.setDieSide(roll);
+			ludoGameFrame.setShowDieSide(true);
 
 			// On the first round, each player, on their turn, starts with a piece at the
 			// first position
@@ -379,7 +379,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 
 					// Redraws the board to show the new die value. When the player clicks on
 					// another piece, he'll move 6 spaces
-					ludoGameFrame.getControlPanel().setDieSide(6);
+					ludoGameFrame.setDieSide(6);
 					ludoGameFrame.setNewPieces(this.pieces);
 				}
 			}
@@ -392,7 +392,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 
 					if (timesRolled6 == 3) {
 						rules.sendPieceToStart(rules.getLastMovedPiece(playerId));
-						ludoGameFrame.getControlPanel().setShowDieSide(false);
+						ludoGameFrame.setShowDieSide(false);
 						ludoGameFrame.setNewPieces(this.pieces);
 						drawNextRound(pieces);
 					}
@@ -400,7 +400,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 						hasRolled = false;
 						hasAStored6 = false;
 
-						ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(true);
+						ludoGameFrame.setEnableRollDieButton(true);
 						ludoGameFrame.setNewPieces(this.pieces);
 
 						hasUsedExtraMove = false;
@@ -412,7 +412,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 						
 						if(rules.getCanMoveAnotherPiece()) {
 							ludoGameFrame.setShowDieSide(true);
-							ludoGameFrame.getControlPanel().setDieSide(6);
+							ludoGameFrame.setDieSide(6);
 							ludoGameFrame.setNewPieces(this.pieces);
 							
 							capturedPieceInStartPos = true;
