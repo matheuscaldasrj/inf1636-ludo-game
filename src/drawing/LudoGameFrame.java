@@ -99,5 +99,9 @@ public class LudoGameFrame extends JFrame {
 		this.controlPanel = controlPanel;
 	}
 	
+	public void setDieSide(boolean show) {
+		getControlPanel().setShowDieSide(show);
+	}
+	
 
 }

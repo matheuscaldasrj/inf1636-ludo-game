@@ -404,7 +404,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 					if (rules.checkCanMoveFromInitialSquare(playerTurn, pieces)) {
 						rules.moveFromInitialSquare();
 						System.out.println("roll == 5, has been moved to initial square");
-						ludoGameFrame.getControlPanel().setShowDieSide(false);
+						ludoGameFrame.setDieSide(false);
 						drawNextRound(pieces);
 					}
 				}
