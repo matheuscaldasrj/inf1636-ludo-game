@@ -4,8 +4,7 @@ package gameRules;
 import java.awt.Color;
 import java.util.List;
 import java.util.Random;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
+
 import models.BoardSpace;
 import models.Piece;
 
