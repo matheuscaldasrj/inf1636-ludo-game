@@ -148,7 +148,21 @@ private String translateColorName(Color color) {
 								gameHasFinished(playersPositions);
 							}
 						}
-						// If the bonus move won't happen in this turn
+						
+						// Used to avoid problems with cases when a player falls into one of these situations:
+						/* 1) Rolled 6 but didn't capture a piece
+						 * 2) Didn't roll 6 but captured a piece
+						 * 3) Rolled 6 and captured a piece
+						 */
+						if(hasAStored6) {
+							//Do nothing, the roll is already 6
+						}else if(roll == 6 && !hasUsedExtraMove) {
+							//Do nothing, the roll is already 6
+						}else
+							//We already used up all our moves
+							roll = 0;
+						
+						// If the bonus move from capturing a piece when leaving the initial square on the first move of this player on this game didn't happen
 						if(!capturedInFirstRound) {
 							if(rules.getCanMoveAnotherPiece()) {
 								System.out.println("You can move another piece!");
@@ -165,7 +179,7 @@ private String translateColorName(Color color) {
 								ludoGameFrame.setNewPieces(this.pieces);
 							}
 							// When a player rolls 6, they can play again. Instead of passing their turn, we just show the new piece positions
-							else if((roll == 6 && !hasUsedExtraMove)|| hasAStored6) {  
+							else if(roll == 6) {  
 								hasRolled = false;
 								hasAStored6 = false;
 								
@@ -180,6 +194,8 @@ private String translateColorName(Color color) {
 								ludoGameFrame.getControlPanel().setShowDieSide(false);
 								
 								drawNextRound(this.pieces);
+								
+								hasUsedExtraMove = false;
 							}							
 							capturedInFirstRound = false;
 						
