@@ -20,7 +20,7 @@ public class GameRules {
 	private int newPosition; 								//The position the piece will move to, if it is able to
 	
 	private boolean posReset = false;						//The piece has passed the final index of the white spaces in the board, so we must reset the index
-	private boolean canMoveAnotherPiece = false;			//The piece captured another one, so it can move 6 spaces
+	private boolean canMoveAnotherPiece = false;			//If the player reached the final position or captured another piece
 	private boolean movedFromInitialSquare = false;			//The piece was moved from it's initial square
 	
 	// Used for the moveFromInitialSquare method:
@@ -434,12 +434,88 @@ public class GameRules {
 		return true;
 	}
 	
-
 	
+	private Color[] getFinalPositions(List<Piece> pieces) {
+		Color[] playerResults = {Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW};
+		int [] numSpaces = {0, 0, 0, 0};
+		int shortestGap=0, shortestIndex=0; // Used to sort the score
+		int pieceIndex = 0;
+		Piece currPiece = null;
 		
-	private Color[] getFinalPositions() {
-		Color[] colors = {Color.BLUE,Color.GREEN,Color.RED,Color.YELLOW};
-		return colors;
+		int gap = 0;
+		int numSpacesIndex = 0;
+		int startingPos = 0;
+		int finishingPos = 56;
+		
+		int i=0;
+		// How many spaces left in total for each player:
+		while(i < 16) {
+			currPiece = pieces.get(i);
+			pieceIndex = currPiece.getIndex();
+			gap = 0;
+			numSpacesIndex = i/4;
+			
+			if(! currPiece.getHasFinished()) { //If a piece has finished, there is nothing to count
+				if(pieceIndex >= 72) { // If the piece is in one of the initial squares
+					gap = 57;
+					
+				}else if(pieceIndex > startingPos){
+					gap = 56 + startingPos - pieceIndex;
+					
+				}else {
+					gap = finishingPos - pieceIndex;
+				}
+				
+				System.out.println(gap);
+				numSpaces[numSpacesIndex] += gap;
+			}
+			i++;
+			//After each 4 iterations, we start analyzing the next player's pieces
+			if(i % 4 == 0) {
+				System.out.println("NumSpaces: "+numSpaces[numSpacesIndex]);
+				System.out.println("==========");
+				startingPos += 13;
+				finishingPos = startingPos + 4;
+			}
+		}
+		
+		// Sorting the final player positions
+		for(int j = 0 ; j < 3 ; j++) {
+			int auxSpaces;
+			Color auxColor;
+			boolean changed;
+			
+			changed = false;
+			shortestGap = numSpaces[j];
+			shortestIndex = j;
+			System.out.println("<<<<<<NEW LOOP>>>>>");
+			System.out.println("shortestGap: "+shortestGap+" shortestIndex "+j);
+			
+			for(int k = j+1 ; k < 4 ; k++) {
+				if(numSpaces[k] < shortestGap) {
+					System.out.println("Found a suitor!");
+					shortestGap = numSpaces[k];
+					shortestIndex = k;
+					System.out.println("shortestGap: "+shortestGap+" shortestIndex "+j);
+					changed = true;
+				}
+			}
+			if(changed) {
+				// Reorganizing the spaces array
+				auxSpaces = numSpaces[shortestIndex];
+				numSpaces[shortestIndex] = numSpaces[j];
+				numSpaces[j] = auxSpaces;
+				
+				// Reorganizing the playerResults array
+				auxColor = playerResults[shortestIndex];
+				playerResults[shortestIndex] = playerResults[j];
+				playerResults[j] = auxColor;
+			}
+		}
+		
+		System.out.println(numSpaces[0]+" "+numSpaces[1]+" "+numSpaces[2]+" "+numSpaces[3]);
+		
+		return playerResults;
 	}
 	
 	
@@ -455,7 +531,7 @@ public class GameRules {
 			
 			if(checkIfPlayerWon(pieces, playerColor)) {
 				System.out.println("<<<<<<<<<<<<<<<< This player has won the game!!!!! >>>>>>>>>>>>>>>>>");
-				return getFinalPositions();
+				return getFinalPositions(pieces);
 			}
 			canMoveAnotherPiece = true;
 
