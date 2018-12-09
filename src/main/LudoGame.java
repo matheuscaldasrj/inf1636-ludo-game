@@ -98,7 +98,7 @@ private String translateColorName(Color color) {
 			    JOptionPane.INFORMATION_MESSAGE);
 		
 		int whatToDo = JOptionPane.showConfirmDialog(new JDialog(),
-				"Game has finishied, do you want to play a new game?",
+				"Game has finished, do you want to play a new game?",
 			    "Game has finished",
 			    JOptionPane.YES_NO_OPTION);
 		
