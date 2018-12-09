@@ -618,8 +618,8 @@ public class GameRules {
 				}	
 			}
 		}
-		// Eclipse doesn't allow the method to end without a return out of ifs or elses
-		return true;
+
+		return false;
 	}
 
 	// Gets the stored pieceToMove and moves it to the currentStartingPos
