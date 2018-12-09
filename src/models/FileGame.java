@@ -13,15 +13,15 @@ import drawing.YellowBoardColorImpl;
 
 public class FileGame implements Serializable {
 	
-	File file;
-	List<Piece> pieces;
-	Color playerTurn;
-	BoardSpace[] boardSpaces;
-	Piece[] getLastMovedPieceArray;
-	int turnsToFinishFirstRound;
-	Piece capturedPiece;
-	boolean canMoveAnotherPiece = false;	
-
+	private File file;
+	private List<Piece> pieces;
+	private Color playerTurn;
+	private BoardSpace[] boardSpaces;
+	private Piece[] getLastMovedPieceArray;
+	private int turnsToFinishFirstRound;
+	private Piece capturedPiece;
+	private boolean canMoveAnotherPiece;	
+	private boolean capturedPieceInStartPos;
 	
 	private int numPieces = 0;
 	private int numBoardSpace = 0;
@@ -33,14 +33,15 @@ public class FileGame implements Serializable {
 					BoardSpace[] boardSpaces,
 					int turnsToFinishFirstRound,
 					Piece capturedPiece,
-					boolean canMoveAnotherPiece) {
+					boolean canMoveAnotherPiece,
+					boolean capturedPieceInStartPos) {
 		this.file = file;
 		this.playerTurn = playerTurn;
 		this.getLastMovedPieceArray = getLastMovedPieceArray;
 		this.turnsToFinishFirstRound = turnsToFinishFirstRound;
 		this.capturedPiece = capturedPiece;
 		this.canMoveAnotherPiece = canMoveAnotherPiece;
-		
+		this.capturedPieceInStartPos = capturedPieceInStartPos;
 		//method handles size
 		setBoardSpaces(boardSpaces);
 		setPieces(pieces);
@@ -86,6 +87,14 @@ public class FileGame implements Serializable {
 	public void setCapturedPiece(Piece capturedPiece) {
 		this.capturedPiece = capturedPiece;
 	}
+	
+	public Boolean getCapturedPieceInStartPos() {
+		return capturedPieceInStartPos;
+	}
+	public void setCapturedPiece(boolean capturedPieceInStartPos) {
+		this.capturedPieceInStartPos = capturedPieceInStartPos;
+	}
+	
 	
 	public boolean getCanMoveAnotherPiece() {
 		return canMoveAnotherPiece;

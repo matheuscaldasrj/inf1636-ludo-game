@@ -304,6 +304,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		rules.setCapturedPiece(fileGame.getCapturedPiece());
 		rules.setCanMoveAnotherPiece(fileGame.getCanMoveAnotherPiece());
 		turnsToFinishFirstRound = fileGame.getTurnsToFinishFirstRound();
+		capturedPieceInStartPos = fileGame.getCapturedPieceInStartPos();
 
 		ludoGameFrame.setTurnColor(playerTurn);
 
@@ -324,7 +325,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		boolean canMoveAnotherPiece = rules.getCanMoveAnotherPiece();
 
 		FileGame fileGame = new FileGame(file, pieces, playerTurn, lastMovedPieceArray, boardSpaces,
-				turnsToFinishFirstRound, capturedPiece, canMoveAnotherPiece);
+				turnsToFinishFirstRound, capturedPiece, canMoveAnotherPiece, capturedPieceInStartPos);
 		// saving it
 		saveAndRestoreGame.saveGame(fileGame);
 	}
