@@ -1,0 +1,9 @@
+diff a/src/main/LudoGame.java b/src/main/LudoGame.java	(rejected hunks)
+@@ -411,6 +411,7 @@
+ +					if (rules.checkCanMoveFromInitialSquare(playerTurn, pieces)) {
+  						rules.moveFromInitialSquare();
+  						System.out.println("roll == 5, has been moved to initial square");
+++<<<<<<< Updated upstream
+ +						ludoGameFrame.setDieSide(false);
+ +						drawNextRound(pieces);
+ +=======
