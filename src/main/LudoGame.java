@@ -21,6 +21,9 @@ import saveRestore.SaveAndRestoreGame;
 // This is the class that contains everything. It controls the flow of the game
 public class LudoGame implements BoardEventListener, ControlEventListener {
 	
+	// Used so the class can be a Singleton
+	private static LudoGame ludoGame = null;
+		
 	LudoGameFrame ludoGameFrame = new LudoGameFrame();
 	SaveAndRestoreGame saveAndRestoreGame = new SaveAndRestoreGame();
 	List<Piece> pieces;
@@ -37,6 +40,13 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 	boolean capturedInFirstRound;	//Used to check when a piece was captured after leaving the initial position on the first round
 	boolean hasUsedExtraMove;		//Used to control the extra moves
 	boolean firstTimeAddingListeners = true;
+	
+	public static LudoGame getGameRules() {
+		if(ludoGame == null) {
+			ludoGame = new LudoGame();
+		}
+		return ludoGame;
+	}
 	
 	public void startGame() {
 		pieces = new ArrayList<Piece>();

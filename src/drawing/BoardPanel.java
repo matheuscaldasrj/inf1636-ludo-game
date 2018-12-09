@@ -195,7 +195,7 @@ public class BoardPanel extends JPanel {
 
 	}
 
-	void drawCircleByInitialSquarePosition(float poisitionX, float positionY, BoardColorInterface boardColor) {
+	private void drawCircleByInitialSquarePosition(float poisitionX, float positionY, BoardColorInterface boardColor) {
 		Ellipse2D.Double circle;
 		float initialRadius = initialSquareSize / 7;
 		int initialCircleBoardIndex = boardColor.getInitialCircleBoardIndex();
