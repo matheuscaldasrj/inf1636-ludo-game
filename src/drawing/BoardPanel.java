@@ -165,11 +165,16 @@ public class BoardPanel extends JPanel {
 
 		Map<Integer, List<Piece>> pieceMap = new HashMap<Integer, List<Piece>>();
 		for (Piece piece : pieces) {
+			
+			if(piece.getHasFinished()) {
+				continue;
+			}
+			
 			if (pieceMap.get(piece.getIndex()) == null) {
 				// is null, lets create
 				pieceMap.put(piece.getIndex(), new ArrayList<Piece>());
 			}
-
+			
 			List<Piece> pieces = pieceMap.get(piece.getIndex());
 			pieces.add(piece);
 
