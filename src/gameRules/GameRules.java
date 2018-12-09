@@ -287,7 +287,7 @@ public class GameRules {
 					}
 				} 
 		}
-		return fillerPiece;
+		return null;
 	}
 	
 	// If there is a barrier, forces one of the pieces that make part of it to move
