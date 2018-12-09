@@ -72,6 +72,8 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		addListeners();
 
 		ludoGameFrame.setNewPieces(pieces);
+		
+		ludoGameFrame.disableSaveButton();
 	}
 
 	private void addListeners() {
@@ -342,6 +344,7 @@ public class LudoGame implements BoardEventListener, ControlEventListener {
 		if (!hasRolled) {
 			System.out.println("We still havent rolled");
 			ludoGameFrame.setEnableRollDieButton(false);
+			ludoGameFrame.enableSaveButto();
 
 			if (fakeValue == null) {
 				roll = rules.rollDie();

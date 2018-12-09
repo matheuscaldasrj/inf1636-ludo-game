@@ -113,5 +113,13 @@ public class LudoGameFrame extends JFrame {
 		this.controlPanel.setTurnColor(playerTurn);
 	}
 	
+	public void disableSaveButton() {
+		this.controlPanel.getSaveButton().setEnabled(false);
+	}
+	
+	public void enableSaveButto() {
+		this.controlPanel.getSaveButton().setEnabled(true);
+	}
+	
 
 }

@@ -240,6 +240,11 @@ public class ControlPanel extends JPanel {
 	public JButton getRollDieButton() {
 		return rollDieButton;
 	}
+	
+	public JButton getSaveButton() {
+		return saveGameButton;
+	}
+	
 
 	// Sets which side of the die will be displayed by the paint component
 	public void setDieSide(int dieSide) {
