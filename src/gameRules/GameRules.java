@@ -321,10 +321,9 @@ public class GameRules {
 		
 		if(checkIfCanMovePiece(pieceToMove, 6)) {
 			movePiece(pieceToMove, pieces, playerColor);
-		}else
-			return false;
-		
-		return true;
+			return true;
+		}
+		return false;
 	}
 	
 	//Removes the "p" piece from the "index" location
@@ -466,14 +465,11 @@ public class GameRules {
 					gap = finishingPos - pieceIndex;
 				}
 				
-				System.out.println(gap);
 				numSpaces[numSpacesIndex] += gap;
 			}
 			i++;
 			//After each 4 iterations, we start analyzing the next player's pieces
 			if(i % 4 == 0) {
-				System.out.println("NumSpaces: "+numSpaces[numSpacesIndex]);
-				System.out.println("==========");
 				startingPos += 13;
 				finishingPos = startingPos + 4;
 			}
@@ -488,15 +484,11 @@ public class GameRules {
 			changed = false;
 			shortestGap = numSpaces[j];
 			shortestIndex = j;
-			System.out.println("<<<<<<NEW LOOP>>>>>");
-			System.out.println("shortestGap: "+shortestGap+" shortestIndex "+j);
 			
 			for(int k = j+1 ; k < 4 ; k++) {
 				if(numSpaces[k] < shortestGap) {
-					System.out.println("Found a suitor!");
 					shortestGap = numSpaces[k];
 					shortestIndex = k;
-					System.out.println("shortestGap: "+shortestGap+" shortestIndex "+j);
 					changed = true;
 				}
 			}
@@ -513,8 +505,6 @@ public class GameRules {
 			}
 		}
 		
-		System.out.println(numSpaces[0]+" "+numSpaces[1]+" "+numSpaces[2]+" "+numSpaces[3]);
-		
 		return playerResults;
 	}
 	
@@ -530,7 +520,6 @@ public class GameRules {
 			
 			
 			if(checkIfPlayerWon(pieces, playerColor)) {
-				System.out.println("<<<<<<<<<<<<<<<< This player has won the game!!!!! >>>>>>>>>>>>>>>>>");
 				return getFinalPositions(pieces);
 			}
 			canMoveAnotherPiece = true;

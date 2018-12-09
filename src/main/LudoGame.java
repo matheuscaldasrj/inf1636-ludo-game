@@ -164,7 +164,8 @@ private String translateColorName(Color color) {
 						
 						// If the bonus move from capturing a piece when leaving the initial square on the first move of this player on this game didn't happen
 						if(!capturedInFirstRound) {
-							if(rules.getCanMoveAnotherPiece()) {
+							// Checks if has a bonus move (+6) and if can move any piece with that bonus
+							if(rules.getCanMoveAnotherPiece() && rules.checkIfCanMakeAMove(playerTurn, this.pieces,  6)) {
 								System.out.println("You can move another piece!");
 								if(roll == 6) {
 									hasAStored6 = true;
@@ -362,8 +363,13 @@ private String translateColorName(Color color) {
 						drawNextRound(pieces);
 					}	
 					if(rules.breakBarriers(pieces, playerTurn)) {
-						ludoGameFrame.getControlPanel().setShowDieSide(false);
+						hasRolled = false;
+						hasAStored6 = false;
+						
+						ludoGameFrame.getControlPanel().getRollDieButton().setEnabled(true);
 						ludoGameFrame.setNewPieces(this.pieces);
+						
+						hasUsedExtraMove = false;
 					}
 				}
 				else if(roll == 5) {
